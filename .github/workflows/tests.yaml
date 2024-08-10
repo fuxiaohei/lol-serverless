@@ -27,7 +27,7 @@ jobs:
         run: |
           bash ./scripts/land-server-deps.sh
           mkdir -p /opt/bin
-          cp -R wizer-v6.0.0-x86_64-linux /opt/bin/wizer
+          cp -R wizer-v6.0.0-x86_64-linux/wizer ./target/release/wizer
       - name: Build binaries
         run: |
           cargo build -p land-cli --release

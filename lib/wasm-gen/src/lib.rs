@@ -69,6 +69,7 @@ fn find_cmd(cmd: &str) -> Result<PathBuf> {
             #[cfg(target_os = "windows")]
             let file = file.with_extension("exe");
 
+            debug!("Try find cmd: {:?}", file);
             if file.exists() {
                 return Ok(file);
             }
