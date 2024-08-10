@@ -1,14 +1,16 @@
-use std::process::Command;
-
 use anyhow::Result;
 use clap::Args;
 use color_print::cprintln;
 use land_core::meta;
-use tracing::debug;
+use std::process::Command;
+use tracing::{debug};
 
 /// Command Build
 #[derive(Args, Debug)]
 pub struct Build {
+    pub input: Option<String>,
+    #[clap(short = 'o', long = "output")]
+    pub output: Option<String>,
     #[clap(short = 'j', long = "js-engine")]
     pub js_engine: Option<String>,
 }
@@ -16,6 +18,17 @@ pub struct Build {
 impl Build {
     pub async fn run(&self) -> Result<()> {
         debug!("Build command: {:?}", self);
+        if let Some(input) = self.input.as_ref() {
+            let dist_wasm_path = if let Some(output) = self.output.as_ref() {
+                output.clone()
+            } else {
+                format!("{}.wasm", input)
+            };
+            cprintln!("Input: {}\nOutput: {}", input, dist_wasm_path);
+            build_js_internal(&input, &dist_wasm_path, self.js_engine.clone())?;
+            cprintln!("<green>Build '{}' success</green>", input);
+            return Ok(());
+        }
         let meta = meta::Data::from_file(meta::DEFAULT_FILE)?;
         debug!("Meta: {:?}", meta);
 
@@ -30,6 +43,13 @@ impl Build {
     }
 }
 
+fn build_js_internal(src: &str, dist_wasm_path: &str, js_engine: Option<String>) -> Result<()> {
+    let dist_wasm_dir = std::path::Path::new(&dist_wasm_path).parent().unwrap();
+    std::fs::create_dir_all(dist_wasm_dir)?;
+    land_wasm_gen::componentize_js(src, dist_wasm_path, js_engine)?;
+    Ok(())
+}
+
 /// build_internal builds the project
 pub fn build_internal(meta: &meta::Data, js_engine: Option<String>) -> Result<()> {
     if let Some(cmd) = &meta.build.cmd {
@@ -38,9 +58,7 @@ pub fn build_internal(meta: &meta::Data, js_engine: Option<String>) -> Result<()
     if meta.language == "js" || meta.language == "javascript" {
         let dist_wasm_path = meta.target_wasm_path();
         debug!("Build wasm file: {}", dist_wasm_path);
-        let dist_wasm_dir = std::path::Path::new(&dist_wasm_path).parent().unwrap();
-        std::fs::create_dir_all(dist_wasm_dir)?;
-        land_wasm_gen::componentize_js(&meta.build.main, &dist_wasm_path, js_engine)?;
+        build_js_internal(&meta.build.main, &dist_wasm_path, js_engine)?;
         cprintln!("<green>Build project '{}' success</green>", meta.name);
         return Ok(());
     }
