@@ -1,4 +1,4 @@
-name: Build Github Packages
+name: Run Tests
 on:
   push:
     branches:
@@ -23,6 +23,11 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: "tests"
+      - name : Install dependencies
+        run: |
+          bash ./scripts/land-server-deps.sh
+          mkdir -p /opt/bin
+          cp -R wizer-v6.0.0-x86_64-linux /opt/bin/wizer
       - name: Build binaries
         run: |
           cargo build -p land-cli --release
