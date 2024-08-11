@@ -23,14 +23,14 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: "tests"
-      - name : Install dependencies
+      - name: Build binaries
+        run: |
+          cargo build -p land-cli --release
+      - name : Install Wizer
         run: |
           bash ./scripts/land-server-deps.sh
           mkdir -p /opt/bin
           cp -R wizer-v6.0.0-x86_64-linux/wizer ./target/release/wizer
-      - name: Build binaries
-        run: |
-          cargo build -p land-cli --release
       - name: Test js-files
         run: |
           bash ./tests/test-js-files.sh

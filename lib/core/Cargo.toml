@@ -26,7 +26,7 @@ rust-embed = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 serde_yaml = "0.9.33"
-tempfile = "3.11.0"
+tempfile = "3.12.0"
 tokio = { workspace = true }
 toml = "0.8.19"
 tracing = { workspace = true }
