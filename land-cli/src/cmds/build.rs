@@ -3,7 +3,7 @@ use clap::Args;
 use color_print::cprintln;
 use land_core::meta;
 use std::process::Command;
-use tracing::{debug};
+use tracing::debug;
 
 /// Command Build
 #[derive(Args, Debug)]
@@ -25,7 +25,7 @@ impl Build {
                 format!("{}.wasm", input)
             };
             cprintln!("Input: {}\nOutput: {}", input, dist_wasm_path);
-            build_js_internal(&input, &dist_wasm_path, self.js_engine.clone())?;
+            build_js_internal(input, &dist_wasm_path, self.js_engine.clone())?;
             cprintln!("<green>Build '{}' success</green>", input);
             return Ok(());
         }

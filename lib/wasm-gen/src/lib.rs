@@ -6,6 +6,7 @@ use std::{
     process::{Command, Stdio},
 };
 use tracing::debug;
+use wasi_preview1_component_adapter_provider::WASI_SNAPSHOT_PREVIEW1_REACTOR_ADAPTER;
 use wit_bindgen_core::{wit_parser::Resolve, Files, WorldGenerator};
 use wit_bindgen_rust::Opts;
 use wit_component::ComponentEncoder;
@@ -193,7 +194,7 @@ pub fn componentize_wasm(target: &str) -> Result<()> {
 /// encode_component encode wasm module file to component
 fn encode_component(src: &str, dest: &str) -> Result<()> {
     let file_bytes = std::fs::read(src)?;
-    let wasi_adapter = include_bytes!("../engine/wasi_snapshot_preview1.reactor.wasm");
+    let wasi_adapter = WASI_SNAPSHOT_PREVIEW1_REACTOR_ADAPTER;
     let component = ComponentEncoder::default()
         .module(&file_bytes)
         .expect("Pull custom sections from module")
