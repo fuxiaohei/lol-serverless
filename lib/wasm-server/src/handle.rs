@@ -24,11 +24,18 @@ pub async fn run(
     let st = Instant::now();
     metrics.req_fn_total.increment(1);
 
+    // get remote ip
+    // if x-real-ip exists, use it
+    let remote = if let Some(real_ip) = req.headers().get("x-real-ip") {
+        real_ip.to_str().unwrap().to_string()
+    } else {
+        addr.to_string()
+    };
+
     // prepare span info
     let method = req.method().clone();
     let uri = req.uri().to_string();
-
-    let span = info_span!("[HTTP]",rt = %addr.to_string(), rid = %info.req_id.clone(), m = %method, u = %uri, h = %info.host);
+    let span = info_span!("[HTTP]",rt = %remote, rid = %info.req_id.clone(), m = %method, u = %uri, h = %info.host);
     let span_clone = span.clone();
 
     // if wasm_module is empty, return 404
