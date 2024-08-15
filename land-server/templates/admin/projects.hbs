@@ -56,9 +56,15 @@
                                         data-x-timeago="{{created_at}}"></span>
                                 </td>
                                 <td>
+                                    {{#if is_disabled}}
+                                    <span class="small text-uppercase status-{{status}} badge">
+                                        {{status}}
+                                    </span>
+                                    {{else}}
                                     <span class="small text-uppercase status-{{deploy_status}} badge">
                                         {{deploy_status}}
                                     </span>
+                                    {{/if}}
                                 </td>
                                 <td>
                                     <a href="/admin/projects/{{name}}" data-bs-toggle="tooltip"

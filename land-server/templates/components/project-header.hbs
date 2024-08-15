@@ -9,6 +9,14 @@
         </div>
     </div>
     <div class="btns">
+        {{#if project.is_disabled}}
+        <button id="project-deploy-status-btn" class="btn status-{{project.status}} text-uppercase y-center"
+            data-bs-toggle="tooltip" data-bs-placement="top"
+            data-bs-title="Project is disabled, Please connact to the Administrator">
+            <i class='bx bx-message-alt-error me-2'></i>{{project.status}}
+        </button>
+        {{else}}
+
         {{#if project.is_deploy_success}}
         <button class="btn btn-success">
             <a href="{{project.prod_domain_url}}" class="y-center link-reset" target="_blank"><i
@@ -17,14 +25,19 @@
         {{else}}
         <button id="project-deploy-status-btn" class="btn status-{{project.deploy_status}} text-uppercase"
             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{project.deploy_message}}">
-            {{project.deploy_status}}
+            <span class="y-center">
+                <i class='bx bx-message-alt-error me-2'></i>{{project.deploy_status}}
+            </span>
         </button>
         {{/if}}
+
         {{#if project.is_editable}}
         <button class="ms-3 btn btn-dark">
             <a href="/projects/{{project.name}}/edit" class="y-center link-reset"><i
                     class='bx bxs-edit me-2'></i>Edit</a>
         </button>
+        {{/if}}
+
         {{/if}}
     </div>
 </div>

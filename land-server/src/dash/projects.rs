@@ -120,6 +120,7 @@ pub async fn single(
         return Ok(notfound_html(engine, &msg, user).into_response());
     }
     let project = Project::new_with_source(&project.unwrap()).await?;
+    println!("----project:{:?}",project);
     Ok(RenderHtmlMinified(
         "project-single.hbs",
         engine,

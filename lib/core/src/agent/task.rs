@@ -118,15 +118,16 @@ async fn request(addr: String, token: String, dir: String, service_name: String)
 }
 
 async fn handle_each_task(t: Task, dir: String, service_name: String) -> Result<()> {
-    if t.task_type == TaskType::DeployWasmToWorker.to_string() {
-        let item: Item = serde_json::from_str(&t.content)?;
-        handle_each_agent_item(item, dir.clone(), service_name.clone()).await?;
-        return Ok(());
+    let item: Item = serde_json::from_str(&t.content)?;
+    match t.task_type.parse()? {
+        TaskType::DeployWasmToWorker => {
+            handle_each_deploy(item, dir.clone(), service_name.clone()).await
+        }
+        TaskType::DisableWasm => handle_each_disable(item, dir).await,
     }
-    Err(anyhow!("unknown task type: {}", t.task_type))
 }
 
-async fn handle_each_agent_item(item: Item, dir: String, service_name: String) -> Result<()> {
+async fn handle_each_deploy(item: Item, dir: String, service_name: String) -> Result<()> {
     let wasm_target_file = format!("{}/{}", dir, item.file_name);
 
     // 1. download wasm file
@@ -168,5 +169,16 @@ async fn handle_each_agent_item(item: Item, dir: String, service_name: String) -
     land_wasm_host::pool::prepare_worker(&item.file_name, true).await?;
     debug!("prepare worker success: {}", item.file_name);
 
+    Ok(())
+}
+
+async fn handle_each_disable(item: Item, dir: String) -> Result<()> {
+    let traefik_file = format!("{}/traefik/{}.yaml", dir, item.domain.replace('.', "_"));
+    if Path::new(&traefik_file).exists() {
+        std::fs::remove_file(&traefik_file)?;
+        debug!("remove traefik success: {}", traefik_file);
+    } else {
+        debug!("traefik not exist: {}", traefik_file);
+    }
     Ok(())
 }

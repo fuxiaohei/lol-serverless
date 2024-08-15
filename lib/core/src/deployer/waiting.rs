@@ -54,7 +54,7 @@ async fn handle() -> Result<()> {
     }
     info!("Waitings: {}", deploy_data.len());
     for dp in deploy_data.iter() {
-        match handle_one(dp).await {
+        match handle_internal(dp).await {
             Ok(_) => {}
             Err(e) => {
                 set_failed(dp.id, dp.project_id, e.to_string().as_str()).await?;
@@ -65,9 +65,19 @@ async fn handle() -> Result<()> {
     Ok(())
 }
 
-async fn handle_one(dp: &deployment::Model) -> Result<()> {
+async fn handle_internal(dp: &deployment::Model) -> Result<()> {
     debug!("Handle waiting: {}", dp.id);
 
+    match dp.deploy_type.parse::<deploys::DeployType>()? {
+        deploys::DeployType::Production | deploys::DeployType::Development => {
+            handle_deploy_wasm(dp).await
+        }
+        deploys::DeployType::Disabled => handle_deploy_disable(dp).await,
+        // _ => Err(anyhow!("Deploy type '{}' not supported", dp.deploy_type)),
+    }
+}
+
+async fn handle_deploy_wasm(dp: &deployment::Model) -> Result<()> {
     // 1. get project
     let project = projects::get_by_id(dp.project_id).await?;
     if project.is_none() {
@@ -181,6 +191,50 @@ async fn handle_one(dp: &deployment::Model) -> Result<()> {
     }
 
     // 13. update deployment status, to trigger review logic
+    deploys::set_rips(dp.id, rips.join(","), rips.len() as i32).await?;
+    deploys::set_deploy_status(dp.id, deploys::Status::Deploying, "Deploying").await?;
+
+    Ok(())
+}
+
+async fn handle_deploy_disable(dp: &deployment::Model) -> Result<()> {
+    // 1. get online workers
+    let workers_value = workers::find_all(Some(workers::Status::Online)).await?;
+    if workers_value.is_empty() {
+        warn!(dp_id = dp.id, "No worker online");
+        return set_failed(dp.id, dp.project_id, "No worker online").await;
+    }
+
+    // 2. create conf values
+    let domain_settings = settings::get_domain_settings().await?;
+    let item = Item {
+        user_id: dp.owner_id,
+        project_id: dp.project_id,
+        deploy_id: dp.id,
+        task_id: dp.task_id.clone(),
+        file_name: String::new(),
+        file_hash: String::new(),
+        download_url: String::new(),
+        domain: format!("{}.{}", dp.domain, domain_settings.domain_suffix),
+    };
+    let item_content = serde_json::to_string(&item)?;
+
+    // 3. create details task for each worker
+    let mut rips = vec![];
+    for worker in workers_value.iter() {
+        let task = deploy_task::create(
+            dp,
+            deploy_task::TaskType::DisableWasm,
+            &item_content,
+            worker.id,
+            &worker.ip,
+        )
+        .await?;
+        debug!("Create task: {:?}", task);
+        rips.push(worker.ip.clone());
+    }
+
+    // 4. update deployment status, to trigger review logic
     deploys::set_rips(dp.id, rips.join(","), rips.len() as i32).await?;
     deploys::set_deploy_status(dp.id, deploys::Status::Deploying, "Deploying").await?;
 

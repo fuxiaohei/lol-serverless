@@ -30,24 +30,56 @@
                             </span>
                         </span>
                     </div>
-                    <div class="ops-buttons p-3 my-3 border-top border-bottom">
-                        <a class="btn btn-success me-3 text-uppercase" href="{{project.prod_domain_url}}"
-                            target="_blank"><span class="y-center">
-                                <i class='bx bx-globe me-1'></i>View</span>
-                        </a>
-                        <button class="btn btn-dark me-3 text-uppercase"><span class="y-center">
-                                <i class='bx bx-refresh me-1'></i>redeploy</span>
-                        </button>
-                        <button class="btn btn-dark me-3 text-uppercase"><span class="y-center">
-                                <i class='bx bx-window-close me-1'></i>
-                                disable
-                            </span>
-                        </button>
-                        <button class="btn btn-dark me-3 text-uppercase"><span class="y-center">
-                                <i class='bx bx-window-open me-1'></i>
-                                enable
-                            </span>
-                        </button>
+                    <div class="ops-buttons pt-3 my-3 border-top border-bottom">
+                        <div class="buttons">
+                            {{#if project.is_disabled}}
+                            <button id="project-deploy-status-btn"
+                                class="btn status-{{project.status}} text-uppercase me-3">
+                                {{project.status}}
+                            </button>
+                            {{else}}
+
+                            {{#if project.is_deploy_success}}
+                            <a class="btn btn-success me-3 text-uppercase" href="{{project.prod_domain_url}}"
+                                target="_blank"><span class="y-center">
+                                    <i class='bx bx-globe me-1'></i>View</span>
+                            </a>
+                            {{else}}
+                            <button id="project-deploy-status-btn"
+                                class="btn status-{{project.deploy_status}} text-uppercase me-3"
+                                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                data-bs-title="{{project.deploy_message}}">
+                                {{project.deploy_status}}
+                            </button>
+                            {{/if}}
+
+                            {{/if}}
+                            <button hx-post="/admin/projects/{{project.name}}/redeploy" hx-swap="innerHTML settle:3s"
+                                hx-target="#op-message" hx-trigge="click" class="btn btn-dark me-3 text-uppercase"><span
+                                    class="y-center">
+                                    <i class='bx bx-refresh me-1'></i>redeploy</span>
+                            </button>
+                            {{#if project.is_disabled}}
+                            <button hx-post="/admin/projects/{{project.name}}/enable" hx-swap="innerHTML settle:3s"
+                                hx-target="#op-message" hx-trigge="click"
+                                class="btn btn-light me-3 text-uppercase"><span class="y-center">
+                                    <i class='bx bx-window-open me-1'></i>
+                                    enable
+                                </span>
+                            </button>
+                            {{else}}
+                            <button hx-post="/admin/projects/{{project.name}}/disable" hx-swap="innerHTML settle:3s"
+                                hx-target="#op-message" hx-trigge="click"
+                                class="btn btn-light me-3 text-uppercase"><span class="y-center">
+                                    <i class='bx bx-window-close me-1'></i>
+                                    disable
+                                </span>
+                            </button>
+                            {{/if}}
+                        </div>
+                        <div class="py-2">
+                            <div id="op-message" class="hx-message"></div>
+                        </div>
                     </div>
                     <div class="code-preview p-3 pt-1 overflow-y-auto" style="max-height: 240px;">
                         <pre class="mb-0"><code class="language-javascript rounded">{{project.source}}</code></pre>

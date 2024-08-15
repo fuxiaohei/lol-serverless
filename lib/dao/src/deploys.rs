@@ -26,11 +26,12 @@ pub enum DeploymentStatus {
     Outdated, // if a deployment is outdated, it will be deleted
 }
 
-#[derive(strum::Display)]
+#[derive(strum::Display,PartialEq, strum::EnumString)]
 #[strum(serialize_all = "lowercase")]
 pub enum DeployType {
     Production,  // production deployment
     Development, // development deployment
+    Disabled,    // disabled deployment
 }
 
 #[derive(Debug, Deserialize, Serialize)]

@@ -1,5 +1,5 @@
 use crate::{
-    dash::ServerError,
+    dash::{ok_html, ServerError},
     templates::{Engine, RenderHtmlMinified},
 };
 use axum::{
@@ -9,7 +9,7 @@ use axum::{
     Extension, Json,
 };
 use land_core::traffic;
-use land_dao::{playground, projects};
+use land_dao::{deploys, playground, projects};
 use land_vars::{AuthUser, BreadCrumbKey, Page, Pagination, Project};
 use serde::{Deserialize, Serialize};
 use tracing::info;
@@ -125,4 +125,71 @@ pub async fn details(
             project,
         },
     ))
+}
+
+/// redeploy is route of project redeploy page, /admin/projects/:name/redeploy
+pub async fn redeploy(
+    Extension(_user): Extension<AuthUser>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, ServerError> {
+    let project = projects::get_by_name(&name, None).await?;
+    if project.is_none() {
+        return Err(ServerError::status_code(
+            StatusCode::NOT_FOUND,
+            "Project not found",
+        ));
+    }
+    let project = project.unwrap();
+    let deploy = projects::create_deploy(&project, deploys::DeployType::Production).await?;
+    info!(
+        "admin-projects, redeploy project:{}, dp-id:{}",
+        project.name, deploy.id
+    );
+    Ok(ok_html("Project redeployed"))
+}
+
+/// enable is route of project enable page, /admin/projects/:name/enable
+pub async fn enable(
+    Extension(_user): Extension<AuthUser>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, ServerError> {
+    let project = projects::get_by_name(&name, None).await?;
+    if project.is_none() {
+        return Err(ServerError::status_code(
+            StatusCode::NOT_FOUND,
+            "Project not found",
+        ));
+    }
+    let project = project.unwrap();
+    // set project status to active
+    projects::set_status(project.id, projects::Status::Active).await?;
+    let deploy = projects::create_deploy(&project, deploys::DeployType::Production).await?;
+    info!(
+        "admin-projects, enable project:{}, dp-id:{}",
+        project.name, deploy.id,
+    );
+    Ok(ok_html("Project enabled"))
+}
+
+/// disable is route of project disable page, /admin/projects/:name/disable
+pub async fn disable(
+    Extension(_user): Extension<AuthUser>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, ServerError> {
+    let project = projects::get_by_name(&name, None).await?;
+    if project.is_none() {
+        return Err(ServerError::status_code(
+            StatusCode::NOT_FOUND,
+            "Project not found",
+        ));
+    }
+    let project = project.unwrap();
+    // set project status to active
+    projects::set_status(project.id, projects::Status::Disabled).await?;
+    let deploy = projects::create_deploy(&project, deploys::DeployType::Disabled).await?;
+    info!(
+        "admin-projects, disable project:{}, dp-id:{}",
+        project.name, deploy.id,
+    );
+    Ok(ok_html("Project disabled"))
 }

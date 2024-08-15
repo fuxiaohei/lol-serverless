@@ -31,7 +31,11 @@
                                 class="d-flex flex-column project-item border rounded p-3 text-reset text-decoration-none">
                                 <div class="meta d-flex justify-content-between align-items-top mb-1">
                                     <div class="title">
-                                        <h6 class="fw-bold mb-1">{{name}}</h6>
+                                        <h6 class="fw-bold mb-1">{{name}}
+                                            {{#if is_disabled}}
+                                            <span class="text-uppercase badge small text-bg-danger">disabled</span>
+                                            {{/if}}
+                                        </h6>
                                         <p class="mb-0 text-body-tertiary small">edit with
                                             <span class="text-uppercase">{{created_by}}</span>
                                         </p>

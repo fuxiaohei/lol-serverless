@@ -8,10 +8,11 @@ use sea_orm::{
     QueryOrder,
 };
 
-#[derive(strum::Display)]
+#[derive(strum::Display,strum::EnumString,PartialEq)]
 #[strum(serialize_all = "lowercase")]
 pub enum TaskType {
     DeployWasmToWorker, // deploy wasm to worker
+    DisableWasm, // disable wasm
 }
 
 #[derive(strum::Display)]

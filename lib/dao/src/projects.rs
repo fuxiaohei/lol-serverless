@@ -205,6 +205,59 @@ pub async fn set_deploy_status(id: i32, status: deploys::Status, msg: &str) -> R
     Ok(())
 }
 
+/// set_status sets a status to a project
+pub async fn set_status(id: i32, status: Status) -> Result<()> {
+    let db = DB.get().unwrap();
+    project::Entity::update_many()
+     .col_expr(project::Column::Status, Expr::value(status.to_string()))
+     .col_expr(project::Column::UpdatedAt, Expr::value(now_time()))
+     .filter(project::Column::Id.eq(id))
+     .exec(db)
+     .await?;
+    Ok(())
+}
+
+/// create_deploy creates a new deploy with project
+pub async fn create_deploy(
+    project: &project::Model,
+    dtype: deploys::DeployType,
+) -> Result<deployment::Model> {
+    let user = users::get_by_id(project.owner_id, Some(users::UserStatus::Active)).await?;
+    if user.is_none() {
+        return Err(anyhow!("User not found or not active"));
+    }
+    let user = user.unwrap();
+
+    // create new deploy
+    let dp = deploys::create(
+        project.owner_id,
+        user.uuid,
+        project.id,
+        project.uuid.clone(),
+        project.prod_domain.clone(),
+        dtype,
+    )
+    .await?;
+
+    // update project status to deploying
+    set_deploy_status(
+        project.id,
+        deploys::Status::WaitDeploy,
+        "Waiting to deploy after playground update",
+    )
+    .await?;
+
+    info!(
+        owner_id = project.owner_id,
+        project_id = project.id,
+        project_name = project.name,
+        dp_id = dp.id,
+        "Create new deploy",
+    );
+
+    Ok(dp)
+}
+
 /// update_source updates a project source
 pub async fn update_source(id: i32, source: String) -> Result<deployment::Model> {
     let project = get_by_id(id).await?;
@@ -231,40 +284,8 @@ pub async fn update_source(id: i32, source: String) -> Result<deployment::Model>
         "Create new playground",
     );
 
-    let user = users::get_by_id(project.owner_id, Some(users::UserStatus::Active)).await?;
-    if user.is_none() {
-        return Err(anyhow!("User not found or not active"));
-    }
-    let user = user.unwrap();
-
     // create new deploy
-    let dp = deploys::create(
-        project.owner_id,
-        user.uuid,
-        id,
-        project.uuid,
-        project.prod_domain,
-        deploys::DeployType::Production,
-    )
-    .await?;
-
-    // update project status to deploying
-    set_deploy_status(
-        id,
-        deploys::Status::WaitDeploy,
-        "Waiting to deploy after playground update",
-    )
-    .await?;
-
-    info!(
-        owner_id = project.owner_id,
-        project_id = id,
-        project_name = project.name,
-        dp_id = dp.id,
-        "Create new deploy",
-    );
-
-    Ok(dp)
+    create_deploy(&project, deploys::DeployType::Production).await
 }
 
 #[derive(FromQueryResult, Debug)]

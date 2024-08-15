@@ -212,7 +212,12 @@ html[data-bs-theme="dark"] .project-item:hover {
     background-color: #c3c6c4;
 }
 
-#project-deploy-status-btn.status-failed {
+html[data-bs-theme="dark"] #project-deploy-status-btn {
+    color: var(--bs-body-bg);
+}
+
+#project-deploy-status-btn.status-failed,
+#project-deploy-status-btn.status-disabled {
     background-color: #b22b38;
     color: #e2e4e5;
 }
@@ -236,7 +241,9 @@ html[data-bs-theme="dark"] .project-item:hover {
 }
 
 #projects-dashboard .badge.status-failed,
+#projects-dashboard .badge.status-disabled,
 #projects-table .badge.status-failed,
+#projects-table .badge.status-disabled,
 #admin-users-dashboard .badge.status-disabled {
     background-color: #b22b38;
     color: #e2e4e5;
@@ -244,4 +251,9 @@ html[data-bs-theme="dark"] .project-item:hover {
 
 #log-wrapper {
     height: 160px;
+}
+
+html[data-bs-theme="dark"] #project-deploy-status-btn.status-disabled {
+    color: #e2e4e5;
+    border: none;
 }

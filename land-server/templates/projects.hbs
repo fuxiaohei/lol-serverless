@@ -64,11 +64,18 @@
                                     class="border-start ms-2 ps-2">-</span>
                             </td>
                             <td>
+                                {{#if is_disabled}}
+                                <span class="small text-uppercase status-{{status}} badge">
+                                    {{status}}
+                                </span>
+                                {{else}}
                                 <span class="small text-uppercase status-{{deploy_status}} badge">
                                     {{deploy_status}}
                                 </span>
+                                {{/if}}
                             </td>
-                            <td class="text-body-secondary"><span class="time-ago" data-x-timeago="{{updated_at}}"></span></td>
+                            <td class="text-body-secondary"><span class="time-ago"
+                                    data-x-timeago="{{updated_at}}"></span></td>
                         </tr>
                         {{/each}}
                     </tbody>
