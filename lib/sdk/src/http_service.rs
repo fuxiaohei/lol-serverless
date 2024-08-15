@@ -6,7 +6,6 @@ pub mod land {
         pub mod types {
             #[used]
             #[doc(hidden)]
-            #[cfg(target_arch = "wasm32")]
             static __FORCE_SECTION_REF: fn() = super::super::super::__link_custom_section_describing_imports;
             use super::super::super::_rt;
             /// HTTP Status Codes
@@ -181,7 +180,6 @@ pub mod land {
         pub mod body {
             #[used]
             #[doc(hidden)]
-            #[cfg(target_arch = "wasm32")]
             static __FORCE_SECTION_REF: fn() = super::super::super::__link_custom_section_describing_imports;
             use super::super::super::_rt;
             pub type BodyHandle = super::super::super::land::http::types::BodyHandle;
@@ -636,7 +634,6 @@ pub mod land {
         pub mod fetching {
             #[used]
             #[doc(hidden)]
-            #[cfg(target_arch = "wasm32")]
             static __FORCE_SECTION_REF: fn() = super::super::super::__link_custom_section_describing_imports;
             use super::super::super::_rt;
             pub type Request = super::super::super::land::http::types::Request;
@@ -956,7 +953,7 @@ mod _rt {
     extern crate alloc as alloc_crate;
 }
 #[cfg(target_arch = "wasm32")]
-#[link_section = "component-type:wit-bindgen:0.29.0:http-service-with-all-of-its-exports-removed:encoded world"]
+#[link_section = "component-type:wit-bindgen:0.30.0:http-service-with-all-of-its-exports-removed:encoded world"]
 #[doc(hidden)]
 pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1168] = *b"\
 \0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xed\x07\x01A\x02\x01\
@@ -985,10 +982,9 @@ response\x03\0\x02\x02\x03\x02\x01\x05\x04\0\x0drequest-error\x03\0\x04\x02\x03\
 ching\x05\x07\x04\x018land:worker/http-service-with-all-of-its-exports-removed\x04\
 \0\x0b2\x01\0,http-service-with-all-of-its-exports-removed\x03\0\0\0G\x09produce\
 rs\x01\x0cprocessed-by\x02\x0dwit-component\x070.215.0\x10wit-bindgen-rust\x060.\
-29.0";
+30.0";
 #[inline(never)]
 #[doc(hidden)]
-#[cfg(target_arch = "wasm32")]
 pub fn __link_custom_section_describing_imports() {
     wit_bindgen::rt::maybe_link_cabi_realloc();
 }
