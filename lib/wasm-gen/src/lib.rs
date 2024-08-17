@@ -131,10 +131,12 @@ fn compile_js(src_path: &str, dst_path: &str, js_engine: Option<String>) -> Resu
         return Err(anyhow!(err));
     }
     // print output
-    debug!(
-        "Wizer output: \n{}",
-        std::str::from_utf8(&output.stdout).unwrap()
-    );
+    let std_out_string = String::from_utf8_lossy(&output.stdout);
+    let std_out_string2 = std_out_string.trim_end();
+    debug!("Wizer output:\n{}", std_out_string2);
+    if std_out_string2 != "success" {
+        return Err(anyhow!("{}", std_out_string2));
+    }
     debug!("Wizer success, from {} to {}", src_path, dst_path);
     let _ = std::fs::remove_file(&js_engine_file);
     Ok(())

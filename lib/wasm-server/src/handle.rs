@@ -25,8 +25,10 @@ pub async fn run(
     metrics.req_fn_total.increment(1);
 
     // get remote ip
-    // if x-real-ip exists, use it
-    let remote = if let Some(real_ip) = req.headers().get("x-real-ip") {
+    // if cf-connecting-ip,x-real-ip exists, use it
+    let remote = if let Some(cf_ip) = req.headers().get("cf-connecting-ip") {
+        cf_ip.to_str().unwrap().to_string()
+    } else if let Some(real_ip) = req.headers().get("x-real-ip") {
         real_ip.to_str().unwrap().to_string()
     } else {
         addr.to_string()
