@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Run Tests
 on:
   push:
     branches:
@@ -10,3 +10,31 @@ env:
 concurrency:
   group: ghcr-${{ github.ref }}
   cancel-in-progress: true
+
+jobs:
+  dockerize:
+    runs-on: ubuntu-latest
+  steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Update local toolchain
+        run: |
+          rustup update stable
+          rustup component add rustfmt
+          rustup target add wasm32-wasi
+      - name: Install wasm-opt
+        run: |
+          sudo apt install -y binaryen xz-utils
+      - name: Toolchain info
+        run: |
+          cargo --version --verbose
+          rustc --version
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "build"
+      - name: test hello-wasm
+        run: |
+          cargo build -p hello-wasm --target wasm32-wasi --release
+          cargo test -p land-wasm-host --release
