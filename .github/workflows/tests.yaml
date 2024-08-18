@@ -8,7 +8,7 @@ on:
 env:
   CARGO_TERM_COLOR: always
 concurrency:
-  group: ghcr-${{ github.ref }}
+  group: run-tests-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
