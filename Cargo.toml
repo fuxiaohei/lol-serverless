@@ -17,6 +17,7 @@ members = [
     "lib/wasm-gen",
     "lib/wasm-host",
     "lib/wasm-server",
+    "tests/hello-wasm",
 ]
 default-members = ["land-cli"]
 resolver = "2"
@@ -71,3 +72,10 @@ tracing-subscriber = { version = "0.3.18", features = [
 ] }
 uuid = { version = "1.10.0", features = ["v4"] }
 walkdir = "2.5.0"
+wasmtime = { version = "23.0.2", features = ["component-model", "async"] }
+wasmtime-wasi = "23.0.2"
+wasi-preview1-component-adapter-provider = "23.0.2"
+wit-bindgen = "0.30.0"
+wit-bindgen-core = "0.30.0"
+wit-bindgen-rust = "0.30.0"
+wit-component = "0.215.0"

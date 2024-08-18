@@ -29,6 +29,9 @@
 
 use proc_macro::TokenStream;
 use quote::quote;
+use std::sync::atomic::AtomicBool;
+
+static HTTP_SRC_INCLUDE: AtomicBool = AtomicBool::new(false);
 
 /// http_main is a macro to generate a http handler function.
 #[proc_macro_attribute]
@@ -36,8 +39,15 @@ pub fn http_main(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let func = syn::parse_macro_input!(item as syn::ItemFn);
     let func_name = func.sig.ident.clone();
 
-    let wit_guest_rs = include_str!("./http_handler.rs").to_string();
-    let iface: TokenStream = wit_guest_rs.parse().expect("cannot parse http_handler.rs");
+    let src_http_handler = if HTTP_SRC_INCLUDE.load(std::sync::atomic::Ordering::Relaxed) {
+        String::new()
+    } else {
+        HTTP_SRC_INCLUDE.store(true, std::sync::atomic::Ordering::Relaxed);
+        include_str!("./http_handler.rs").to_string()
+    };
+    let iface: TokenStream = src_http_handler
+        .parse()
+        .expect("cannot parse http_handler.rs");
 
     let iface_impl = quote!(
 

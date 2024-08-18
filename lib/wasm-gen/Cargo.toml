@@ -7,8 +7,8 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 tracing = { workspace = true }
+wasi-preview1-component-adapter-provider = { workspace = true }
 which = "6.0.2"
-wit-bindgen-core = "0.30.0"
-wit-bindgen-rust = "0.30.0"
-wit-component = "0.215.0"
-wasi-preview1-component-adapter-provider = "23.0.2"
+wit-bindgen-core = { workspace = true }
+wit-bindgen-rust = { workspace = true }
+wit-component = { workspace = true }

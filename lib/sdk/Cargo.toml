@@ -10,4 +10,4 @@ http = { workspace = true }
 land-sdk-macro = { workspace = true }
 lazy_static = { workspace = true }
 matchit = "0.8.4"
-wit-bindgen = "0.30.0"
+wit-bindgen = { workspace = true }
