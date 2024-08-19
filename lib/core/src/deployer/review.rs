@@ -36,7 +36,7 @@ async fn review() -> Result<()> {
         match handle_one(dp).await {
             Ok(_) => {}
             Err(e) => {
-                set_failed(dp.id, dp.project_id, e.to_string().as_str()).await?;
+                set_failed(dp.id, Some(dp.project_id), e.to_string().as_str()).await?;
                 warn!(dp_id = dp.id, "deployer waiting handle error: {:?}", e);
             }
         }
@@ -89,13 +89,18 @@ async fn handle_one(dp: &deployment::Model) -> Result<()> {
     }
     // 4. if all tasks are done, update deploy status
     if done_count == tasks.len() as i32 {
+        let project_id = if dp.deploy_type != DeployType::Envs.to_string() {
+            Some(dp.project_id)
+        } else {
+            None
+        };
         if done_count != success_count {
             info!(dp_id = dp.id, "review failed: {:?}", failed_message);
-            set_failed(dp.id, dp.project_id, &failed_message).await?;
+            set_failed(dp.id, project_id, &failed_message).await?;
             return Ok(());
         }
         info!(dp_id = dp.id, "review success");
-        set_success(dp.id, dp.project_id).await?;
+        set_success(dp.id, project_id).await?;
 
         // if deploy type is disabled, drop record in deploy-state table
         if dp.deploy_type == DeployType::Disabled.to_string() {

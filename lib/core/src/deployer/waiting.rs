@@ -1,8 +1,11 @@
+use std::collections::HashMap;
+
 use crate::agent::Item;
 use anyhow::Result;
 use land_dao::{
     deploy_task,
     deploys::{self, Status},
+    envs,
     models::deployment,
     playground, projects, settings, store, workers,
 };
@@ -27,21 +30,29 @@ pub async fn init_waiting() {
 }
 
 /// set_failed sets the deploy and project status to failed
-pub(crate) async fn set_failed(dp_id: i32, project_id: i32, mut message: &str) -> Result<()> {
+pub(crate) async fn set_failed(
+    dp_id: i32,
+    project_id: Option<i32>,
+    mut message: &str,
+) -> Result<()> {
     // find last \n flag in 255 chars in message
     if message.len() > 255 {
         message = &message[..255];
     }
     deploys::set_deploy_status(dp_id, deploys::Status::Failed, message).await?;
-    projects::set_deploy_status(project_id, dp_id, deploys::Status::Failed, message).await?;
+    if let Some(project_id) = project_id {
+        projects::set_deploy_status(project_id, dp_id, deploys::Status::Failed, message).await?;
+    }
     warn!(dp_id = dp_id, "set failed: {}", message);
     Ok(())
 }
 
 /// set_success sets the deploy and projectstatus to success
-pub(crate) async fn set_success(dp_id: i32, project_id: i32) -> Result<()> {
+pub(crate) async fn set_success(dp_id: i32, project_id: Option<i32>) -> Result<()> {
     deploys::set_deploy_status(dp_id, deploys::Status::Success, "Success").await?;
-    projects::set_deploy_status(project_id, dp_id, deploys::Status::Success, "Success").await?;
+    if let Some(project_id) = project_id {
+        projects::set_deploy_status(project_id, dp_id, deploys::Status::Success, "Success").await?;
+    }
     Ok(())
 }
 
@@ -57,7 +68,7 @@ async fn handle() -> Result<()> {
         match handle_internal(dp).await {
             Ok(_) => {}
             Err(e) => {
-                set_failed(dp.id, dp.project_id, e.to_string().as_str()).await?;
+                set_failed(dp.id, Some(dp.project_id), e.to_string().as_str()).await?;
                 warn!(dp_id = dp.id, "deployer waiting handle error: {:?}", e);
             }
         }
@@ -73,7 +84,11 @@ async fn handle_internal(dp: &deployment::Model) -> Result<()> {
             handle_deploy_wasm(dp).await
         }
         deploys::DeployType::Disabled => handle_deploy_disable(dp).await,
-        // _ => Err(anyhow!("Deploy type '{}' not supported", dp.deploy_type)),
+        deploys::DeployType::Envs => handle_deploy_envs(dp).await,
+        /*_ => Err(anyhow::anyhow!(
+            "Deploy type '{}' not supported",
+            dp.deploy_type
+        )),*/
     }
 }
 
@@ -81,19 +96,24 @@ async fn handle_deploy_wasm(dp: &deployment::Model) -> Result<()> {
     // 1. get project
     let project = projects::get_by_id(dp.project_id).await?;
     if project.is_none() {
-        return set_failed(dp.id, dp.project_id, "Project not found").await;
+        return set_failed(dp.id, Some(dp.project_id), "Project not found").await;
     }
     let project = project.unwrap();
 
     // 2. if project is not created by playground, currently only playground can create project
     if project.created_by != projects::CreatedBy::Playground.to_string() {
-        return set_failed(dp.id, dp.project_id, "Project not created by playground").await;
+        return set_failed(
+            dp.id,
+            Some(dp.project_id),
+            "Project not created by playground",
+        )
+        .await;
     }
 
     // 3. get playground
     let playground = playground::get_by_project(dp.project_id).await?;
     if playground.is_none() {
-        return set_failed(dp.id, dp.project_id, "Playground not found").await;
+        return set_failed(dp.id, Some(dp.project_id), "Playground not found").await;
     }
     let playground = playground.unwrap();
 
@@ -158,7 +178,7 @@ async fn handle_deploy_wasm(dp: &deployment::Model) -> Result<()> {
     let workers_value = workers::find_all(Some(workers::Status::Online)).await?;
     if workers_value.is_empty() {
         warn!(dp_id = dp.id, "No worker online");
-        return set_failed(dp.id, dp.project_id, "No worker online").await;
+        return set_failed(dp.id, Some(dp.project_id), "No worker online").await;
     }
 
     // 11. create conf values
@@ -172,6 +192,7 @@ async fn handle_deploy_wasm(dp: &deployment::Model) -> Result<()> {
         file_hash,
         download_url: target_url,
         domain: format!("{}.{}", dp.domain, domain_settings.domain_suffix),
+        content: None,
     };
     let item_content = serde_json::to_string(&item)?;
 
@@ -202,7 +223,7 @@ async fn handle_deploy_disable(dp: &deployment::Model) -> Result<()> {
     let workers_value = workers::find_all(Some(workers::Status::Online)).await?;
     if workers_value.is_empty() {
         warn!(dp_id = dp.id, "No worker online");
-        return set_failed(dp.id, dp.project_id, "No worker online").await;
+        return set_failed(dp.id, Some(dp.project_id), "No worker online").await;
     }
 
     // 2. create conf values
@@ -216,6 +237,7 @@ async fn handle_deploy_disable(dp: &deployment::Model) -> Result<()> {
         file_hash: String::new(),
         download_url: String::new(),
         domain: format!("{}.{}", dp.domain, domain_settings.domain_suffix),
+        content: None,
     };
     let item_content = serde_json::to_string(&item)?;
 
@@ -238,5 +260,58 @@ async fn handle_deploy_disable(dp: &deployment::Model) -> Result<()> {
     deploys::set_rips(dp.id, rips.join(","), rips.len() as i32).await?;
     deploys::set_deploy_status(dp.id, deploys::Status::Deploying, "Deploying").await?;
 
+    Ok(())
+}
+
+async fn handle_deploy_envs(dp: &deployment::Model) -> Result<()> {
+    // 1. get online workers
+    let workers_value = workers::find_all(Some(workers::Status::Online)).await?;
+    if workers_value.is_empty() {
+        warn!(dp_id = dp.id, "No worker online");
+        return set_failed(dp.id, None, "No worker online").await;
+    }
+
+    // 2. create conf values
+    let env = envs::get(dp.project_id).await?;
+    if env.is_none() {
+        warn!(dp_id = dp.id, "No envs found");
+        return set_failed(dp.id, None, "No envs found").await;
+    }
+    let env = env.unwrap();
+    let mut env_map = HashMap::new();
+    env_map.insert("secret", env.secret_key);
+    env_map.insert("values", env.content);
+    let env_content = serde_json::to_string(&env_map)?;
+    let item = Item {
+        user_id: dp.owner_id,
+        project_id: dp.project_id,
+        deploy_id: dp.id,
+        task_id: dp.task_id.clone(),
+        file_name: String::new(),
+        file_hash: String::new(),
+        download_url: String::new(),
+        domain: String::new(),
+        content: Some(env_content),
+    };
+    let item_content = serde_json::to_string(&item)?;
+
+    // 3. create details task for each worker
+    let mut rips = vec![];
+    for worker in workers_value.iter() {
+        let task = deploy_task::create(
+            dp,
+            deploy_task::TaskType::DeployEnvs,
+            &item_content,
+            worker.id,
+            &worker.ip,
+        )
+        .await?;
+        debug!("Create task: {:?}", task);
+        rips.push(worker.ip.clone());
+    }
+
+    // 4. update deployment status, to trigger review logic
+    deploys::set_rips(dp.id, rips.join(","), rips.len() as i32).await?;
+    deploys::set_deploy_status(dp.id, deploys::Status::Deploying, "Deploying").await?;
     Ok(())
 }

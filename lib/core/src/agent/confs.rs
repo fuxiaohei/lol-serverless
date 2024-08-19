@@ -15,6 +15,7 @@ pub struct Item {
     pub download_url: String,
     pub file_hash: String,
     pub domain: String,
+    pub content: Option<String>,
 }
 
 /// init_confs is used to generate confs in background
@@ -85,6 +86,7 @@ async fn gen_confs(ids: Vec<i32>) -> Result<Vec<Item>> {
             download_url: storage_item.file_target.clone(),
             file_hash: storage_item.file_hash.clone(),
             domain,
+            content: None,
         };
         items.push(item);
     }

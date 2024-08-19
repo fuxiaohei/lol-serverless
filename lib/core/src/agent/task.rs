@@ -7,7 +7,7 @@ use reqwest::Client;
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 use tokio::sync::Mutex;
-use tracing::{debug, instrument, warn};
+use tracing::{debug, info, instrument, warn};
 
 #[derive(Deserialize, Default, Clone, Debug)]
 struct SyncResponse {
@@ -124,6 +124,7 @@ async fn handle_each_task(t: Task, dir: String, service_name: String) -> Result<
             handle_each_deploy(item, dir.clone(), service_name.clone()).await
         }
         TaskType::DisableWasm => handle_each_disable(item, dir).await,
+        TaskType::DeployEnvs => handle_env(item, dir).await,
     }
 }
 
@@ -180,5 +181,20 @@ async fn handle_each_disable(item: Item, dir: String) -> Result<()> {
     } else {
         debug!("traefik not exist: {}", traefik_file);
     }
+    Ok(())
+}
+
+async fn handle_env(item: Item, dir: String) -> Result<()> {
+    let envs_file = format!("{}/envs/{}-{}.envs.json", dir, item.user_id, item.project_id);
+    let envs_dir = format!("{}/envs", dir);
+    std::fs::create_dir_all(envs_dir)?;
+    let content = item.content.unwrap_or_default();
+    /*
+    let env_content = serde_json::from_str::<EnvContent>(&content)?;
+    let envs = land_dao::envs::decode_env(&env_content.secret, &env_content.values)?;
+    println!("envs: {:?}", envs);
+    */
+    std::fs::write(&envs_file, content)?;
+    info!("generate envs success: {}", envs_file);
     Ok(())
 }

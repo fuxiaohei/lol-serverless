@@ -10,6 +10,7 @@ use axum::{
     response::{IntoResponse, Response},
     Extension,
 };
+use land_core::memenvs;
 use land_wasm_host::{hostcall, pool::prepare_worker, Context, Worker};
 use std::net::SocketAddr;
 use tokio::time::Instant;
@@ -116,8 +117,9 @@ async fn wasm(req: Request<Body>, info: &WorkerInfo) -> Result<Response<Body>> {
         uri = new_uri.parse().unwrap();
     }
     let method = req.method().clone();
-    // let envs = envs::get_by_project(ctx.project_uuid.clone()).await;
-    let mut context = Context::new(None);
+    let env_key = format!("{}-{}", info.user_id, info.project_id);
+    let envs = memenvs::get(&env_key).await;
+    let mut context = Context::new(envs);
     // if method is GET or DELETE, set body to None
     let body_handle = if method == "GET" || method == "DELETE" {
         0

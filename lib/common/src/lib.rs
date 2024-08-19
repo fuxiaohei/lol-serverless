@@ -43,3 +43,4 @@ pub fn get_hostname() -> Result<String> {
 
 pub mod logging;
 pub mod version;
+pub mod crypt;

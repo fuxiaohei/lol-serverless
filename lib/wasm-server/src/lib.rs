@@ -1,5 +1,6 @@
 use anyhow::Result;
 use axum::{http::StatusCode, response::IntoResponse, routing::any, Router};
+use land_core::memenvs;
 use land_wasm_host::{
     hostcall::init_clients,
     init_engines,
@@ -60,14 +61,23 @@ async fn init_opts(opts: &Opts) -> Result<()> {
     // create directory
     std::fs::create_dir_all(&opts.dir).unwrap();
 
-    DEFAULT_WASM.set(opts.default_wasm.clone().unwrap_or_default()).unwrap();
+    DEFAULT_WASM
+        .set(opts.default_wasm.clone().unwrap_or_default())
+        .unwrap();
     ENDPOINT_NAME.set(hostname).unwrap();
     ENABLE_WASMTIME_AOT.set(opts.enable_wasmtime_aot).unwrap();
     ENABLE_METRICS.set(opts.enable_metrics).unwrap();
     FILE_DIR.set(opts.dir.clone()).unwrap();
 
+    // init clients to handle fetch hostcall
     init_clients();
+
+    // init wasmtime engine in memory.
+    // some instances are live in one wasmtime engine.
     init_engines()?;
+
+    // load envs to memory from local files
+    memenvs::init_envs(format!("{}/envs", opts.dir)).await?;
 
     if opts.enable_metrics {
         let addr: SocketAddr = opts

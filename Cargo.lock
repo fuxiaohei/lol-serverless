@@ -1901,7 +1901,7 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "hello-wasm"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "http",
@@ -2315,7 +2315,7 @@ dependencies = [
 
 [[package]]
 name = "land-cli"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "clap",
@@ -2332,7 +2332,7 @@ dependencies = [
 
 [[package]]
 name = "land-common"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2342,6 +2342,7 @@ dependencies = [
  "rand",
  "serde",
  "serde_json",
+ "simple_crypt",
  "time",
  "tracing",
  "tracing-subscriber",
@@ -2350,7 +2351,7 @@ dependencies = [
 
 [[package]]
 name = "land-core"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2373,11 +2374,12 @@ dependencies = [
  "tokio",
  "toml",
  "tracing",
+ "walkdir",
 ]
 
 [[package]]
 name = "land-dao"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2392,7 +2394,6 @@ dependencies = [
  "sea-orm-migration",
  "serde",
  "serde_json",
- "simple_crypt",
  "strum",
  "tracing",
  "uuid",
@@ -2400,7 +2401,7 @@ dependencies = [
 
 [[package]]
 name = "land-sdk"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "http",
@@ -2412,7 +2413,7 @@ dependencies = [
 
 [[package]]
 name = "land-sdk-macro"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "http",
@@ -2422,7 +2423,7 @@ dependencies = [
 
 [[package]]
 name = "land-server"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "axum",
@@ -2450,7 +2451,7 @@ dependencies = [
 
 [[package]]
 name = "land-vars"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2462,7 +2463,7 @@ dependencies = [
 
 [[package]]
 name = "land-wasm-gen"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "tracing",
@@ -2475,7 +2476,7 @@ dependencies = [
 
 [[package]]
 name = "land-wasm-host"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2497,11 +2498,12 @@ dependencies = [
 
 [[package]]
 name = "land-wasm-server"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "axum",
  "land-common",
+ "land-core",
  "land-wasm-host",
  "metrics",
  "metrics-exporter-prometheus",
@@ -2515,7 +2517,7 @@ dependencies = [
 
 [[package]]
 name = "land-worker"
-version = "0.5.0-beta.15"
+version = "0.5.0-beta.18"
 dependencies = [
  "anyhow",
  "clap",
@@ -3060,9 +3062,9 @@ checksum = "c08d65885ee38876c4f86fa503fb49d7b507c2b62552df7c70b2fce627e06381"
 
 [[package]]
 name = "opendal"
-version = "0.48.0"
+version = "0.49.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "615d41187deea0ea7fab5b48e9afef6ae8fc742fdcfa248846ee3d92ff71e986"
+checksum = "39d516adf7db912c38af382c3e92c27cd62fbbc240e630920555d784c2ab1494"
 dependencies = [
  "anyhow",
  "async-trait",

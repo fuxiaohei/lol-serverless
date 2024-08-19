@@ -1,5 +1,5 @@
 use crate::{
-    deploys,
+    deploys::{self, DeployType},
     models::{deployment, playground, project},
     now_time, users, DB,
 };
@@ -242,18 +242,20 @@ pub async fn create_deploy(
         project.id,
         project.uuid.clone(),
         project.prod_domain.clone(),
-        dtype,
+        dtype.clone(),
     )
     .await?;
 
-    // update project status to deploying
-    set_deploy_status(
-        project.id,
-        dp.id,
-        deploys::Status::WaitDeploy,
-        "Waiting to deploy after playground update",
-    )
-    .await?;
+    if dtype != DeployType::Envs {
+        // update project status to deploying
+        set_deploy_status(
+            project.id,
+            dp.id,
+            deploys::Status::WaitDeploy,
+            "Waiting to deploy after playground update",
+        )
+        .await?;
+    }
 
     info!(
         owner_id = project.owner_id,

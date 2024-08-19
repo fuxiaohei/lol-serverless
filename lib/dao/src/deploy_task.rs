@@ -13,6 +13,7 @@ use sea_orm::{
 pub enum TaskType {
     DeployWasmToWorker, // deploy wasm to worker
     DisableWasm,        // disable wasm
+    DeployEnvs, // deploy envs
 }
 
 #[derive(strum::Display)]

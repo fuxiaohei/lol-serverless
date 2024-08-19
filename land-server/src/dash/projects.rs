@@ -360,5 +360,7 @@ pub async fn handle_envs(
         let _ = envs::create(user.id, project.id, j).await?;
         debug!(owner_id = user.id, project_name = name, "Create envs");
     }
+    let dp = projects::create_deploy(&project, deploys::DeployType::Envs).await?;
+    info!(project_name = name, dp_id = dp.id, "Update envs");
     Ok(ok_html("Envs updated").into_response())
 }

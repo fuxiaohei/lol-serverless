@@ -1,11 +1,10 @@
 use crate::{models::environment_variables, now_time, DB};
 use anyhow::Result;
-use land_common::{base64decode, base64encode, rand_string};
+use land_common::{crypt, rand_string};
 use sea_orm::{
     prelude::Expr, ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, QueryFilter, QueryOrder,
 };
 use serde::Deserialize;
-use simple_crypt::{decrypt, encrypt};
 use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]
@@ -74,37 +73,14 @@ pub async fn get(project_id: i32) -> Result<Option<environment_variables::Model>
     Ok(env)
 }
 
-fn encode_envs(q: EnvsQuery) -> Result<(String, String)> {
-    let secret = rand_string(12);
-    let q_map = q.into_map();
-    let q_value = serde_json::to_vec(&q_map)?;
-    let encrypt_data = encrypt(&q_value, secret.as_bytes())?;
-    let encrypt_string = base64encode(encrypt_data);
-    Ok((secret, encrypt_string))
-}
-
-fn encode_envs_map(secret: String, q_map: HashMap<String, String>) -> Result<String> {
-    let q_value = serde_json::to_vec(&q_map)?;
-    let encrypt_data = encrypt(&q_value, secret.as_bytes())?;
-    let encrypt_string = base64encode(encrypt_data);
-    Ok(encrypt_string)
-}
-
-fn decode_env(secret: &str, encrypt_string: &str) -> Result<HashMap<String, String>> {
-    let encrypt_data = base64decode(encrypt_string)?;
-    let decrypt_data = decrypt(&encrypt_data, secret.as_bytes())?;
-    let q_map = serde_json::from_slice(&decrypt_data)?;
-    Ok(q_map)
-}
-
 /// update environment variable
 pub async fn update(
     m: environment_variables::Model,
     q: EnvsQuery,
 ) -> Result<environment_variables::Model> {
-    let old_map = decode_env(&m.secret_key, &m.content)?;
+    let old_map = crypt::decode(&m.secret_key, &m.content)?;
     let new_map = q.merge_map(old_map);
-    let encrypt_string = encode_envs_map(m.secret_key.clone(), new_map)?;
+    let encrypt_string = crypt::encode_map_with_secret(new_map, &m.secret_key)?;
     let task_id = rand_string(12);
     let db = DB.get().unwrap();
     environment_variables::Entity::update_many()
@@ -129,7 +105,7 @@ pub async fn create(
     project_id: i32,
     q: EnvsQuery,
 ) -> Result<environment_variables::Model> {
-    let (secret, encrypt_string) = encode_envs(q)?;
+    let (secret, encrypt_string) = crypt::encode_map(q.into_map())?;
     let task_id = rand_string(12);
     let now = now_time();
     let env = environment_variables::Model {
@@ -152,7 +128,7 @@ pub async fn create(
 
 /// get_keys get keys of environment variable
 pub async fn get_keys(m: environment_variables::Model) -> Result<Vec<String>> {
-    let old_map = decode_env(&m.secret_key, &m.content)?;
+    let old_map = crypt::decode(&m.secret_key, &m.content)?;
     let mut keys: Vec<String> = old_map.keys().cloned().collect();
     // sort keys
     keys.sort();
