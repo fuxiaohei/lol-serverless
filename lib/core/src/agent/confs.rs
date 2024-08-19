@@ -20,7 +20,7 @@ pub struct Item {
 /// init_confs is used to generate confs in background
 pub async fn init_confs() {
     tokio::spawn(async move {
-        let mut ticker = tokio::time::interval(std::time::Duration::from_secs(1));
+        let mut ticker = tokio::time::interval(std::time::Duration::from_secs(60));
         loop {
             ticker.tick().await;
             match gen().await {
@@ -45,6 +45,7 @@ pub async fn gen() -> anyhow::Result<()> {
     if ids.is_empty() {
         return Ok(());
     }
+    debug!("Generate confs for deploys: {:?}", ids);
     let ids_hash = obj_hash(ids.clone())?;
     let mut confs = CONFS.lock().await;
     if confs.0 == ids_hash {
