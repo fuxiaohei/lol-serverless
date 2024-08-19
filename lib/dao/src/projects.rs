@@ -107,6 +107,7 @@ async fn create_internal(
         status: Status::Active.to_string(),
         deploy_status: deploys::Status::WaitDeploy.to_string(),
         deploy_message: "Waiting to deploy".to_string(),
+        deploy_id: 0,
         uuid: uuid::Uuid::new_v4().to_string(),
         description: description.to_string(),
         dev_domain: String::new(),
@@ -190,13 +191,19 @@ pub async fn update_names(id: i32, name: &str, desc: &str) -> Result<()> {
 }
 
 /// set_deploy_status sets a deploy status to a project
-pub async fn set_deploy_status(id: i32, status: deploys::Status, msg: &str) -> Result<()> {
+pub async fn set_deploy_status(
+    id: i32,
+    dp_id: i32,
+    status: deploys::Status,
+    msg: &str,
+) -> Result<()> {
     let db = DB.get().unwrap();
     project::Entity::update_many()
         .col_expr(
             project::Column::DeployStatus,
             Expr::value(status.to_string()),
         )
+        .col_expr(project::Column::DeployId, Expr::value(dp_id))
         .col_expr(project::Column::DeployMessage, Expr::value(msg))
         .col_expr(project::Column::UpdatedAt, Expr::value(now_time()))
         .filter(project::Column::Id.eq(id))
@@ -209,11 +216,11 @@ pub async fn set_deploy_status(id: i32, status: deploys::Status, msg: &str) -> R
 pub async fn set_status(id: i32, status: Status) -> Result<()> {
     let db = DB.get().unwrap();
     project::Entity::update_many()
-     .col_expr(project::Column::Status, Expr::value(status.to_string()))
-     .col_expr(project::Column::UpdatedAt, Expr::value(now_time()))
-     .filter(project::Column::Id.eq(id))
-     .exec(db)
-     .await?;
+        .col_expr(project::Column::Status, Expr::value(status.to_string()))
+        .col_expr(project::Column::UpdatedAt, Expr::value(now_time()))
+        .filter(project::Column::Id.eq(id))
+        .exec(db)
+        .await?;
     Ok(())
 }
 
@@ -242,6 +249,7 @@ pub async fn create_deploy(
     // update project status to deploying
     set_deploy_status(
         project.id,
+        dp.id,
         deploys::Status::WaitDeploy,
         "Waiting to deploy after playground update",
     )

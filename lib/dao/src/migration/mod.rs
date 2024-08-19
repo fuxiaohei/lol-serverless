@@ -8,6 +8,7 @@ mod m05_create_storage_table;
 mod m06_create_workernode_table;
 mod m07_create_deploystask_table;
 mod m08_create_envs_table;
+mod m09_alter_project_deployid;
 
 pub struct Migrator;
 
@@ -23,6 +24,7 @@ impl MigratorTrait for Migrator {
             Box::new(m06_create_workernode_table::Migration),
             Box::new(m07_create_deploystask_table::Migration),
             Box::new(m08_create_envs_table::Migration),
+            Box::new(m09_alter_project_deployid::Migration),
         ]
     }
 }

@@ -24,6 +24,7 @@ pub struct Model {
     #[sea_orm(column_type = "Text", nullable)]
     pub metadata: Option<String>,
     pub deploy_message: String,
+    pub deploy_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

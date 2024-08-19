@@ -33,7 +33,7 @@ pub(crate) async fn set_failed(dp_id: i32, project_id: i32, mut message: &str) -
         message = &message[..255];
     }
     deploys::set_deploy_status(dp_id, deploys::Status::Failed, message).await?;
-    projects::set_deploy_status(project_id, deploys::Status::Failed, message).await?;
+    projects::set_deploy_status(project_id, dp_id, deploys::Status::Failed, message).await?;
     warn!(dp_id = dp_id, "set failed: {}", message);
     Ok(())
 }
@@ -41,7 +41,7 @@ pub(crate) async fn set_failed(dp_id: i32, project_id: i32, mut message: &str) -
 /// set_success sets the deploy and projectstatus to success
 pub(crate) async fn set_success(dp_id: i32, project_id: i32) -> Result<()> {
     deploys::set_deploy_status(dp_id, deploys::Status::Success, "Success").await?;
-    projects::set_deploy_status(project_id, deploys::Status::Success, "Success").await?;
+    projects::set_deploy_status(project_id, dp_id, deploys::Status::Success, "Success").await?;
     Ok(())
 }
 
