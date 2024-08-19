@@ -1,17 +1,17 @@
 use super::{redirect, ServerError};
 use crate::{
-    dash::{error_html, notfound_html},
+    dash::{error_html, notfound_html, ok_html},
     templates::{Engine, RenderHtmlMinified},
 };
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension, Form, Json};
 use axum_htmx::HxRedirect;
 use htmlentity::entity::{encode, CharacterSet, EncodeType, ICodedDataTrait};
 use land_core::examples::{self, Item};
-use land_dao::{deploys, projects, settings};
+use land_dao::{deploys, envs, projects, settings};
 use land_vars::{AuthUser, BreadCrumbKey, Page, Project};
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
-use tracing::{info, warn};
+use tracing::{debug, info, warn};
 
 /// index is handler for projects index page, /projects
 pub async fn index(
@@ -174,6 +174,7 @@ pub async fn settings(
         pub project_name: String,
         pub project: Project,
         pub domain: String,
+        pub env_keys: Vec<String>,
     }
     let project = projects::get_by_name(&name, Some(user.id)).await?;
     if project.is_none() {
@@ -182,6 +183,12 @@ pub async fn settings(
     }
     let domain_settings = settings::get_domain_settings().await?;
     let project = Project::new_with_source(&project.unwrap()).await?;
+    let env = envs::get(project.id).await?;
+    let env_keys = if let Some(env) = env {
+        envs::get_keys(env).await?
+    } else {
+        vec![]
+    };
     Ok(RenderHtmlMinified(
         "project-settings.hbs",
         engine,
@@ -190,6 +197,7 @@ pub async fn settings(
             project_name: name,
             project,
             domain: domain_settings.domain_suffix,
+            env_keys,
         },
     )
     .into_response())
@@ -331,4 +339,26 @@ pub async fn handle_status(
         html: html.to_string()?,
     })
     .into_response())
+}
+
+/// handle_envs is route of user envs settings page, /projects/{name}/envs
+pub async fn handle_envs(
+    Extension(user): Extension<AuthUser>,
+    Path(name): Path<String>,
+    Json(j): Json<envs::EnvsQuery>,
+) -> Result<impl IntoResponse, ServerError> {
+    let project = projects::get_by_name(&name, Some(user.id)).await?;
+    if project.is_none() {
+        return Ok(error_html("Project not found").into_response());
+    }
+    let project = project.unwrap();
+    let env = envs::get(project.id).await?;
+    if let Some(env) = env {
+        envs::update(env, j).await?;
+        debug!(owner_id = user.id, project_name = name, "Update envs");
+    } else {
+        let _ = envs::create(user.id, project.id, j).await?;
+        debug!(owner_id = user.id, project_name = name, "Create envs");
+    }
+    Ok(ok_html("Envs updated").into_response())
 }

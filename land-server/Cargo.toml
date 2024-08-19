@@ -9,10 +9,10 @@ anyhow = { workspace = true }
 axum = { workspace = true }
 axum-extra = { version = "0.9.3", features = ["cookie"] }
 axum-htmx = "0.6.0"
-axum-template = { version = "2.3.0", features = ["handlebars"] }
+axum-template = { version = "2.4.0", features = ["handlebars"] }
 chrono = { workspace = true }
 clap = { workspace = true }
-handlebars = "5.1.2"
+handlebars = "6.0.0"
 htmlentity = "1.3.2"
 land-common = { workspace = true }
 land-core = { workspace = true }

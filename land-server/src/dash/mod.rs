@@ -101,6 +101,7 @@ pub async fn route(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> 
             "/projects/:name/settings",
             get(projects::settings).post(projects::handle_settings),
         )
+        .route("/projects/:name/envs", post(projects::handle_envs))
         .route("/new", get(projects::new))
         .route("/new/:name", get(projects::handle_new))
         .route("/settings", get(settings::index))

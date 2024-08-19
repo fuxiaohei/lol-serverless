@@ -32,11 +32,106 @@
                         <button class="btn btn-dark" type="submit">Save</button>
                     </form>
                 </div>
+                <div id="project-envs-settings" class="p-3 border-top">
+                    <div class="mb-3">
+                        <p class="mb-1 fw-medium fs-5">Environment Variables</p>
+                        <p class="mb-0 text-body-tertiary">Use environment variables to provide secrets and environment
+                            information in current project. You can access them by using the <code>env</code> API.</p>
+                    </div>
+                    <dic class="card shadow-none">
+                        <div class="card-body p-1">
+                            <form hx-swap="innerHTML settle:3s" hx-target="#env-res-message" hx-ext="submitjson"
+                                hx-post="/projects/{{project.name}}/envs">
+                                <ul class="list-group list-group-flush shadow-none">
+                                    {{#each env_keys}}
+                                    <li class="list-group-item p-2 y-center justify-content-between">
+                                        <div class="input-group">
+                                            <span class="input-group-text border-0 bg-transparent shadow-none"><i
+                                                    class='bx bx-key'></i></span>
+                                            <input type="text" name="key" readonly
+                                                class="form-control border-0 shadow-none fw-bold" value={{this}}>
+                                            <input type="hidden" name="value" value="-" />
+                                            <input type="hidden" name="action" value="keep" />
+                                            <button
+                                                class="btn btn-reset border-0 bg-transparent shadow-none env-del-btn"><i
+                                                    class='bx bx-trash'></i></button>
+                                        </div>
+                                    </li>
+                                    {{/each}}
+                                    <li id="env-add-tpl"
+                                        class="d-none list-group-item p-2 y-center justify-content-between">
+                                        <div class="input-group">
+                                            <span class="input-group-text border-0 bg-transparent shadow-none"><i
+                                                    class='bx bx-key'></i></span>
+                                            <input type="text" name="key" class="form-control border-0 shadow-none"
+                                                placeholder="KEY">
+                                            <input type="text" name="value" class="form-control border-0 shadow-none"
+                                                placeholder="VALUE">
+                                            <input type="hidden" name="action" value="add" />
+                                            <button type="button"
+                                                class="btn btn-reset border-0 bg-transparent shadow-none env-item-del-btn"><i
+                                                    class='bx bx-x'></i></button>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item p-2 y-center justify-content-start mt-1">
+                                        <button type="button" id="env-add-btn" class="btn btn-dark y-center me-3">
+                                            <i class='bx bx-plus me-1'></i>Add Variable
+                                        </button>
+                                        <button type="submit" class="btn btn-dark y-center me-3">
+                                            Save
+                                        </button>
+                                        <div id="env-res-message" class="hx-message"></div>
+                                    </li>
+                                </ul>
+                            </form>
+                        </div>
+                    </dic>
+                </div>
             </div>
             {{> parts/footer.hbs}}
         </main>
     </div>
     {{> parts/js.hbs}}
+    <script type="text/javascript">
+        document.getElementById("env-add-btn").addEventListener("click", function () {
+            const tpl = document.getElementById("env-add-tpl");
+            const tpl2 = tpl.cloneNode(true);
+            tpl2.removeAttribute("id");
+            tpl2.classList.remove("d-none");
+            tpl2.querySelector("input[name=key]").setAttribute("required", "required");
+            tpl2.querySelector("input[name=value]").setAttribute("required", "required");
+            tpl2.querySelectorAll(".env-item-del-btn").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    const li = btn.parentNode.parentNode;
+                    li.remove();
+                });
+            });
+            // insert tpl2 before tpl
+            tpl.parentNode.insertBefore(tpl2, tpl);
+        });
+        document.querySelectorAll(".env-del-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                const li = btn.parentNode.parentNode;
+                li.remove();
+            });
+        });
+        htmx.defineExtension('submitjson', {
+            onEvent: function (name, evt) {
+                if (name === "htmx:configRequest") {
+                    evt.detail.headers['Content-Type'] = "application/json"
+                }
+            },
+            encodeParameters: function (xhr, parameters, elt) {
+                xhr.overrideMimeType('text/json');
+                let values = {};
+                parameters.entries().forEach(function (entry) {
+                    if (!values[entry[0]]) values[entry[0]] = [];
+                    values[entry[0]].push(entry[1]);
+                })
+                return (JSON.stringify(values))
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -11,6 +11,7 @@ mod migration;
 
 pub mod deploy_task;
 pub mod deploys;
+pub mod envs;
 pub mod models;
 pub mod playground;
 pub mod projects;
@@ -117,4 +118,4 @@ fn now_time() -> chrono::NaiveDateTime {
 pub type DateTimeUTC = chrono::DateTime<chrono::Utc>;
 
 /// ItemsAndPagesNumber re-expresent items and pages number from sea-orm
-pub use sea_orm::ItemsAndPagesNumber as ItemsAndPagesNumber;
+pub use sea_orm::ItemsAndPagesNumber;

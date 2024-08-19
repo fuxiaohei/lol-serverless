@@ -1,4 +1,6 @@
 use anyhow::Result;
+use base64::prelude::BASE64_STANDARD;
+use base64::Engine;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use serde::Serialize;
@@ -10,6 +12,16 @@ pub fn rand_string(size: usize) -> String {
         .take(size)
         .map(char::from)
         .collect()
+}
+
+/// base64encode encode the given string
+pub fn base64encode(value: Vec<u8>) -> String {
+    BASE64_STANDARD.encode(value)
+}
+
+/// base64decode decode the given string
+pub fn base64decode(value: &str) -> Result<Vec<u8>> {
+    Ok(BASE64_STANDARD.decode(value)?)
 }
 
 /// obj_hash generate a hash of the given serializable object

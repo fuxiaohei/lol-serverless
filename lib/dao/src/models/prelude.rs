@@ -2,6 +2,7 @@
 
 pub use super::deploy_task::Entity as DeployTask;
 pub use super::deployment::Entity as Deployment;
+pub use super::environment_variables::Entity as EnvironmentVariables;
 pub use super::playground::Entity as Playground;
 pub use super::project::Entity as Project;
 pub use super::settings::Entity as Settings;

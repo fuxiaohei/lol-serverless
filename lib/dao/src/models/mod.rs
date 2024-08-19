@@ -4,6 +4,7 @@ pub mod prelude;
 
 pub mod deploy_task;
 pub mod deployment;
+pub mod environment_variables;
 pub mod playground;
 pub mod project;
 pub mod settings;

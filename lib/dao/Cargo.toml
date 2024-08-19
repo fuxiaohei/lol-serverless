@@ -23,6 +23,7 @@ sea-orm = { version = "1.0.0", default-features = false, features = [
 sea-orm-migration = "1.0.0"
 serde = { workspace = true }
 serde_json = { workspace = true }
+simple_crypt = "0.2.3"
 strum = { workspace = true }
 tracing = { workspace = true }
 uuid = { workspace = true }
