@@ -2,7 +2,7 @@ use crate::deployer::waiting::{set_failed, set_success};
 use anyhow::{anyhow, Result};
 use land_dao::{
     deploy_task,
-    deploys::{self, DeployType, Status},
+    deploys::{self, DeployType, StateType, Status},
     models::deployment,
 };
 use tracing::{debug, info, instrument, warn};
@@ -99,22 +99,57 @@ async fn handle_one(dp: &deployment::Model) -> Result<()> {
             set_failed(dp.id, project_id, &failed_message).await?;
             return Ok(());
         }
-        info!(dp_id = dp.id, "review success");
         set_success(dp.id, project_id).await?;
-
-        // if deploy type is disabled, drop record in deploy-state table
-        if dp.deploy_type == DeployType::Disabled.to_string() {
-            deploys::drop_state(dp.owner_id, dp.project_id, dp.id).await?;
-            debug!(
-                dp_id = dp.id,
-                "deploy type is disabled, drop record in deploy-state table"
-            );
-        } else {
-            deploys::refresh_state(dp.owner_id, dp.project_id, dp.id, dp.task_id.clone()).await?;
-            debug!(dp_id = dp.id, "refresh state");
-        }
+        refresh_state(dp).await?;
+        info!(dp_id = dp.id, "review success");
     } else {
         info!(dp_id = dp.id, "review not done");
     }
     Ok(())
+}
+
+async fn refresh_state(dp: &deployment::Model) -> Result<()> {
+    // if deploy type is envs, refresh state as env type
+    if dp.deploy_type == DeployType::Envs.to_string() {
+        deploys::refresh_state(
+            dp.owner_id,
+            dp.project_id,
+            dp.id,
+            dp.task_id.clone(),
+            StateType::Envs,
+        )
+        .await?;
+        debug!(dp_id = dp.id, "refresh env state");
+        return Ok(());
+    }
+
+    // if deploy type is disabled, drop record in deploy-state table
+    if dp.deploy_type == DeployType::Disabled.to_string() {
+        deploys::drop_state(dp.owner_id, dp.project_id, dp.id, StateType::WasmDeploy).await?;
+        debug!(
+            dp_id = dp.id,
+            "deploy type is disabled, drop record in deploy-state table"
+        );
+        return Ok(());
+    }
+
+    if dp.deploy_type == DeployType::Production.to_string()
+        || dp.deploy_type == DeployType::Development.to_string()
+    {
+        // deploy is wasm case
+        deploys::refresh_state(
+            dp.owner_id,
+            dp.project_id,
+            dp.id,
+            dp.task_id.clone(),
+            StateType::WasmDeploy,
+        )
+        .await?;
+        debug!(dp_id = dp.id, "refresh wasm state");
+        return Ok(());
+    }
+    Err(anyhow!(
+        "Unknown refresh state deploy type: {}",
+        dp.deploy_type
+    ))
 }

@@ -7,7 +7,7 @@
 
 `Runtime.land` is in **alpha** stage and **NOT READY** for production use. We are working on the platform and adding new features. 
 
-If you want to try it out, you can sign up from developer dashboard [https://dev.runtime.land](https://dash.runtime.land).
+If you want to try it out, you can sign up from developer dashboard [https://dash.runtime.land](https://dash.runtime.land).
 
 ## Features
 

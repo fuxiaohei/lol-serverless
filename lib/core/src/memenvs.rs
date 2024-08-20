@@ -22,6 +22,7 @@ struct EnvContent {
 #[instrument("[ENVS]", skip_all)]
 pub async fn init_envs(dir: String) -> Result<()> {
     debug!("Init envs: {}", dir);
+    std::fs::create_dir_all(&dir)?;
     let mut global_envs = ENVS.lock().await;
     for entry in walkdir::WalkDir::new(dir) {
         let entry = entry?;
@@ -63,4 +64,22 @@ pub async fn init_envs(dir: String) -> Result<()> {
 pub async fn get(key: &str) -> Option<EnvsMap> {
     let global_envs = ENVS.lock().await;
     global_envs.get(key).cloned()
+}
+
+/// read_file read file and load into ENVsMap
+pub async fn read_file(file: &str) -> Result<()> {
+    let fpath = std::path::Path::new(file);
+    let basepath = fpath
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .trim_end_matches(".envs.json");
+    let content = std::fs::read_to_string(fpath)?;
+    let env_content = serde_json::from_str::<EnvContent>(&content)?;
+    let envs = crypt::decode(&env_content.secret, &env_content.values)?;
+    let mut global_envs = ENVS.lock().await;
+    global_envs.insert(basepath.to_string(), envs);
+    debug!("Load envs: {}", fpath.display());
+    Ok(())
 }

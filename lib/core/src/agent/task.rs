@@ -1,4 +1,5 @@
 use super::Item;
+use crate::memenvs;
 use anyhow::{anyhow, Result};
 use land_dao::deploy_task::TaskType;
 use land_vars::Task;
@@ -185,7 +186,10 @@ async fn handle_each_disable(item: Item, dir: String) -> Result<()> {
 }
 
 async fn handle_env(item: Item, dir: String) -> Result<()> {
-    let envs_file = format!("{}/envs/{}-{}.envs.json", dir, item.user_id, item.project_id);
+    let envs_file = format!(
+        "{}/envs/{}-{}.envs.json",
+        dir, item.user_id, item.project_id
+    );
     let envs_dir = format!("{}/envs", dir);
     std::fs::create_dir_all(envs_dir)?;
     let content = item.content.unwrap_or_default();
@@ -195,6 +199,7 @@ async fn handle_env(item: Item, dir: String) -> Result<()> {
     println!("envs: {:?}", envs);
     */
     std::fs::write(&envs_file, content)?;
+    memenvs::read_file(&envs_file).await?;
     info!("generate envs success: {}", envs_file);
     Ok(())
 }

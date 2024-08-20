@@ -41,7 +41,8 @@ pub enum DeployType {
 #[derive(strum::Display)]
 #[strum(serialize_all = "lowercase")]
 pub enum StateType {
-    WasmDeploy, // deployment
+    WasmDeploy, // wasm deployment
+    Envs,       // envs deployment
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -181,12 +182,13 @@ pub async fn refresh_state(
     project_id: i32,
     deploy_id: i32,
     task_id: String,
+    state_type: StateType,
 ) -> Result<deploy_state::Model> {
     let db = DB.get().unwrap();
     let model = deploy_state::Entity::find()
         .filter(deploy_state::Column::OwnerId.eq(owner_id))
         .filter(deploy_state::Column::ProjectId.eq(project_id))
-        .filter(deploy_state::Column::StateType.eq(StateType::WasmDeploy.to_string()))
+        .filter(deploy_state::Column::StateType.eq(state_type.to_string()))
         .one(db)
         .await?;
     if let Some(model) = model {
@@ -205,7 +207,7 @@ pub async fn refresh_state(
             project_id,
             deploy_id,
             task_id,
-            state_type: StateType::WasmDeploy.to_string(),
+            state_type: state_type.to_string(),
             value: "".to_string(),
             created_at: now_time(),
             updated_at: now_time(),
@@ -218,12 +220,18 @@ pub async fn refresh_state(
 }
 
 /// drop_state
-pub async fn drop_state(owner_id: i32, project_id: i32, deploy_id: i32) -> Result<()> {
+pub async fn drop_state(
+    owner_id: i32,
+    project_id: i32,
+    deploy_id: i32,
+    state_type: StateType,
+) -> Result<()> {
     let db = DB.get().unwrap();
     deploy_state::Entity::delete_many()
         .filter(deploy_state::Column::OwnerId.eq(owner_id))
         .filter(deploy_state::Column::ProjectId.eq(project_id))
         .filter(deploy_state::Column::DeployId.eq(deploy_id))
+        .filter(deploy_state::Column::StateType.eq(state_type.to_string()))
         .exec(db)
         .await?;
     Ok(())
