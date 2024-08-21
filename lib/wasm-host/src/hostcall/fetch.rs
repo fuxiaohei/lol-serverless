@@ -46,28 +46,30 @@ impl Host for HostContext {
         };
 
         // FIXME: read body bytes is not correct, use stream instead
-        let body_bytes = axum::body::to_bytes(body, usize::MAX)
-            .await
-            .map_err(|e| {
-                warn!(
-                    method = request.method,
-                    uri = request.uri,
-                    "Fetch failed: {e}"
-                );
-                RequestError::InvalidRequest(e.to_string())
-            })?;
+        let body_bytes = axum::body::to_bytes(body, usize::MAX).await.map_err(|e| {
+            warn!(
+                method = request.method,
+                uri = request.uri,
+                "Fetch failed: {e}"
+            );
+            RequestError::InvalidRequest(e.to_string())
+        })?;
 
         let client = get_client(options.redirect);
         // call fetch
-        let fetch_result = client
+        let mut fetch_builder = client
             .request(
                 reqwest::Method::from_str(request.method.as_str()).unwrap(),
                 request.uri.clone(),
             )
             .timeout(std::time::Duration::from_secs(options.timeout as u64))
-            .body(body_bytes)
-            .send()
-            .await;
+            .body(body_bytes);
+        if !request.headers.is_empty() {
+            for (key, value) in request.headers {
+                fetch_builder = fetch_builder.header(key, value);
+            }
+        }
+        let fetch_result = fetch_builder.send().await;
 
         // handle fetch result failed
         if fetch_result.is_err() {
