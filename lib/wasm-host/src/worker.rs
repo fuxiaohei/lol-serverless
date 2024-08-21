@@ -130,7 +130,7 @@ impl Worker {
 }
 
 #[cfg(test)]
-mod tests {
+mod worker_test {
     use crate::{hostcall::Request, Context, Worker};
 
     #[tokio::test]

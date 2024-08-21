@@ -96,7 +96,7 @@ impl HostContext {
                     return Ok((vec![], true));
                 }
                 // return rest buffer
-                return Ok((current_buffer, true));
+                return Ok((current_buffer, false));
             }
             let chunk = chunk.unwrap();
             let chunk = chunk.map_err(|err| {
@@ -175,5 +175,42 @@ impl HostContext {
 impl Default for HostContext {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod context_test {
+    use crate::hostcall::HostContext;
+    use axum::body::Body;
+
+    #[tokio::test]
+    async fn read_body() {
+        let mut ctx = HostContext::default();
+        let body_handle = ctx.new_empty_body();
+        let body = Body::from(String::from("abc").repeat(101));
+        ctx.set_body(body_handle, body);
+        let mut index = 0;
+
+        loop {
+            let (data, end) = ctx.read_body(body_handle, 10).await.unwrap();
+            index += 1;
+            if index == 32 {
+                // last one is empty chunk and true flag
+                assert_eq!(0, data.len());
+                assert!(end == true);
+            } else {
+                if index == 31 {
+                    // last chunk is 101*3%10 = 
+                    assert_eq!(3, data.len());
+                } else {
+                    // common chunk is 10
+                    assert_eq!(10, data.len());
+                }
+                assert!(end == false);
+            }
+            if end {
+                break;
+            }
+        }
     }
 }
