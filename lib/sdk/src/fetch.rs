@@ -1,6 +1,6 @@
+use super::export_service::land::http::fetching::{send_request, RequestError, RequestOptions};
+use super::export_service::land::http::types::{self, RedirectPolicy};
 use super::http::{Body, Request, Response};
-use super::http_service::land::http::fetching::{send_request, RequestError, RequestOptions};
-use super::http_service::land::http::types::{self, RedirectPolicy};
 
 impl Default for RequestOptions {
     fn default() -> Self {

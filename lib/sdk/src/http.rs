@@ -10,11 +10,11 @@ pub type Request = http::Request<Body>;
 pub type Response = http::Response<Body>;
 
 /// `RequestError` is error type when fetching request failed.
-pub type RequestError = super::http_service::land::http::fetching::RequestError;
+pub type RequestError = super::export_service::land::http::fetching::RequestError;
 /// `RequestOptions` is options for fetching request, including timeout and redirect policy.
-pub type RequestOptions = super::http_service::land::http::fetching::RequestOptions;
+pub type RequestOptions = super::export_service::land::http::fetching::RequestOptions;
 /// `RedirectPolicy` is redirect policy for fetching request.
-pub type RedirectPolicy = super::http_service::land::http::types::RedirectPolicy;
+pub type RedirectPolicy = super::export_service::land::http::types::RedirectPolicy;
 
 /// `error_response` is a helper function to build a response with status code and message.
 pub fn error_response(status: http::StatusCode, message: String) -> Response {
