@@ -3,6 +3,10 @@ package land:asyncio;
 interface asyncio{
     use types.{async-handle};
 
+    // new async task
+    new-task: func() -> result<async-handle>;
+    // set task finished
+    finish: func(handle: async-handle);
     // sleep for ms milliseconds, create a sleep task and return the handle
     sleep: func(ms: u32) -> result<async-handle>;
     // cancel a task, no-op if the task is already done or not found

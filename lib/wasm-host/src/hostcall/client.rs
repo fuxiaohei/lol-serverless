@@ -1,4 +1,4 @@
-use super::host_service::land::http::types::RedirectPolicy;
+use super::host::land::http::types::RedirectPolicy;
 use once_cell::sync::OnceCell;
 use reqwest::Client;
 use std::sync::Once;

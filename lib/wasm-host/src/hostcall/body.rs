@@ -1,4 +1,4 @@
-use super::host_service::land::http::body::{self, BodyError, BodyHandle};
+use super::host::land::http::body::{self, BodyError, BodyHandle};
 use super::HostContext;
 
 #[async_trait::async_trait]

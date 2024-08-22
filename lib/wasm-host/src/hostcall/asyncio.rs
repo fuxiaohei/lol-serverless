@@ -1,5 +1,5 @@
 use super::{
-    host_service::land::asyncio::{asyncio, types::AsyncHandle},
+    host::land::asyncio::{asyncio, types::AsyncHandle},
     HostContext,
 };
 use std::{
@@ -77,6 +77,24 @@ impl AsyncioContext {
 
 #[async_trait::async_trait]
 impl asyncio::Host for AsyncioContext {
+    async fn new_task(&mut self) -> Result<AsyncHandle, ()> {
+        let mut inner = self.inner.lock().await;
+        let seq_id = inner
+            .seq_id
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        let task = AsyncioTask {
+            _handle: seq_id,
+            status: AsyncioTaskStatus::Pending,
+        };
+        println!("new_task: {}", seq_id);
+        inner.tasks.insert(seq_id, task);
+        Ok(seq_id)
+    }
+
+    async fn finish(&mut self, handle: AsyncHandle) {
+        self.inner.lock().await.set_finished(handle);
+    }
+    
     async fn sleep(&mut self, ms: u32) -> Result<AsyncHandle, ()> {
         let mut inner = self.inner.lock().await;
         let seq_id = inner
@@ -115,6 +133,12 @@ impl asyncio::Host for AsyncioContext {
 
 #[async_trait::async_trait]
 impl asyncio::Host for HostContext {
+    async fn new_task(&mut self) -> Result<AsyncHandle, ()> {
+        self.asyncio_ctx.new_task().await
+    }
+    async fn finish(&mut self, handle: AsyncHandle) {
+        self.asyncio_ctx.finish(handle).await;
+    }
     async fn sleep(&mut self, ms: u32) -> Result<AsyncHandle, ()> {
         self.asyncio_ctx.sleep(ms).await
     }
@@ -136,7 +160,7 @@ impl asyncio::Host for HostContext {
 mod asyncio_test {
     use crate::hostcall::{
         asyncio::{AsyncioContext, AsyncioTaskStatus},
-        host_service::land::asyncio::asyncio::Host,
+        host::land::asyncio::asyncio::Host,
     };
 
     #[tokio::test]

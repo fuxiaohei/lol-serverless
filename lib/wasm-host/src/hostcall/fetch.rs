@@ -1,8 +1,8 @@
 use super::client::get_client;
-use super::host_service::land::http::fetching::{
+use super::host::land::http::fetching::{
     self, Request, RequestError, RequestOptions, Response,
 };
-use super::host_service::land::http::types::RedirectPolicy;
+use super::host::land::http::types::RedirectPolicy;
 use super::HostContext;
 use axum::body::Body;
 use reqwest::redirect;

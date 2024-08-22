@@ -1,7 +1,7 @@
 use super::{
     asyncio::AsyncioContext,
     body_impl::{new_channel, Sender},
-    host_service::land::http::body::BodyError,
+    host::land::http::body::BodyError,
 };
 use axum::body::{Body, BodyDataStream, Bytes};
 use futures_util::StreamExt;

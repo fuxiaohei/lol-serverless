@@ -131,6 +131,28 @@ impl Worker {
             .call_handle_request(&mut store, &req)
             .await?;
         let body = store.data_mut().take_body(resp.body.unwrap()).unwrap();
+
+        // check if asyncio is pending
+        let is_pending = exports
+            .land_asyncio_context()
+            .call_is_pending(&mut store)
+            .await?;
+        debug!("pending_tasks:{}", is_pending);
+        if is_pending {
+            tokio::task::spawn(async move {
+                loop {
+                    let res = exports.land_asyncio_context().call_select(&mut store).await;
+                    if res.is_err() {
+                        break;
+                    }
+                    let res = res.unwrap();
+                    if !res {
+                        break;
+                    }
+                }
+            });
+        }
+
         Ok((resp, body))
     }
 }

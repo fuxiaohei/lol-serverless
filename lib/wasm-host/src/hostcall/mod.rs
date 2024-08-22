@@ -5,13 +5,13 @@ mod client;
 mod context;
 mod fetch;
 mod guest;
-mod host_service;
+mod host;
 
 pub use client::init_clients;
 pub use context::HostContext;
 pub use guest::exports::land::http::incoming::{Request, Response};
 pub use guest::ExportHandlerPre;
-pub use host_service::ExportService;
+pub use host::ExportService;
 
-impl host_service::land::http::types::Host for HostContext {}
-impl host_service::land::asyncio::types::Host for HostContext {}
+impl host::land::http::types::Host for HostContext {}
+impl host::land::asyncio::types::Host for HostContext {}

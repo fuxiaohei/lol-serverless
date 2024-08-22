@@ -18,6 +18,59 @@ pub mod land {
             use super::super::super::_rt;
             pub type AsyncHandle = super::super::super::land::asyncio::types::AsyncHandle;
             #[allow(unused_unsafe, clippy::all)]
+            /// new async task
+            pub fn new_task() -> Result<AsyncHandle, ()> {
+                unsafe {
+                    #[repr(align(4))]
+                    struct RetArea([::core::mem::MaybeUninit<u8>; 8]);
+                    let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
+                    let ptr0 = ret_area.0.as_mut_ptr().cast::<u8>();
+                    #[cfg(target_arch = "wasm32")]
+                    #[link(wasm_import_module = "land:asyncio/asyncio")]
+                    extern "C" {
+                        #[link_name = "new-task"]
+                        fn wit_import(_: *mut u8);
+                    }
+                    #[cfg(not(target_arch = "wasm32"))]
+                    fn wit_import(_: *mut u8) {
+                        unreachable!()
+                    }
+                    wit_import(ptr0);
+                    let l1 = i32::from(*ptr0.add(0).cast::<u8>());
+                    match l1 {
+                        0 => {
+                            let e = {
+                                let l2 = *ptr0.add(4).cast::<i32>();
+                                l2 as u32
+                            };
+                            Ok(e)
+                        }
+                        1 => {
+                            let e = ();
+                            Err(e)
+                        }
+                        _ => _rt::invalid_enum_discriminant(),
+                    }
+                }
+            }
+            #[allow(unused_unsafe, clippy::all)]
+            /// set task finished
+            pub fn finish(handle: AsyncHandle) {
+                unsafe {
+                    #[cfg(target_arch = "wasm32")]
+                    #[link(wasm_import_module = "land:asyncio/asyncio")]
+                    extern "C" {
+                        #[link_name = "finish"]
+                        fn wit_import(_: i32);
+                    }
+                    #[cfg(not(target_arch = "wasm32"))]
+                    fn wit_import(_: i32) {
+                        unreachable!()
+                    }
+                    wit_import(_rt::as_i32(handle));
+                }
+            }
+            #[allow(unused_unsafe, clippy::all)]
             /// sleep for ms milliseconds, create a sleep task and return the handle
             pub fn sleep(ms: u32) -> Result<AsyncHandle, ()> {
                 unsafe {
@@ -1063,8 +1116,8 @@ mod _rt {
 #[cfg(target_arch = "wasm32")]
 #[link_section = "component-type:wit-bindgen:0.30.0:export-service-with-all-of-its-exports-removed:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1374] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xb9\x09\x01A\x02\x01\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1403] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xd6\x09\x01A\x02\x01\
 A\x10\x01B\x16\x01{\x04\0\x0bstatus-code\x03\0\0\x01s\x04\0\x06method\x03\0\x02\x01\
 o\x02ss\x01p\x04\x04\0\x07headers\x03\0\x05\x01s\x04\0\x03uri\x03\0\x07\x01y\x04\
 \0\x0bbody-handle\x03\0\x09\x01k\x0a\x01r\x04\x06method\x03\x03uri\x08\x07header\
@@ -1088,14 +1141,14 @@ response\x03\0\x02\x02\x03\x02\x01\x05\x04\0\x0drequest-error\x03\0\x04\x02\x03\
 \x01\x06\x04\0\x0frequest-options\x03\0\x06\x01j\x01\x03\x01\x05\x01@\x02\x03req\
 \x01\x07options\x07\0\x08\x04\0\x0csend-request\x01\x09\x03\x01\x12land:http/fet\
 ching\x05\x07\x01B\x02\x01y\x04\0\x0casync-handle\x03\0\0\x03\x01\x12land:asynci\
-o/types\x05\x08\x02\x03\0\x03\x0casync-handle\x01B\x0a\x02\x03\x02\x01\x09\x04\0\
-\x0casync-handle\x03\0\0\x01j\x01\x01\0\x01@\x01\x02msy\0\x02\x04\0\x05sleep\x01\
-\x03\x01@\x01\x06handle\x01\x01\0\x04\0\x06cancel\x01\x04\x01@\0\0\x7f\x04\0\x0e\
-is-job-pending\x01\x05\x04\0\x0bexecute-job\x01\x05\x03\x01\x14land:asyncio/asyn\
-cio\x05\x0a\x04\x01:land:worker/export-service-with-all-of-its-exports-removed\x04\
-\0\x0b4\x01\0.export-service-with-all-of-its-exports-removed\x03\0\0\0G\x09produ\
-cers\x01\x0cprocessed-by\x02\x0dwit-component\x070.215.0\x10wit-bindgen-rust\x06\
-0.30.0";
+o/types\x05\x08\x02\x03\0\x03\x0casync-handle\x01B\x0d\x02\x03\x02\x01\x09\x04\0\
+\x0casync-handle\x03\0\0\x01j\x01\x01\0\x01@\0\0\x02\x04\0\x08new-task\x01\x03\x01\
+@\x01\x06handle\x01\x01\0\x04\0\x06finish\x01\x04\x01@\x01\x02msy\0\x02\x04\0\x05\
+sleep\x01\x05\x04\0\x06cancel\x01\x04\x01@\0\0\x7f\x04\0\x0eis-job-pending\x01\x06\
+\x04\0\x0bexecute-job\x01\x06\x03\x01\x14land:asyncio/asyncio\x05\x0a\x04\x01:la\
+nd:worker/export-service-with-all-of-its-exports-removed\x04\0\x0b4\x01\0.export\
+-service-with-all-of-its-exports-removed\x03\0\0\0G\x09producers\x01\x0cprocesse\
+d-by\x02\x0dwit-component\x070.215.0\x10wit-bindgen-rust\x060.30.0";
 #[inline(never)]
 #[doc(hidden)]
 pub fn __link_custom_section_describing_imports() {
