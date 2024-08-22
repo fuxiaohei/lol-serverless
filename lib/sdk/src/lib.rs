@@ -29,10 +29,11 @@
 // Make sure all our public APIs have docs.
 #![warn(missing_docs)]
 
+mod asyncio_service;
 mod body;
-mod http_service;
 mod fetch;
 pub mod http;
+mod http_service;
 pub mod router;
 
 /// Re-export macro from sdk-macro

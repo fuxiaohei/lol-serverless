@@ -1,8 +1,8 @@
-use super::host::land::http::body::{BodyError, BodyHandle, Host};
+use super::host_service::land::http::body::{self, BodyError, BodyHandle};
 use super::HostContext;
 
 #[async_trait::async_trait]
-impl Host for HostContext {
+impl body::Host for HostContext {
     async fn read(&mut self, handle: BodyHandle, size: u32) -> Result<(Vec<u8>, bool), BodyError> {
         self.read_body(handle, size).await
     }

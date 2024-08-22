@@ -1,0 +1,14 @@
+package land:asyncio;
+
+interface asyncio{
+    use types.{async-handle};
+
+    // sleep for ms milliseconds, create a sleep task and return the handle
+    sleep: func(ms: u32) -> result<async-handle>;
+    // cancel a task, no-op if the task is already done or not found
+    cancel: func(handle: async-handle);
+    // return true if there is a pending job
+    is-job-pending: func() -> bool;
+    // execute a job, return true if there is a pending job
+    execute-job: func() -> bool;
+}

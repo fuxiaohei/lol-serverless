@@ -138,10 +138,7 @@ async fn wasm(req: Request<Body>, info: &WorkerInfo) -> Result<Response<Body>> {
 
     let (wasm_resp, wasm_resp_body) = match worker.handle_request(wasm_req, context).await {
         Ok((wasm_resp, wasm_resp_body)) => (wasm_resp, wasm_resp_body),
-        Err(e) => {
-            let builder = Response::builder().status(500);
-            return Ok(builder.body(Body::from(e.to_string())).unwrap());
-        }
+        Err(e) => return Ok(error_response(e, req_id)),
     };
 
     // convert host-call response to response
@@ -154,6 +151,13 @@ async fn wasm(req: Request<Body>, info: &WorkerInfo) -> Result<Response<Body>> {
     }
     builder = builder.header("x-served-by", ENDPOINT_NAME.get().unwrap());
     Ok(builder.body(wasm_resp_body).unwrap())
+}
+
+fn error_response(e: anyhow::Error, req_id: String) -> Response<Body> {
+    let mut builder = Response::builder().status(500);
+    builder = builder.header("x-request-id", req_id);
+    builder = builder.header("x-served-by", ENDPOINT_NAME.get().unwrap());
+    builder.body(Body::from(e.to_string())).unwrap()
 }
 
 /// init_worker is a helper function to prepare wasm worker

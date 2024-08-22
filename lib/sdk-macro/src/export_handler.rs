@@ -455,7 +455,7 @@ mod _rt {
 #[allow(unused_macros)]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! __export_http_handler_impl {
+macro_rules! __export_export_handler_impl {
     ($ty:ident) => {
         self::export!($ty with_types_in self);
     };
@@ -464,10 +464,10 @@ macro_rules! __export_http_handler_impl {
         exports::land::http::incoming::__export_land_http_incoming_cabi!($ty
         with_types_in $($path_to_types_root)*:: exports::land::http::incoming); const _ :
         () = { #[cfg(target_arch = "wasm32")] #[link_section =
-        "component-type:wit-bindgen:0.30.0:http-handler:imports and exports"]
-        #[doc(hidden)] pub static __WIT_BINDGEN_COMPONENT_TYPE : [u8; 692] = *
+        "component-type:wit-bindgen:0.30.0:export-handler:imports and exports"]
+        #[doc(hidden)] pub static __WIT_BINDGEN_COMPONENT_TYPE : [u8; 696] = *
         b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xb1\x04\x01A\x02\x01\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xb3\x04\x01A\x02\x01\
 A\x06\x01B\x16\x01{\x04\0\x0bstatus-code\x03\0\0\x01s\x04\0\x06method\x03\0\x02\x01\
 o\x02ss\x01p\x04\x04\0\x07headers\x03\0\x05\x01s\x04\0\x03uri\x03\0\x07\x01y\x04\
 \0\x0bbody-handle\x03\0\x09\x01k\x0a\x01r\x04\x06method\x03\x03uri\x08\x07header\
@@ -480,19 +480,19 @@ edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\x01\x0fland:http/types\x05\0\
 \x03\0\0\x07request\x02\x03\0\0\x08response\x01B\x06\x02\x03\x02\x01\x01\x04\0\x07\
 request\x03\0\0\x02\x03\x02\x01\x02\x04\0\x08response\x03\0\x02\x01@\x01\x03req\x01\
 \0\x03\x04\0\x0ehandle-request\x01\x04\x04\x01\x12land:http/incoming\x05\x03\x04\
-\x01\x18land:worker/http-handler\x04\0\x0b\x12\x01\0\x0chttp-handler\x03\0\0\0G\x09\
-producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.215.0\x10wit-bindgen-rus\
-t\x060.30.0";
+\x01\x1aland:worker/export-handler\x04\0\x0b\x14\x01\0\x0eexport-handler\x03\0\0\
+\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.215.0\x10wit-bind\
+gen-rust\x060.30.0";
         };
     };
 }
 #[doc(inline)]
-pub use __export_http_handler_impl as export;
+pub use __export_export_handler_impl as export;
 #[cfg(target_arch = "wasm32")]
-#[link_section = "component-type:wit-bindgen:0.30.0:http-handler-with-all-of-its-exports-removed:encoded world"]
+#[link_section = "component-type:wit-bindgen:0.30.0:export-handler-with-all-of-its-exports-removed:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 639] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xdc\x03\x01A\x02\x01\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 643] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xde\x03\x01A\x02\x01\
 A\x02\x01B\x16\x01{\x04\0\x0bstatus-code\x03\0\0\x01s\x04\0\x06method\x03\0\x02\x01\
 o\x02ss\x01p\x04\x04\0\x07headers\x03\0\x05\x01s\x04\0\x03uri\x03\0\x07\x01y\x04\
 \0\x0bbody-handle\x03\0\x09\x01k\x0a\x01r\x04\x06method\x03\x03uri\x08\x07header\
@@ -502,9 +502,9 @@ eout\0\0\x0binvalid-url\0\0\x17destination-not-allowed\0\0\x11too-many-requests\
 \0\x0finvalid-request\x01s\0\x04\0\x0drequest-error\x03\0\x10\x01m\x03\x06follow\
 \x06manual\x05error\x04\0\x0fredirect-policy\x03\0\x12\x01r\x02\x07timeouty\x08r\
 edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\x01\x0fland:http/types\x05\0\x04\
-\x018land:worker/http-handler-with-all-of-its-exports-removed\x04\0\x0b2\x01\0,h\
-ttp-handler-with-all-of-its-exports-removed\x03\0\0\0G\x09producers\x01\x0cproce\
-ssed-by\x02\x0dwit-component\x070.215.0\x10wit-bindgen-rust\x060.30.0";
+\x01:land:worker/export-handler-with-all-of-its-exports-removed\x04\0\x0b4\x01\0\
+.export-handler-with-all-of-its-exports-removed\x03\0\0\0G\x09producers\x01\x0cp\
+rocessed-by\x02\x0dwit-component\x070.215.0\x10wit-bindgen-rust\x060.30.0";
 #[inline(never)]
 #[doc(hidden)]
 pub fn __link_custom_section_describing_imports() {

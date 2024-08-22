@@ -43,11 +43,11 @@ pub fn http_main(_attr: TokenStream, item: TokenStream) -> TokenStream {
         String::new()
     } else {
         HTTP_SRC_INCLUDE.store(true, std::sync::atomic::Ordering::Relaxed);
-        include_str!("./http_handler.rs").to_string()
+        include_str!("./export_handler.rs").to_string()
     };
     let iface: TokenStream = src_http_handler
         .parse()
-        .expect("cannot parse http_handler.rs");
+        .expect("cannot parse export_handler.rs");
 
     let iface_impl = quote!(
 

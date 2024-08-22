@@ -7,7 +7,7 @@ use std::{
     task::{Context, Poll},
 };
 use tokio::sync::{mpsc, oneshot};
-use super::host::land::http::body::BodyError;
+use super::host_service::land::http::body::BodyError;
 
 #[derive(Debug)]
 pub enum FinishMessage {

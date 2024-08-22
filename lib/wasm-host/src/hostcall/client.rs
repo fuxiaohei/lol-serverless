@@ -1,8 +1,7 @@
+use super::host_service::land::http::types::RedirectPolicy;
 use once_cell::sync::OnceCell;
 use reqwest::Client;
 use std::sync::Once;
-
-use super::host::land::http::types::RedirectPolicy;
 
 pub static CLIENT_INIT_ONCE: Once = Once::new();
 pub static REDIRECT_FOLLOW_POOL: OnceCell<Client> = OnceCell::new();

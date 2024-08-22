@@ -1,4 +1,4 @@
-use crate::hostcall::HttpHandlerPre;
+use crate::hostcall::ExportHandlerPre;
 use anyhow::Result;
 use axum::body::Body;
 use tracing::debug;
@@ -12,7 +12,7 @@ use wasmtime::{
 pub struct Worker {
     path: String,
     engine: Engine,
-    instance_pre: HttpHandlerPre<crate::context::Context>,
+    instance_pre: ExportHandlerPre<crate::context::Context>,
 }
 
 impl std::fmt::Debug for Worker {
@@ -32,14 +32,17 @@ impl Worker {
         let mut linker: Linker<crate::context::Context> = Linker::new(&engine);
         // init wasi context
         wasmtime_wasi::add_to_linker_async(&mut linker)?;
-        crate::hostcall::HttpService::add_to_linker(&mut linker, crate::context::Context::host_ctx)
-            .expect("add http_service failed");
+        crate::hostcall::ExportService::add_to_linker(
+            &mut linker,
+            crate::context::Context::host_ctx,
+        )
+        .expect("add export_service failed");
 
         let instance_pre = linker.instantiate_pre(&component)?;
         Ok(Self {
             path: path.unwrap_or("binary".to_string()),
             engine,
-            instance_pre: HttpHandlerPre::new(instance_pre)?,
+            instance_pre: ExportHandlerPre::new(instance_pre)?,
         })
     }
 
@@ -58,14 +61,17 @@ impl Worker {
         let mut linker: Linker<crate::context::Context> = Linker::new(&engine);
         // init wasi context
         wasmtime_wasi::add_to_linker_async(&mut linker)?;
-        crate::hostcall::HttpService::add_to_linker(&mut linker, crate::context::Context::host_ctx)
-            .expect("add http_service failed");
+        crate::hostcall::ExportService::add_to_linker(
+            &mut linker,
+            crate::context::Context::host_ctx,
+        )
+        .expect("add export_service failed");
 
         let instance_pre = linker.instantiate_pre(&component)?;
         Ok(Self {
             path,
             engine,
-            instance_pre: HttpHandlerPre::new(instance_pre)?,
+            instance_pre: ExportHandlerPre::new(instance_pre)?,
         })
     }
 
@@ -159,7 +165,7 @@ mod worker_test {
             }
         }
         let body_handle = resp.1;
-        let body =axum::body::to_bytes(body_handle,9999).await.unwrap();
+        let body = axum::body::to_bytes(body_handle, 9999).await.unwrap();
         assert_eq!(body, b"Hello Runtime.land!!".to_vec());
     }
 }

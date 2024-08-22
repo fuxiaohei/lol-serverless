@@ -1,6 +1,8 @@
 use super::client::get_client;
-use super::host::land::http::fetching::{Host, Request, RequestError, RequestOptions, Response};
-use super::host::land::http::types::RedirectPolicy;
+use super::host_service::land::http::fetching::{
+    self, Request, RequestError, RequestOptions, Response,
+};
+use super::host_service::land::http::types::RedirectPolicy;
 use super::HostContext;
 use axum::body::Body;
 use reqwest::redirect;
@@ -30,7 +32,7 @@ impl TryFrom<RedirectPolicy> for redirect::Policy {
 }
 
 #[async_trait::async_trait]
-impl Host for HostContext {
+impl fetching::Host for HostContext {
     async fn send_request(
         &mut self,
         request: Request,

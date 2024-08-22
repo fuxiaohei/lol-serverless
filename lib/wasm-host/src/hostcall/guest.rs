@@ -1,5 +1,5 @@
 wasmtime::component::bindgen!({
-    world: "http-handler",
+    world: "export-handler",
     path: "./wit",
     async:true,
 });
