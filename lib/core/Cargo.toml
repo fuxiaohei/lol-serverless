@@ -16,7 +16,7 @@ land-wasm-host = { workspace = true }
 lazy_static = { workspace = true }
 md5 = { workspace = true }
 once_cell = { workspace = true }
-opendal = { version = "0.49.0", default-features = false, features = [
+opendal = { version = "0.49.1", default-features = false, features = [
     "services-fs",
     "services-s3",
     "services-memory",
