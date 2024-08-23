@@ -1,0 +1,13 @@
+[package]
+name = "wait-until"
+version = { workspace = true }
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+http = { workspace = true }
+land-sdk = { path = "../../lib/sdk" }
+wit-bindgen = { workspace = true }
+
+[lib]
+crate-type = ["cdylib"]

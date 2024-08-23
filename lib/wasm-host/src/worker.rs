@@ -125,6 +125,32 @@ impl Worker {
             .call_handle_request(&mut store, &req)
             .await?;
         let body = store.data_mut().take_body(resp.body.unwrap()).unwrap();
+
+        // check async task is pending
+        let is_pending = exports
+            .land_asyncio_context()
+            .call_is_pending(&mut store)
+            .await?;
+        debug!("async task is pending: {}", is_pending);
+        if is_pending {
+            tokio::task::spawn(async move {
+                let now = tokio::time::Instant::now();
+                loop {
+                    let res = exports
+                        .land_asyncio_context()
+                        .call_select(&mut store)
+                        .await
+                        .unwrap();
+                    debug!("async task is done, res: {:?}", res);
+                    if !res {
+                        break;
+                    }
+                }
+                debug!("async task is done, cost:{:.2?}", now.elapsed());
+                // println!("async task is done, cost:{:.2?}", now.elapsed());
+            });
+        }
+
         Ok((resp, body))
     }
 }
@@ -134,11 +160,11 @@ mod worker_test {
     use crate::{hostcall::Request, Context, Worker};
 
     #[tokio::test]
-    async fn run_wasm() {
-        let test_hello_file = "../../target/wasm32-wasi/release/hello_wasm.wasm";
-        land_wasm_gen::componentize_wasm(&test_hello_file).expect("componentize wasm failed");
+    async fn run_hello_wasm() {
+        let test_wasm_file = "../../target/wasm32-wasi/release/hello_wasm.wasm";
+        land_wasm_gen::componentize_wasm(&test_wasm_file).expect("componentize wasm failed");
 
-        let worker = Worker::new(test_hello_file, false)
+        let worker = Worker::new(test_wasm_file, false)
             .await
             .expect("load worker failed");
         let request = Request {
@@ -159,7 +185,40 @@ mod worker_test {
             }
         }
         let body_handle = resp.1;
-        let body =axum::body::to_bytes(body_handle,9999).await.unwrap();
+        let body = axum::body::to_bytes(body_handle, 9999).await.unwrap();
         assert_eq!(body, b"Hello Runtime.land!!".to_vec());
+    }
+
+    #[tokio::test]
+    async fn run_wait_until() {
+        let test_wasm_file = "../../target/wasm32-wasi/release/wait_until.wasm";
+        land_wasm_gen::componentize_wasm(&test_wasm_file).expect("componentize wasm failed");
+
+        let worker = Worker::new(test_wasm_file, false)
+            .await
+            .expect("load worker failed");
+        let request = Request {
+            method: "GET".to_string(),
+            uri: "/".to_string(),
+            headers: vec![("X-Request-Id".to_string(), "123456".to_string())],
+            body: None,
+        };
+        let context = Context::new(None);
+        let resp = worker
+            .handle_request(request, context)
+            .await
+            .expect("handle request failed");
+        assert_eq!(resp.0.status, 200);
+        for (h, v) in resp.0.headers {
+            if h == "X-Request-Method" {
+                assert_eq!(v, "GET");
+            }
+        }
+        let body_handle = resp.1;
+        let body = axum::body::to_bytes(body_handle, 9999).await.unwrap();
+        assert_eq!(body, b"Hello Runtime.land!!".to_vec());
+
+        // wait until
+        tokio::time::sleep(tokio::time::Duration::from_secs(4)).await;
     }
 }

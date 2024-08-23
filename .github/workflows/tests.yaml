@@ -36,5 +36,4 @@ jobs:
           shared-key: "build"
       - name: test hello-wasm
         run: |
-          cargo build -p hello-wasm --target wasm32-wasi --release
-          cargo test -p land-wasm-host --release
+          bash ./tests/test_examples.sh

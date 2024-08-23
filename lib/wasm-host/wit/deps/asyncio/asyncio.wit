@@ -1,0 +1,17 @@
+package land:asyncio;
+
+interface asyncio{
+    use types.{handle};
+
+    // new async task handle
+    new: func() -> result<handle>;
+    // new sleep time task handle and sleep
+    sleep: func(ms: u32) -> result<handle>;
+    // finish async task
+    finish: func(handle: handle);
+
+    // is-pending checks if the task is pending
+    is-pending: func() -> bool;
+    // wait for async task to finish
+    wait: func();
+}

@@ -38,6 +38,7 @@ static HTTP_SRC_INCLUDE: AtomicBool = AtomicBool::new(false);
 pub fn http_main(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let func = syn::parse_macro_input!(item as syn::ItemFn);
     let func_name = func.sig.ident.clone();
+    let func_args_len = func.sig.inputs.len();
 
     let src_http_handler = if HTTP_SRC_INCLUDE.load(std::sync::atomic::Ordering::Relaxed) {
         String::new()
@@ -52,6 +53,7 @@ pub fn http_main(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let iface_impl = quote!(
 
         use exports::land::http::incoming;
+        use exports::land::asyncio::context;
 
         struct WorkerHttpImpl;
 
@@ -92,6 +94,39 @@ pub fn http_main(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
         }
 
+    );
+
+    // if func args len is 1, it means that the function has one argument, no ExecutionCtx
+    // so context::Guest should not be used
+    let mut async_impl = quote!(
+        impl context::Guest for WorkerHttpImpl {
+            fn is_pending() -> bool{
+               return false
+            }
+
+            fn select() -> bool {
+               return false
+            }
+        }
+    );
+    if func_args_len == 2 {
+        async_impl = quote!(
+            impl context::Guest for WorkerHttpImpl {
+                fn is_pending() -> bool{
+                    let ctx = ExecutionCtx::get();
+                    ctx.is_pending()
+                }
+
+                fn select() -> bool {
+                    let mut ctx = ExecutionCtx::get();
+                    ctx.execute();
+                    ctx.is_pending()
+                }
+            }
+        );
+    }
+
+    let mut iface_impl2 = quote!(
         impl incoming::Guest for WorkerHttpImpl {
             fn handle_request(req: incoming::Request) -> incoming::Response {
                 #func
@@ -120,11 +155,50 @@ pub fn http_main(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 }
             }
         }
+    );
 
+    // if func args len is 2, it means that the function has two arguments,
+    // the first one is the request, the second one is the context
+    if func_args_len == 2 {
+        iface_impl2 = quote!(
+            impl incoming::Guest for WorkerHttpImpl {
+                fn handle_request(req: incoming::Request) -> incoming::Response {
+                    #func
+
+                    // get execution context
+                    let mut ctx = ExecutionCtx::get();
+                    // convert wasm_request to sdk_request
+                    let sdk_request: Request = req.try_into().unwrap();
+                    let sdk_response = match #func_name(sdk_request, ctx){
+                        Ok(r) => r,
+                        Err(e) => {
+                            land_sdk::http::error_response(
+                                http::StatusCode::INTERNAL_SERVER_ERROR,
+                                e.to_string(),
+                            )
+                        }
+                    };
+
+                    let sdk_response_body_handle = sdk_response.body().body_handle();
+                    // convert sdk_response to wasm_response
+                    match sdk_response.try_into() {
+                        Ok(r) => r,
+                        Err(_e) => incoming::Response {
+                            status: 500,
+                            headers: vec![],
+                            body: Some(sdk_response_body_handle),
+                        },
+                    }
+                }
+            }
+        );
+    }
+
+    let iface_impl3 = quote!(
         export!(WorkerHttpImpl);
-
     );
     let user_code_comment = "// User code start";
-    let value = format!("{iface}\n\n{user_code_comment}\n\n{iface_impl}");
+    let value =
+        format!("{iface}\n\n{user_code_comment}\n\n{iface_impl}\n\n{async_impl}\n\n{iface_impl2}\n\n{iface_impl3}");
     value.parse().unwrap()
 }

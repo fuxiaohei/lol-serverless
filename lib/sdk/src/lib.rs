@@ -30,10 +30,14 @@
 #![warn(missing_docs)]
 
 mod body;
-mod http_service;
+mod execution_ctx;
 mod fetch;
 pub mod http;
+mod http_service;
 pub mod router;
+
+/// export execution ctx
+pub use execution_ctx::ExecutionCtx;
 
 /// Re-export macro from sdk-macro
 pub use land_sdk_macro::http_main;

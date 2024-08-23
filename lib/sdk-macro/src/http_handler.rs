@@ -183,6 +183,57 @@ pub mod exports {
     #[allow(dead_code)]
     pub mod land {
         #[allow(dead_code)]
+        pub mod asyncio {
+            #[allow(dead_code, clippy::all)]
+            pub mod context {
+                #[used]
+                #[doc(hidden)]
+                static __FORCE_SECTION_REF: fn() = super::super::super::super::__link_custom_section_describing_imports;
+                use super::super::super::super::_rt;
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_is_pending_cabi<T: Guest>() -> i32 {
+                    #[cfg(target_arch = "wasm32")] _rt::run_ctors_once();
+                    let result0 = T::is_pending();
+                    match result0 {
+                        true => 1,
+                        false => 0,
+                    }
+                }
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_select_cabi<T: Guest>() -> i32 {
+                    #[cfg(target_arch = "wasm32")] _rt::run_ctors_once();
+                    let result0 = T::select();
+                    match result0 {
+                        true => 1,
+                        false => 0,
+                    }
+                }
+                pub trait Guest {
+                    /// is ctx pending
+                    fn is_pending() -> bool;
+                    /// select one task to run, if no task is ready, return false
+                    fn select() -> bool;
+                }
+                #[doc(hidden)]
+                #[macro_export]
+                macro_rules! __export_land_asyncio_context_cabi {
+                    ($ty:ident with_types_in $($path_to_types:tt)*) => {
+                        const _ : () = { #[export_name =
+                        "land:asyncio/context#is-pending"] unsafe extern "C" fn
+                        export_is_pending() -> i32 { $($path_to_types)*::
+                        _export_is_pending_cabi::<$ty > () } #[export_name =
+                        "land:asyncio/context#select"] unsafe extern "C" fn
+                        export_select() -> i32 { $($path_to_types)*::
+                        _export_select_cabi::<$ty > () } };
+                    };
+                }
+                #[doc(hidden)]
+                pub use __export_land_asyncio_context_cabi;
+            }
+        }
+        #[allow(dead_code)]
         pub mod http {
             #[allow(dead_code, clippy::all)]
             pub mod incoming {
@@ -462,13 +513,16 @@ macro_rules! __export_http_handler_impl {
     ($ty:ident with_types_in $($path_to_types_root:tt)*) => {
         $($path_to_types_root)*::
         exports::land::http::incoming::__export_land_http_incoming_cabi!($ty
-        with_types_in $($path_to_types_root)*:: exports::land::http::incoming); const _ :
-        () = { #[cfg(target_arch = "wasm32")] #[link_section =
+        with_types_in $($path_to_types_root)*:: exports::land::http::incoming);
+        $($path_to_types_root)*::
+        exports::land::asyncio::context::__export_land_asyncio_context_cabi!($ty
+        with_types_in $($path_to_types_root)*:: exports::land::asyncio::context); const _
+        : () = { #[cfg(target_arch = "wasm32")] #[link_section =
         "component-type:wit-bindgen:0.30.0:http-handler:imports and exports"]
-        #[doc(hidden)] pub static __WIT_BINDGEN_COMPONENT_TYPE : [u8; 692] = *
+        #[doc(hidden)] pub static __WIT_BINDGEN_COMPONENT_TYPE : [u8; 751] = *
         b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xb1\x04\x01A\x02\x01\
-A\x06\x01B\x16\x01{\x04\0\x0bstatus-code\x03\0\0\x01s\x04\0\x06method\x03\0\x02\x01\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xec\x04\x01A\x02\x01\
+A\x08\x01B\x16\x01{\x04\0\x0bstatus-code\x03\0\0\x01s\x04\0\x06method\x03\0\x02\x01\
 o\x02ss\x01p\x04\x04\0\x07headers\x03\0\x05\x01s\x04\0\x03uri\x03\0\x07\x01y\x04\
 \0\x0bbody-handle\x03\0\x09\x01k\x0a\x01r\x04\x06method\x03\x03uri\x08\x07header\
 s\x06\x04body\x0b\x04\0\x07request\x03\0\x0c\x01r\x03\x06status\x01\x07headers\x06\
@@ -479,10 +533,11 @@ eout\0\0\x0binvalid-url\0\0\x17destination-not-allowed\0\0\x11too-many-requests\
 edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\x01\x0fland:http/types\x05\0\x02\
 \x03\0\0\x07request\x02\x03\0\0\x08response\x01B\x06\x02\x03\x02\x01\x01\x04\0\x07\
 request\x03\0\0\x02\x03\x02\x01\x02\x04\0\x08response\x03\0\x02\x01@\x01\x03req\x01\
-\0\x03\x04\0\x0ehandle-request\x01\x04\x04\x01\x12land:http/incoming\x05\x03\x04\
-\x01\x18land:worker/http-handler\x04\0\x0b\x12\x01\0\x0chttp-handler\x03\0\0\0G\x09\
-producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.215.0\x10wit-bindgen-rus\
-t\x060.30.0";
+\0\x03\x04\0\x0ehandle-request\x01\x04\x04\x01\x12land:http/incoming\x05\x03\x01\
+B\x03\x01@\0\0\x7f\x04\0\x0ais-pending\x01\0\x04\0\x06select\x01\0\x04\x01\x14la\
+nd:asyncio/context\x05\x04\x04\x01\x18land:worker/http-handler\x04\0\x0b\x12\x01\
+\0\x0chttp-handler\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-compon\
+ent\x070.215.0\x10wit-bindgen-rust\x060.30.0";
         };
     };
 }

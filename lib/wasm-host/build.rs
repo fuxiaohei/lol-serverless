@@ -5,6 +5,7 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=wit/*.wit");
     println!("cargo:rerun-if-changed=wit/deps/http/*.wit");
+    println!("cargo:rerun-if-changed=wit/deps/asyncio/*.wit");
 
     build_wit_guest_code();
     copy_guest_code_to_sdk();
