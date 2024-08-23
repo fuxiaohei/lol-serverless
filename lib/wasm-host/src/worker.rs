@@ -133,20 +133,24 @@ impl Worker {
             .await?;
         debug!("async task is pending: {}", is_pending);
         if is_pending {
+            // let req_id = store.data().req_id();
+            // let span = debug_span!("[ASYNC]", req_id);
             tokio::task::spawn(async move {
                 let now = tokio::time::Instant::now();
                 loop {
-                    let res = exports
-                        .land_asyncio_context()
-                        .call_select(&mut store)
-                        .await
-                        .unwrap();
+                    let res = match exports.land_asyncio_context().call_select(&mut store).await {
+                        Ok(res) => res,
+                        Err(e) => {
+                            debug!("async task pending failed, error: {}", e);
+                            return;
+                        }
+                    };
                     debug!("async task is done, res: {:?}", res);
                     if !res {
                         break;
                     }
                 }
-                debug!("async task is done, cost:{:.2?}", now.elapsed());
+                debug!("async tasks all done, cost:{:.2?}", now.elapsed());
                 // println!("async task is done, cost:{:.2?}", now.elapsed());
             });
         }
@@ -173,7 +177,7 @@ mod worker_test {
             headers: vec![("X-Request-Id".to_string(), "123456".to_string())],
             body: None,
         };
-        let context = Context::new(None);
+        let context = Context::default();
         let resp = worker
             .handle_request(request, context)
             .await
@@ -203,7 +207,7 @@ mod worker_test {
             headers: vec![("X-Request-Id".to_string(), "123456".to_string())],
             body: None,
         };
-        let context = Context::new(None);
+        let context = Context::default();
         let resp = worker
             .handle_request(request, context)
             .await

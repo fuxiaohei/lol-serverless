@@ -1,34 +1,78 @@
 use super::http_service::land::asyncio::asyncio;
-use std::sync::{Arc, Mutex};
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
 
 type WaitUntilHandler = Box<dyn Fn() + Send + 'static>;
 
 struct Inner {
-    pub handlers: Vec<(u32, WaitUntilHandler)>,
+    pub handlers: HashMap<u32, WaitUntilHandler>,
 }
 
 impl Inner {
     pub fn new() -> Self {
-        Self { handlers: vec![] }
+        Self {
+            handlers: HashMap::new(),
+        }
     }
     pub fn wait_until(&mut self, f: WaitUntilHandler) {
         let seq_id = asyncio::new().unwrap();
-        self.handlers.push((seq_id, f));
+        self.handlers.insert(seq_id, f);
     }
-    pub fn execute(&mut self) {
-        let current = self.handlers.pop();
-        if let Some((seq_id, handler)) = current {
+
+    /// sleep add empty sleep task to asyncio task with seq_id
+    pub fn sleep(&mut self, ms: u32) -> u32 {
+        asyncio::sleep(ms).unwrap()
+    }
+
+    /// sleep_callback add callback function to asyncio task with seq_id
+    pub fn sleep_callback(&mut self, seq_id: u32, f: WaitUntilHandler) {
+        self.handlers.insert(seq_id, f);
+    }
+
+    /*
+    fn execute_runnable(&mut self) -> bool {
+        let (handle, is_wait) = asyncio::select();
+        if self.handlers.is_empty() {
+            return false;
+        }
+
+        while let Some(idx) = self
+            .handlers
+            .iter()
+            .position(|(handle, _)| asyncio::is_runnable(*handle))
+        {
+            let (seq_id, handler) = self.handlers.remove(idx).unwrap();
+            println!("asyncio->execute_runnable: {:?}", seq_id);
             handler();
             asyncio::finish(seq_id);
-        } else {
-            // if nothing pop, check is-pending to wait sleep timer tasks
-            if asyncio::is_pending() {
-                asyncio::wait();
-            }
+            return true;
+        }
+
+        return false;
+    }*/
+
+    pub fn execute(&mut self) {
+        let (handle, is_wait) = asyncio::select();
+        if !is_wait {
+            return;
+        }
+        // no handle to run, but is-wait=true, do wait
+        if handle.is_none() {
+            asyncio::ready();
+            // after ready, select runnable when next time
+            return;
+        }
+        let handle = handle.unwrap();
+        let handler = self.handlers.remove(&handle);
+        if let Some(handler) = handler {
+            // call callback function
+            handler();
         }
     }
     pub fn is_pending(&self) -> bool {
-        !self.handlers.is_empty() || asyncio::is_pending()
+        !self.handlers.is_empty()
     }
 }
 
@@ -114,7 +158,14 @@ impl ExecutionCtx {
     }
     /// `sleep` sleep for `ms` milliseconds in hostcall tokio spawn task
     pub fn sleep(&self, ms: u32) -> u32 {
-        asyncio::sleep(ms).unwrap()
+        self.inner.lock().unwrap().sleep(ms)
+    }
+    /// `sleep_callback` add callback function to asyncio task with seq_id
+    pub fn sleep_callback<F>(&self, id: u32, f: F)
+    where
+        F: Fn() + 'static + Send,
+    {
+        self.inner.lock().unwrap().sleep_callback(id, Box::new(f));
     }
 }
 

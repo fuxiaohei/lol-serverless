@@ -119,7 +119,7 @@ async fn wasm(req: Request<Body>, info: &WorkerInfo) -> Result<Response<Body>> {
     let method = req.method().clone();
     let env_key = format!("{}-{}", info.user_id, info.project_id);
     let envs = memenvs::get(&env_key).await;
-    let mut context = Context::new(envs);
+    let mut context = Context::new(envs, req_id.clone());
     // if method is GET or DELETE, set body to None
     let body_handle = if method == "GET" || method == "DELETE" {
         0

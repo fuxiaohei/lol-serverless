@@ -7,7 +7,10 @@ pub fn handle_request(req: Request, mut ctx: ExecutionCtx) -> Result<Response, E
     let url = req.uri().clone();
     let method = req.method().to_string().to_uppercase();
 
-    ctx.sleep(1500);
+    let seq_id = ctx.sleep(1500);
+    ctx.sleep_callback(seq_id, || {
+        println!("sleep 1.5s done!");
+    });
 
     ctx.wait_until(|| {
         println!("sleep 1s...");

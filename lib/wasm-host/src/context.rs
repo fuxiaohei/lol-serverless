@@ -43,6 +43,7 @@ pub struct Context {
     table: ResourceTable,
     host_ctx: HostContext,
     pub limiter: Limiter,
+    req_id: String,
 }
 
 impl WasiView for Context {
@@ -56,12 +57,12 @@ impl WasiView for Context {
 
 impl Default for Context {
     fn default() -> Self {
-        Self::new(None)
+        Self::new(None, String::new())
     }
 }
 
 impl Context {
-    pub fn new(envs: Option<HashMap<String, String>>) -> Self {
+    pub fn new(envs: Option<HashMap<String, String>>, req_id: String) -> Self {
         let table = ResourceTable::new();
         let mut wasi_ctx_builder = WasiCtxBuilder::new();
         wasi_ctx_builder.inherit_stdio();
@@ -76,6 +77,7 @@ impl Context {
             host_ctx: HostContext::new(),
             limiter: Limiter::default(),
             table,
+            req_id,
         }
     }
     /// get host_ctx
@@ -93,5 +95,9 @@ impl Context {
     /// elapsed returns the duration since the request started
     pub fn elapsed(&self) -> tokio::time::Duration {
         self.host_ctx.elapsed()
+    }
+    /// req_id returns the request id
+    pub fn req_id(&self) -> &str {
+        &self.req_id
     }
 }

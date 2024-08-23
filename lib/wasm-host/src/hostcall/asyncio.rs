@@ -11,15 +11,27 @@ use tracing::debug;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Status {
-    Pending,
+    Pending, // ready to run
     // Running,
     // Canceled,
-    Finished,
+    Finished, // run done
 }
 
 #[derive(Clone, Debug)]
 struct Task {
+    timing: Option<Status>,
     status: Status,
+}
+
+impl Task {
+    pub fn is_runnable(&self) -> bool {
+        if let Some(t) = &self.timing {
+            if *t == Status::Pending {
+                return false;
+            }
+        }
+        self.status == Status::Pending
+    }
 }
 
 #[derive(Debug)]
@@ -37,6 +49,69 @@ impl Inner {
             notify,
         }
     }
+
+    fn new_task(&mut self) -> Result<Handle, ()> {
+        let seq_id = self
+            .seq_id
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        let task = Task {
+            timing: None,
+            status: Status::Pending,
+        };
+        self.tasks.insert(seq_id, task);
+        // println!("asyncio->new_task: {}", seq_id);
+        debug!("asyncio->new_task: {}", seq_id);
+        Ok(seq_id)
+    }
+
+    async fn new_sleep(&mut self) -> Result<Handle, ()> {
+        let seq_id = self
+            .seq_id
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        let task = Task {
+            timing: Some(Status::Pending),
+            status: Status::Pending,
+        };
+        self.tasks.insert(seq_id, task);
+        Ok(seq_id)
+    }
+
+    async fn timeup(&mut self, handle: Handle) {
+        let task = self.tasks.get_mut(&handle);
+        if let Some(task) = task {
+            // println!("asyncio->timeup: {}", handle);
+            debug!("asyncio->timeup: {}", handle);
+            task.timing = Some(Status::Finished);
+            self.notify.notify_one();
+        }
+    }
+
+    /// select_one select one task to run
+    async fn select_one(&mut self) -> (Option<Handle>, bool) {
+        // all tasks are exeucted
+        if self.tasks.is_empty() {
+            // println!("asyncio->select_one: all tasks are exeucted");
+            debug!("asyncio->select_one: all tasks are exeucted");
+            return (None, false);
+        }
+        let mut runnable_seq_id = 0;
+        for (seq_id, task) in self.tasks.iter() {
+            if task.is_runnable() {
+                runnable_seq_id = *seq_id;
+                // println!("asyncio->select_one: runnable_seq_id: {}", runnable_seq_id);
+                debug!("asyncio->select_one: runnable_seq_id: {}", runnable_seq_id);
+                break;
+            }
+        }
+        // no runnable task, but some tasks are exists, need wait
+        if runnable_seq_id == 0 && !self.tasks.is_empty() {
+            // println!("asyncio->select_one: wait");
+            debug!("asyncio->select_one: wait");
+            return (None, true);
+        }
+        self.tasks.remove(&runnable_seq_id);
+        (Some(runnable_seq_id), true)
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -53,73 +128,35 @@ impl Context {
             notify,
         }
     }
-    pub async fn set_finish(&mut self, seq_id: u32) {
-        let mut inner = self.inner.lock().await;
-        let task = inner.tasks.get_mut(&seq_id);
-        if let Some(task) = task {
-            if task.status == Status::Pending {
-                // println!("asyncio->set_finish: {}", seq_id);
-                debug!("asyncio->set_finish: {}", seq_id);
-                task.status = Status::Finished;
-            }
-            // notify to wake up other function to check is_pending
-            inner.notify.notify_one();
-        }
-    }
-    /// wait one task done
-    /// it a task is done, it wakes up to check is_pending
-    pub async fn wait(&self) {
-        self.notify.notified().await
-    }
-    /// is_pending check if there is any task pending
-    pub async fn is_pending(&self) -> bool {
-        let inner = self.inner.lock().await;
-        return inner
-            .tasks
-            .values()
-            .any(|task| task.status == Status::Pending);
-    }
 }
 
 #[async_trait::async_trait]
 impl asyncio::Host for Context {
     async fn new(&mut self) -> Result<Handle, ()> {
-        let mut inner = self.inner.lock().await;
-        let seq_id = inner
-            .seq_id
-            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
-        let task = Task {
-            status: Status::Pending,
-        };
-        // println!("asyncio->new: {}", seq_id);
-        debug!("asyncio->new: {}", seq_id);
-        inner.tasks.insert(seq_id, task);
-        Ok(seq_id)
+        self.inner.lock().await.new_task()
     }
     async fn sleep(&mut self, ms: u32) -> Result<Handle, ()> {
-        let seq_id = self.new().await?;
-        // println!("asyncio->sleep: {}, {}ms", seq_id, ms);
-        debug!("asyncio->sleep: {}, {}ms", seq_id, ms);
-
-        let mut ctx2 = self.clone();
-        tokio::task::spawn(async move {
-            tokio::time::sleep(std::time::Duration::from_millis(ms as u64)).await;
-            ctx2.set_finish(seq_id).await;
-            // println!("asyncio->sleep->done: {}, {}ms", seq_id, ms);
-            debug!("asyncio->sleep->done: {}, {}ms", seq_id, ms);
+        let self2 = self.clone();
+        let seq_id = self
+            .inner
+            .lock()
+            .await
+            .new_sleep()
+            .await
+            .expect("new_sleep error");
+        // println!("asyncio->new_sleep: {}, {}ms", seq_id, ms);
+        debug!("asyncio->new_sleep: {}, {}ms", seq_id, ms);
+        tokio::spawn(async move {
+            tokio::time::sleep(tokio::time::Duration::from_millis(ms as u64)).await;
+            self2.inner.lock().await.timeup(seq_id).await;
         });
         Ok(seq_id)
     }
-    async fn finish(&mut self, handle: u32) {
-        // println!("asyncio->finish: {}", handle);
-        debug!("asyncio->finish: {}", handle);
-        self.set_finish(handle).await;
+    async fn select(&mut self) -> (Option<Handle>, bool) {
+        self.inner.lock().await.select_one().await
     }
-    async fn is_pending(&mut self) -> bool {
-        self.is_pending().await
-    }
-    async fn wait(&mut self) {
-        self.wait().await;
+    async fn ready(&mut self) {
+        self.notify.notified().await
     }
 }
 
@@ -131,14 +168,11 @@ impl asyncio::Host for HostContext {
     async fn sleep(&mut self, ms: u32) -> Result<Handle, ()> {
         self.asyncio_ctx.sleep(ms).await
     }
-    async fn finish(&mut self, handle: u32) {
-        self.asyncio_ctx.finish(handle).await;
+    async fn select(&mut self) -> (Option<Handle>, bool) {
+        self.asyncio_ctx.select().await
     }
-    async fn is_pending(&mut self) -> bool {
-        self.asyncio_ctx.is_pending().await
-    }
-    async fn wait(&mut self) {
-        self.asyncio_ctx.wait().await;
+    async fn ready(&mut self) {
+        self.asyncio_ctx.ready().await
     }
 }
 
@@ -149,21 +183,17 @@ mod asyncio_test {
     #[tokio::test]
     async fn test_sleep() {
         let mut ctx = Context::new();
-        let _ = ctx.sleep(1500).await;
-        let _ = ctx.sleep(1000).await;
-        let mut index = 0;
+        let _ = ctx.sleep(1500).await.unwrap();
+        let _ = ctx.sleep(1000).await.unwrap();
         loop {
-            ctx.wait().await;
-            index += 1;
-            let is_pending = ctx.is_pending().await;
-            println!("is_pending: {}, index:{}", is_pending, index);
-            if index == 2 {
-                assert!(!is_pending)
-            } else {
-                assert!(is_pending)
-            }
-            if !is_pending {
+            // println!("select");
+            let (handle, is_wait) = ctx.select().await;
+            // println!("handle: {:?}, is_wait: {:?}", handle, is_wait);
+            if !is_wait {
                 break;
+            }
+            if handle.is_none() {
+                ctx.ready().await;
             }
         }
     }
