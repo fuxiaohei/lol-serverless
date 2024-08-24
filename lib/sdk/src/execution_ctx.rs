@@ -53,24 +53,22 @@ impl Inner {
         return false;
     }*/
 
-    pub fn execute(&mut self) {
+    // get runnable asyncio task
+    pub fn execute(&mut self) -> Option<WaitUntilHandler> {
         let (handle, is_wait) = asyncio::select();
         if !is_wait {
-            return;
+            return None;
         }
         // no handle to run, but is-wait=true, do wait
         if handle.is_none() {
             asyncio::ready();
             // after ready, select runnable when next time
-            return;
+            return None;
         }
         let handle = handle.unwrap();
-        let handler = self.handlers.remove(&handle);
-        if let Some(handler) = handler {
-            // call callback function
-            handler();
-        }
+        self.handlers.remove(&handle)
     }
+
     pub fn is_pending(&self) -> bool {
         !self.handlers.is_empty()
     }
@@ -150,7 +148,10 @@ impl ExecutionCtx {
     /// after execute, it will be removed from asyncio task list
     /// then it should check is_pending to check if there is any asyncio task pending
     pub fn execute(&mut self) {
-        self.inner.lock().unwrap().execute();
+        let handler = self.inner.lock().unwrap().execute();
+        if let Some(handler) = handler {
+            handler();
+        }
     }
     /// `is_pending` check if there is any asyncio task pending
     pub fn is_pending(&self) -> bool {

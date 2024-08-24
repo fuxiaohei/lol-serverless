@@ -3,15 +3,15 @@ use land_sdk::{http_main, ExecutionCtx};
 
 #[http_main]
 pub fn handle_request(req: Request, mut ctx: ExecutionCtx) -> Result<Response, Error> {
-    // read uri and method from request
-    let url = req.uri().clone();
-    let method = req.method().to_string().to_uppercase();
 
     let seq_id = ctx.sleep(1500);
+    // this function is called in host with tokio::spawn
     ctx.sleep_callback(seq_id, || {
         println!("sleep 1.5s done!");
     });
 
+    // this function is called in guest.
+    // std::thread::sleep will block main thread(wasm runtime is single-thread currently)
     ctx.wait_until(|| {
         println!("sleep 1s...");
         std::thread::sleep(std::time::Duration::from_secs(1));
@@ -27,8 +27,6 @@ pub fn handle_request(req: Request, mut ctx: ExecutionCtx) -> Result<Response, E
     // build response
     Ok(http::Response::builder()
         .status(200)
-        .header("X-Request-Url", url.to_string())
-        .header("X-Request-Method", method)
         .body(Body::from("Hello Runtime.land!!"))
         .unwrap())
 }

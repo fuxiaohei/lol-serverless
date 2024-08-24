@@ -124,8 +124,9 @@ impl Worker {
             .land_http_incoming()
             .call_handle_request(&mut store, &req)
             .await?;
-        let body = store.data_mut().take_body(resp.body.unwrap()).unwrap();
-
+        let body_handle = resp.body.unwrap();
+        let body = store.data_mut().take_body(body_handle).unwrap();
+        debug!("response is ready, body:{}", body_handle);
         // check async task is pending
         let is_pending = exports
             .land_asyncio_context()
@@ -154,7 +155,6 @@ impl Worker {
                 // println!("async task is done, cost:{:.2?}", now.elapsed());
             });
         }
-
         Ok((resp, body))
     }
 }
