@@ -33,10 +33,10 @@ require tar
 
 download_wizer_binary() {
     log_print 0 "Downloading wizer"
-    local archive_url="https://github.com/bytecodealliance/wizer/releases/download/v6.0.0/wizer-v6.0.0-x86_64-linux.tar.xz"
+    local archive_url="https://github.com/bytecodealliance/wizer/releases/download/v7.0.4/wizer-v7.0.4-x86_64-linux.tar.xz"
     log_print 1 "Downloading wizer: $archive_url"
-    curl --progress-bar --show-error --location --fail $archive_url --output "wizer-v6.0.0.tar.xz"
-    tar -xvf "wizer-v6.0.0.tar.xz"
+    curl --progress-bar --show-error --location --fail $archive_url --output "wizer-v7.0.4.tar.xz"
+    tar -xvf "wizer-v7.0.4.tar.xz"
 }
 
 download_wizer_binary

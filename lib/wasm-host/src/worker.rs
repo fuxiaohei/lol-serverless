@@ -225,4 +225,39 @@ mod worker_test {
         // wait until
         tokio::time::sleep(tokio::time::Duration::from_secs(4)).await;
     }
+
+    #[tokio::test]
+    async fn run_js_hello() {
+        let test_js = "../../examples/js-hello/src/index.js";
+        let test_wasm_path = "../../target/wasm32-wasi/release/js_hello.wasm";
+
+        let test_wasm_dir = std::path::Path::new(test_wasm_path).parent().unwrap();
+        std::fs::create_dir_all(test_wasm_dir).expect("create dir failed");
+        land_wasm_gen::componentize_js(test_js, test_wasm_path, None)
+            .expect("componentize js failed");
+
+        let worker = Worker::new(test_wasm_path, false)
+            .await
+            .expect("load worker failed");
+        let request = Request {
+            method: "GET".to_string(),
+            uri: "/".to_string(),
+            headers: vec![("X-Request-Id".to_string(), "123456".to_string())],
+            body: None,
+        };
+        let context = Context::default();
+        let resp = worker
+            .handle_request(request, context)
+            .await
+            .expect("handle request failed");
+        assert_eq!(resp.0.status, 200);
+        for (h, v) in resp.0.headers {
+            if h == "X-Request-Method" {
+                assert_eq!(v, "GET");
+            }
+        }
+        let body_handle = resp.1;
+        let body = axum::body::to_bytes(body_handle, 9999).await.unwrap();
+        assert_eq!(body, b"Hello, Runtime.land JS SDK".to_vec());
+    }
 }
