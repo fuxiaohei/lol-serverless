@@ -27,7 +27,7 @@ jobs:
         run: |
           sudo apt install -y binaryen xz-utils
           bash ./scripts/land-server-deps.sh
-          export PATH=$(pwd)/wizer-v7.0.4-x86_64-linux:$PATH
+          cp -R wizer-v7.0.4-x86_64-linux lib/wizer
       - name: Toolchain info
         run: |
           cargo --version --verbose
