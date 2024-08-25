@@ -26,6 +26,7 @@ jobs:
       - name: Install wasm-opt
         run: |
           sudo apt install -y binaryen xz-utils
+          bash ./scripts/land-server-deps.sh
       - name: Toolchain info
         run: |
           cargo --version --verbose
