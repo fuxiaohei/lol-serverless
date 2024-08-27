@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use std::{
     collections::HashMap,
-    env::current_dir,
+    env::{current_dir, current_exe},
     io::Write,
     path::{Path, PathBuf},
     process::{Command, Stdio},
@@ -64,7 +64,7 @@ fn find_cmd(cmd: &str) -> Result<PathBuf> {
     let c = match which::which(cmd) {
         Ok(c) => c,
         Err(_) => {
-            // find xxx binary in current exe directroy ./xxx/xxx
+            // find xxx binary in current work directroy ./xxx/xxx
             let exe_path = current_dir()?;
             let file = exe_path.parent().unwrap().join(format!("{}/{}", cmd, cmd));
 
@@ -75,10 +75,24 @@ fn find_cmd(cmd: &str) -> Result<PathBuf> {
             if file.exists() {
                 return Ok(file);
             }
+
+            // find xxx binary in current executable file
+            let exe_path2 = current_exe()?;
+            let file2 = exe_path2.parent().unwrap().join(format!("{}/{}", cmd, cmd));
+
+            #[cfg(target_os = "windows")]
+            let file2 = file2.with_extension("exe");
+
+            debug!("Try find cmd: {:?}", file2);
+            if file2.exists() {
+                return Ok(file2);
+            }
+
             return Err(anyhow!(
-                "cannot find '{}' binary, it should in $PATH or {:?}",
+                "cannot find '{}' binary, it should in $PATH or {:?} or {:?}",
                 cmd,
-                file
+                file,
+                file2,
             ));
         }
     };
