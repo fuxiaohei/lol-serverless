@@ -16,6 +16,7 @@ lazy_static = { workspace = true }
 moka = { version = "0.12.8", features = ["sync"] }
 once_cell = { workspace = true }
 reqwest = { workspace = true }
+ring = "0.17.8"
 tokio = { workspace = true }
 tracing = { workspace = true }
 wasmtime = { workspace = true }

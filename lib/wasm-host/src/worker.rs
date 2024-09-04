@@ -30,11 +30,15 @@ impl Worker {
 
         // create linker
         let mut linker: Linker<crate::context::Context> = Linker::new(&engine);
+
         // init wasi context
         wasmtime_wasi::add_to_linker_async(&mut linker)?;
+
+        // init http_service
         crate::hostcall::HttpService::add_to_linker(&mut linker, crate::context::Context::host_ctx)
             .expect("add http_service failed");
 
+        // create instance-pre
         let instance_pre = linker.instantiate_pre(&component)?;
         Ok(Self {
             path: path.unwrap_or("binary".to_string()),
@@ -58,6 +62,7 @@ impl Worker {
         let mut linker: Linker<crate::context::Context> = Linker::new(&engine);
         // init wasi context
         wasmtime_wasi::add_to_linker_async(&mut linker)?;
+        // init http_service
         crate::hostcall::HttpService::add_to_linker(&mut linker, crate::context::Context::host_ctx)
             .expect("add http_service failed");
 

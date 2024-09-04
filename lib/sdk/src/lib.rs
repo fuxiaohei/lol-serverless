@@ -41,3 +41,7 @@ pub use execution_ctx::ExecutionCtx;
 
 /// Re-export macro from sdk-macro
 pub use land_sdk_macro::http_main;
+
+// #[cfg(feature = "crypto")]
+/// Re-export crypto module
+pub mod crypto;
