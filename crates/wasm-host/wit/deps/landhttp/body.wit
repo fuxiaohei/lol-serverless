@@ -1,0 +1,36 @@
+package land:http@0.1.5;
+
+interface body {
+    use types.{body-handle};
+
+    /// an error type returned from a body operation.
+    variant body-error{
+        /// The body is invalid
+        invalid-handle,
+        /// The body is only readable
+        read-only,
+        /// The body is reading closed
+        read-closed,
+        /// The body read failed
+        read-failed(string),
+        /// The body write failed
+        write-failed(string),
+        /// The body is writing closed
+        write-closed,
+    }
+
+    /// Read http body bytes with size and eof flag
+    read: func(handle: body-handle, size: u32) -> result<tuple<list<u8>, bool>, body-error>;
+
+    /// Readall http body bytes with size and eof flag
+    read-all: func(handle: body-handle) -> result<list<u8>, body-error>;
+
+    /// Write http body bytes, return written bytes length
+    write: func(handle: body-handle, data: list<u8>) -> result<u64, body-error>;
+
+    /// Accquire http body and get http body handle
+    new: func() -> result<body-handle,body-error>;
+
+    /// Accquire http body and get http body handle
+    new-stream: func() -> result<body-handle,body-error>;
+}

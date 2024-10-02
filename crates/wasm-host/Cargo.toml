@@ -1,0 +1,10 @@
+[package]
+name = "land-wasm-host"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+
+[build-dependencies]
+land-wasm-gen = { workspace = true }

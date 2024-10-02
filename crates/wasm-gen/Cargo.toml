@@ -1,0 +1,11 @@
+[package]
+name = "land-wasm-gen"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+wit-bindgen-core = "0.33.0"
+wit-bindgen-rust = "0.33.0"
+

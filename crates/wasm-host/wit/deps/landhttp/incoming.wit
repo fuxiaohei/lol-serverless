@@ -1,0 +1,7 @@
+package land:http@0.1.5;
+
+interface incoming {
+    use types.{request,response};
+    // handle request function
+    handle-request: func(req: request) -> response;
+}
