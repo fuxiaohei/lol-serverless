@@ -1,0 +1,8 @@
+package land:asyncio@0.1.5;
+
+interface context {
+    // is ctx pending
+    is-pending: func() -> bool;
+    // select one task to run, if no task is ready, return false
+    select: func() -> bool;
+}

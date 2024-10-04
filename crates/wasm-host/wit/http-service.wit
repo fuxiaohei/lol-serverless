@@ -3,4 +3,5 @@ package land:worker@0.1.5;
 world http-service {
     import land:http/body@0.1.5;
     import land:http/fetching@0.1.5;
+    import land:asyncio/asyncio@0.1.5;
 }

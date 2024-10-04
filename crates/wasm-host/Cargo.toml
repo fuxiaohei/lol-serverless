@@ -5,6 +5,18 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+axum = { workspace = true }
+bytes = "1.7.2"
+futures-util = "0.3.30"
+http-body = "1.0.1"
+http-body-util = "0.1.2"
+once_cell = { workspace = true }
+reqwest = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+wasmtime = { version = "25.0.1", features = ["component-model", "async"] }
 
 [build-dependencies]
 land-wasm-gen = { workspace = true }

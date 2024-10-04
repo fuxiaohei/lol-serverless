@@ -2,4 +2,5 @@ package land:worker@0.1.5;
 
 world http-handler {
     export land:http/incoming@0.1.5;
+    export land:asyncio/context@0.1.5;
 }
