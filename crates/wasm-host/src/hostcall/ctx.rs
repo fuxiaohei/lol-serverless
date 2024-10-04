@@ -17,6 +17,12 @@ pub struct HostCtx {
     asyncio_ctx: AsyncioContext,
 }
 
+impl Default for HostCtx {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl HostCtx {
     /// new host context
     pub fn new() -> Self {

@@ -33,6 +33,7 @@ anyhow = "1.0.89"
 axum = "0.7.7"
 async-trait = "0.1.83"
 clap = { version = "4.5.19", features = ["derive", "env"] }
+lazy_static = "1.5.0"
 once_cell = "1.20.1"
 reqwest = { version = "0.12.8", default-features = false, features = [
     "stream",
