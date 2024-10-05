@@ -85,6 +85,8 @@ impl BodyCtx {
                 // no more data, no rest buffer
                 // return empty vec and true to indicate end of stream
                 if current_buffer.is_empty() {
+                    // TODO: all data is read, set sender closed
+                    // self.set_sender_closed(handle);
                     return Ok((vec![], true));
                 }
                 // return rest buffer
@@ -157,5 +159,43 @@ impl BodyCtx {
         let body = Body::from(data);
         self.set_body(handle, body);
         Ok(data_len)
+    }
+}
+
+#[cfg(test)]
+mod body_ctx_test {
+    use crate::hostcall::body_ctx::BodyCtx;
+    use axum::body::Body;
+
+    #[tokio::test]
+    async fn test_body() {
+        let body = Body::from("abc".repeat(100));
+        let mut body_ctx = BodyCtx::new();
+        let handle = body_ctx.set_body(0, body);
+        assert!(handle == 1);
+
+        // this body is not writable
+        let res = body_ctx.write_body(handle, vec![1, 2, 3]).await;
+        assert!(res.is_err());
+
+        // read chunk data
+        let res = body_ctx.read_body(handle, 10).await;
+        assert!(res.is_ok());
+        let (chunk, done) = res.unwrap();
+        assert!(chunk.len() == 10);
+        assert!(!done);
+
+        // read all data
+        let res = body_ctx.read_body_all(handle).await;
+        assert!(res.is_ok());
+        let all = res.unwrap();
+        assert!(all.len() == 290); // "abc"*100 - 10 = 290
+
+        // all is read, read again, should read none
+        let res = body_ctx.read_body(handle, 10).await;
+        assert!(res.is_ok());
+        let (chunk, done) = res.unwrap();
+        assert!(chunk.is_empty());
+        assert!(done);
     }
 }

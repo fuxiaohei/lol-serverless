@@ -19,9 +19,9 @@ vergen-git2 = { version = "1.0.0", features = ["build", "cargo", "rustc"] }
 [workspace]
 members = [
     "crates/sdk",
+    "crates/sdk-macro",
     "crates/wasm-gen",
     "crates/wasm-host",
-    "crates/sdk-macro",
     "tests/hello-wasm"
 ]
 

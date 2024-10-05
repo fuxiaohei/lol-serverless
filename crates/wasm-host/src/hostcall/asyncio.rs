@@ -162,3 +162,26 @@ impl asyncio::Host for Context {
         self.notify.notified().await
     }
 }
+
+#[cfg(test)]
+mod asyncio_test {
+    use crate::hostcall::{asyncio::Context, host::land::asyncio::asyncio::Host};
+
+    #[tokio::test]
+    async fn test_sleep() {
+        let mut ctx = Context::new();
+        let _ = ctx.sleep(1500).await.unwrap();
+        let _ = ctx.sleep(1000).await.unwrap();
+        loop {
+            // println!("select");
+            let (handle, is_wait) = ctx.select().await;
+            // println!("handle: {:?}, is_wait: {:?}", handle, is_wait);
+            if !is_wait {
+                break;
+            }
+            if handle.is_none() {
+                ctx.ready().await;
+            }
+        }
+    }
+}

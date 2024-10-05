@@ -181,3 +181,38 @@ impl Worker {
         prepare_worker(key, is_aot).await
     }
 }
+
+#[cfg(test)]
+mod worker_test {
+    use crate::{hostcall::Request, Ctx, Worker};
+
+    #[tokio::test]
+    async fn run_hello_wasm() {
+        let test_wasm_file = "../../target/wasm32-wasip1/release/hello_wasm.wasm";
+        land_wasm_gen::componentize(&test_wasm_file).expect("componentize wasm failed");
+
+        let worker = Worker::new(test_wasm_file, false)
+            .await
+            .expect("load worker failed");
+        let request = Request {
+            method: "GET".to_string(),
+            uri: "/".to_string(),
+            headers: vec![("X-Request-Id".to_string(), "123456".to_string())],
+            body: None,
+        };
+        let context = Ctx::default();
+        let resp = worker
+            .handle_request(request, context)
+            .await
+            .expect("handle request failed");
+        assert_eq!(resp.0.status, 200);
+        for (h, v) in resp.0.headers {
+            if h == "X-Request-Method" {
+                assert_eq!(v, "GET");
+            }
+        }
+        let body_handle = resp.1;
+        let body = axum::body::to_bytes(body_handle, 9999).await.unwrap();
+        assert_eq!(body, b"Hello Runtime.land!!".to_vec());
+    }
+}
