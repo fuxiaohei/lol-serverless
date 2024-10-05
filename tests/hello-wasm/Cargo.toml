@@ -1,0 +1,13 @@
+[package]
+name = "hello-wasm"
+version = { workspace = true }
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+http = { workspace = true }
+land-sdk = { workspace = true }
+wit-bindgen = { workspace = true }
+
+[lib]
+crate-type = ["cdylib"]

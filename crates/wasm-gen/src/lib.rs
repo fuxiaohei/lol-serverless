@@ -17,6 +17,7 @@ impl GuestGeneratorType {
                     format: true,
                     generate_all: true,
                     pub_export_macro: true,
+                    // export_macro_name: Some("http_export".to_string()),
                     ..Default::default()
                 };
                 let builder = opts.build();
