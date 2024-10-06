@@ -5,11 +5,15 @@ use std::process;
 
 mod cmds;
 mod logging;
+mod memenvs;
 mod version;
+mod worker_server;
+mod crypt;
 
 #[derive(Parser, Debug)]
 enum SubCommands {
     Dashboard(cmds::dashboard::Dashboard),
+    Worker(cmds::worker::Worker),
 }
 
 #[derive(Parser, Debug)]
@@ -43,6 +47,7 @@ async fn main() -> Result<()> {
     // Run subcommand
     let res = match args.cmd {
         Some(SubCommands::Dashboard(n)) => n.run().await,
+        Some(SubCommands::Worker(w)) => w.run().await,
         None => {
             CliArgs::command().print_long_help().unwrap();
             process::exit(2);

@@ -6,12 +6,30 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+axum = { workspace = true }
+base64 = "0.22.1"
 clap = { workspace = true }
 color-print = "0.3.6"
+hostname = "0.4.0"
+land-wasm-host = { workspace = true }
+lazy_static = { workspace = true }
+metrics = { workspace = true }
+metrics-exporter-prometheus = { version = "0.15.3", default-features = false, features = [
+    "http-listener",
+] }
+once_cell = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+simple_crypt = "0.2.3"
 time = { workspace = true }
 tokio = { workspace = true }
+tower-http = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+url = "2.5.2"
+walkdir = "2.5.0"
+xid = "1.1.1"
 
 [build-dependencies]
 vergen-git2 = { version = "1.0.0", features = ["build", "cargo", "rustc"] }
@@ -22,7 +40,7 @@ members = [
     "crates/sdk-macro",
     "crates/wasm-gen",
     "crates/wasm-host",
-    "tests/hello-wasm"
+    "tests/hello-wasm",
 ]
 
 [workspace.package]
@@ -35,6 +53,7 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 land-sdk = { path = "crates/sdk" }
 land-sdk-macro = { path = "crates/sdk-macro" }
 land-wasm-gen = { path = "crates/wasm-gen" }
+land-wasm-host = { path = "crates/wasm-host" }
 
 # third-party dependencies
 anyhow = "1.0.89"
@@ -43,14 +62,24 @@ async-trait = "0.1.83"
 clap = { version = "4.5.19", features = ["derive", "env"] }
 http = "1.1.0"
 lazy_static = "1.5.0"
-once_cell = "1.20.1"
+metrics = "0.23.0"
+once_cell = "1.20.2"
+rand = "0.8.5"
 reqwest = { version = "0.12.8", default-features = false, features = [
     "stream",
     "rustls-tls",
     "json",
 ] }
+serde = { version = "1.0.209", features = ["derive"] }
+serde_json = "1.0.127"
 time = { version = "0.3.36", features = ["local-offset"] }
 tokio = { version = "1.40.0", features = ["full"] }
+tower-http = { version = "0.6.1", features = [
+    "timeout",
+    "cors",
+    "fs",
+    "trace",
+] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = [
     "time",
