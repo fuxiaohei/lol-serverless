@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> parts/head.hbs}}
+</head>
+
+<body>
+    <main id="root">
+        <div id="install-wrapper" class="mx-auto" style="width: 400px;">
+            <h1 class="text-center my-4">
+                <img src="/static/img/logo.png" width="64" height="64" class="border rounded me-2 p-2">
+                Runtime.land
+            </h1>
+            <p class="text-center">
+                Runtime.land is a free and open-source platform for hosting and sharing
+                web applications
+            </p>
+            <div class="card shadow-none">
+                <div class="card-body text-center">
+                    <div class="alert alert-success">
+                        <h4>Installation Successful</h4>
+                        <p>Your Runtime.land instance has been successfully installed. You can now login to the
+                            dashboard.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="window.location.href = '/sign-in'">Login to
+                        Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    {{> parts/js.hbs}}
+</body>
+
+</html>

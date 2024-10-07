@@ -15,7 +15,7 @@ fn build_long() -> String {
 }
 
 /// short version of the binary
-pub fn _short() -> String {
+pub fn short() -> String {
     build_short()
 }
 

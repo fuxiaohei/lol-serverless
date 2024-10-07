@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> parts/head.hbs}}
+</head>
+
+<body>
+    <main id="root">
+        <div id="sign-in-wrapper" class="mx-auto" style="width: 400px;">
+            <h1 class="text-center my-4">
+                <img src="/static/img/logo.png" width="64" height="64" class="border rounded me-2 p-2">
+                Runtime.land
+            </h1>
+            <p class="text-center">
+                Sign in to your account to access Runtime.land.
+            </p>
+            <div class="card shadow-none mt-4">
+                <div class="card-body">
+                    <form id="sign-in-form" hx-post="/sign-in" hx-swap="innerHTML settle:3s"
+                        hx-target="#sign-in-message">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email
+                                <small class="text-danger">*</small>
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" required
+                                minlength="3">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password
+                                <small class="text-danger">*</small>
+                            </label>
+                            <input type="password" class="form-control" id="password" name="password" required
+                                minlength="8">
+                            <p class="form-text text-end">
+                                <a class="link-reset" href="/forgot-password">Forgot password?</a>
+                            </p>
+                        </div>
+                        <div id="sign-in-message" class="my-3 htmx-message"></div>
+                        <button type="submit" class="btn btn-primary">
+                            Login in <i class="bi bi-box-arrow-in-right ms-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    {{> parts/js.hbs}}
+</body>
+
+</html>

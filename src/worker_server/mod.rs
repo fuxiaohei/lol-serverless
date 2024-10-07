@@ -1,3 +1,4 @@
+use crate::kernel::memenvs;
 use anyhow::Result;
 use axum::{routing::any, Router};
 use land_wasm_host::{hostcall, init_engines, Worker, FILE_DIR};
@@ -7,8 +8,8 @@ use std::{net::SocketAddr, time::Duration};
 use tower_http::timeout::TimeoutLayer;
 use tracing::{debug, info};
 
-mod middle;
 mod handle;
+mod middle;
 
 /// Opts for the worker server
 pub struct Opts {
@@ -82,7 +83,7 @@ async fn init_opts(opts: &Opts) -> Result<()> {
     init_engines()?;
 
     // load envs to memory from local files
-    crate::memenvs::init_envs(format!("{}/envs", opts.dir)).await?;
+    memenvs::init_envs(format!("{}/envs", opts.dir)).await?;
 
     if opts.enable_metrics {
         let addr: SocketAddr = opts

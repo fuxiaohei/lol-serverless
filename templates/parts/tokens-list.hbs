@@ -1,0 +1,104 @@
+<div class="card shadow-none">
+    <div class="card-body">
+        <ul class="list-group list-group-flush shadow-none">
+            {{#each tokens}}
+            <li class="list-group-item y-center justify-content-between m-1 p-1">
+                <div class="meta">
+                    <p class="mb-0 y-center">
+                        <i class='bi bi-key me-2'></i>
+                        <span class="fw-bold">{{name}}</span>
+                        <span class="text-body-secondary small ps-2">Recent Used at
+                            <span class="time-ago" data-x-timeago="{{latest_used_at}}"></span>, Expired
+                            <span class="time-ago" data-x-timeago="{{expired_at}}"></span>
+                        </span>
+                    </p>
+                    {{#if is_new}}
+                    <p class="mb-0 mt-2">
+                        <span class="badge text-bg-success">New</span>
+                        <span class="ms-2 value">{{value}}</span>
+                        <button class="btn btn-reset btn-copy" data-bs-toggle="tooltip" data-bs-trigger="manual"
+                            data-bs-title="Copied!!" data-bs-delay='{"hide": 1000}' data-clipboard-text="{{value}}"><i
+                                class='bi bi-clipboard'></i></button>
+                    </p>
+                    {{/if}}
+                </div>
+                <div class="ops">
+                    <button class="btn btn-reset btn-remove-token" data-bs-toggle="modal"
+                        data-bs-target="#remove-token-modal-{{id}}"><i class='bi bi-trash'></i></button>
+                    <div class="modal fade" id="remove-token-modal-{{id}}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form hx-post="{{token_url}}" hx-swap="innerHTML settle:3s"
+                                    hx-target="#remove-token-message-{{id}}">
+                                    <div class="modal-header border-bottom">
+                                        <h1 class="modal-title fs-5">Remove token</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <div class="form-text mb-3">Are you sure you want to remove
+                                                this
+                                                token?</div>
+                                            <p class="mb-0 flex-align-center">
+                                                <i class='bi bi-key me-2'></i>
+                                                <span class="fw-bold">{{name}}</span>
+                                                <span class="text-body-secondary small ps-2">Recent Used
+                                                    at
+                                                    <span class="time-ago" data-x-timeago="{{latest_used_at}}"></span>,
+                                                    Expired
+                                                    <span class="time-ago" data-x-timeago="{{expired_at}}"></span>
+                                                </span>
+                                            </p>
+                                            <input type="hidden" name="name" value="{{name}}" />
+                                            <input type="hidden" name="id" value="{{id}}" />
+                                            <input type="hidden" name="op" value="remove" />
+                                        </div>
+                                        <div id="remove-token-message-{{id}}" class="hx-message"></div>
+                                    </div>
+                                    <div class="modal-footer border-top">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-danger">Remove
+                                            token</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {{/each}}
+            <li class="list-group-item m-1 p-1">
+                <button class="btn btn-dark y-center" data-bs-toggle="modal" data-bs-target="#create-token-modal"><i
+                        class='bi bi-plus-lg me-2'></i>Create New
+                    Token</button>
+            </li>
+        </ul>
+        <div class="modal fade" id="create-token-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form hx-post="{{token_url}}" hx-swap="innerHTML settle:3s" hx-target="#create-token-message">
+                        <div class="modal-header border-bottom">
+                            <h1 class="modal-title fs-5">Create new token</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <div class="form-text mb-3">Type a name to identify this token.</div>
+                                <input type="text" class="form-control" name="name" required
+                                    placeholder="What is this token for?">
+                                <input type="hidden" name="op" value="create">
+                            </div>
+                            <div id="create-token-message" class="hx-message"></div>
+                        </div>
+                        <div class="modal-footer border-top">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark">Create new token</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,7 +2,7 @@ use super::{
     middle::{WorkerInfo, WorkerMetrics},
     ENDPOINT_NAME,
 };
-use crate::{memenvs, worker_server::ENABLE_WASMTIME_AOT};
+use crate::{kernel::memenvs, worker_server::ENABLE_WASMTIME_AOT};
 use anyhow::Result;
 use axum::{
     body::{Body, HttpBody},

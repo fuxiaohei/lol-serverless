@@ -4,12 +4,11 @@ use color_print::cprintln;
 use std::process;
 
 mod cmds;
-mod crypt;
 mod dashboard;
 mod logging;
-mod memenvs;
 mod version;
 mod worker_server;
+mod kernel;
 
 #[derive(Parser, Debug)]
 enum SubCommands {

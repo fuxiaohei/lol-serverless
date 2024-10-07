@@ -1,0 +1,12 @@
+[package]
+name = "land-utils"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+base64 = "0.22.1"
+rand = { workspace = true }
+serde_json = { workspace = true }
+simple_crypt = "0.2.3"

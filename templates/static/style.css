@@ -1,0 +1,103 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
+
+html,
+body {
+    font-family: Montserrat, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html[bs-data-theme="light"] {
+    background-color: #f0f0f0;
+}
+
+.htmx-err-message {
+    color: #b22b38;
+    background-color: #f8d7da;
+    border-color: #f68490;
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+}
+
+.htmx-err-show {
+    display: block !important;
+}
+
+.htmx-ok-message {
+    color: #008000;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+}
+
+.htmx-message {
+    display: none;
+}
+
+.htmx-message.htmx-settling {
+    display: block;
+}
+
+i.bi {
+    font-size: 18px;
+}
+
+.vertical-center,
+.y-center {
+    display: flex;
+    align-items: center;
+}
+
+.btn.btn-reset {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+a.link-reset {
+    text-decoration: none;
+    color: inherit !important;
+}
+
+a.link-hover:hover {
+    text-decoration: underline;
+}
+
+#root {
+    height: 100vh;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+}
+
+#sidebar {
+    width: 220px;
+    background-color: #f9fdfe;
+}
+
+#logo-brand,
+#top-nav {
+    height: 60px;
+}
+
+#account-nav .nav-link:hover,
+#resource-nav .nav-link:hover {
+    background-color: #e2e4e5;
+}
+
+#account-nav .nav-link.active,
+#project-nav .nav-link.active {
+    background-color: #d4e9f4 !important;
+    color: #3459e6;
+}
+
+#user-dropdown .dropdown-menu {
+    width: 210px;
+}
+
+.project-item:hover {
+    border-color: #ccc !important;
+    box-shadow: 1rem #aaa;
+}

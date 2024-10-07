@@ -7,12 +7,17 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 axum = { workspace = true }
+axum-extra = { version = "0.9.4", features = ["cookie"] }
+axum-htmx = "0.6.0"
 axum-template = { version = "2.4.0", features = ["handlebars"] }
-base64 = "0.22.1"
+chrono = { workspace = true }
 clap = { workspace = true }
 color-print = "0.3.6"
+gravatar = "0.2.0"
 handlebars = "6.1.0"
 hostname = "0.4.0"
+land-dao = { workspace = true }
+land-utils =  { workspace = true }
 land-wasm-host = { workspace = true }
 lazy_static = { workspace = true }
 metrics = { workspace = true }
@@ -28,7 +33,7 @@ rust-embed = { version = "8.5.0", features = [
 ] }
 serde = { workspace = true }
 serde_json = { workspace = true }
-simple_crypt = "0.2.3"
+strum = { workspace = true }
 time = { workspace = true }
 tokio = { workspace = true }
 tower-http = { workspace = true }
@@ -43,8 +48,9 @@ vergen-git2 = { version = "1.0.0", features = ["build", "cargo", "rustc"] }
 
 [workspace]
 members = [
+    "crates/dao",
     "crates/sdk",
-    "crates/sdk-macro",
+    "crates/sdk-macro", "crates/utils",
     "crates/wasm-gen",
     "crates/wasm-host",
     "tests/hello-wasm",
@@ -57,15 +63,18 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
 [workspace.dependencies]
 # internal dependencies
+land-dao = { path = "crates/dao" }
 land-sdk = { path = "crates/sdk" }
 land-sdk-macro = { path = "crates/sdk-macro" }
 land-wasm-gen = { path = "crates/wasm-gen" }
 land-wasm-host = { path = "crates/wasm-host" }
+land-utils = { path = "crates/utils" }
 
 # third-party dependencies
 anyhow = "1.0.89"
 axum = "0.7.7"
 async-trait = "0.1.83"
+chrono = "0.4.38"
 clap = { version = "4.5.19", features = ["derive", "env"] }
 http = "1.1.0"
 lazy_static = "1.5.0"
@@ -79,6 +88,7 @@ reqwest = { version = "0.12.8", default-features = false, features = [
 ] }
 serde = { version = "1.0.209", features = ["derive"] }
 serde_json = "1.0.127"
+strum = { version = "0.26.3", features = ["derive"] }
 time = { version = "0.3.36", features = ["local-offset"] }
 tokio = { version = "1.40.0", features = ["full"] }
 tower-http = { version = "0.6.1", features = [

@@ -8,6 +8,7 @@ use tracing::info;
 
 mod routers;
 mod templates;
+mod tplvars;
 
 /// handle_notfound returns a not found response.
 async fn handle_notfound() -> impl IntoResponse {
@@ -27,8 +28,21 @@ pub async fn start_server(
 
     let app = Router::new()
         .route("/", get(routers::index))
+        .route(
+            "/install",
+            get(routers::install::page).post(routers::install::handle),
+        )
+        .route("/installed", get(routers::install::installed))
+        .route(
+            "/sign-in",
+            get(routers::auth::sign_in).post(routers::auth::handle_sign_in),
+        )
+        .route("/sign-out", get(routers::auth::sign_out))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
+        .route_layer(axum::middleware::from_fn(routers::auth::middle))
+        .route_layer(axum::middleware::from_fn(routers::install::middle))
+        .route_layer(axum::middleware::from_fn(routers::logger))
         .with_state(Engine::from(hbs));
 
     info!("Listening on {}", addr);

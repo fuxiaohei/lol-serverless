@@ -6,9 +6,9 @@ use tracing_subscriber::{fmt::time::OffsetTime, EnvFilter};
 pub fn init(verbose: bool) {
     if std::env::var("RUST_LOG").ok().is_none() {
         if verbose {
-            std::env::set_var("RUST_LOG", "rtland=debug")
+            std::env::set_var("RUST_LOG", "rtland=debug,land=debug")
         } else {
-            std::env::set_var("RUST_LOG", "rtland=info")
+            std::env::set_var("RUST_LOG", "rtland=info,land=info")
         }
     }
 
