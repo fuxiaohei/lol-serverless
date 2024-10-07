@@ -7,9 +7,11 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 axum = { workspace = true }
+axum-template = { version = "2.4.0", features = ["handlebars"] }
 base64 = "0.22.1"
 clap = { workspace = true }
 color-print = "0.3.6"
+handlebars = "6.1.0"
 hostname = "0.4.0"
 land-wasm-host = { workspace = true }
 lazy_static = { workspace = true }
@@ -17,8 +19,13 @@ metrics = { workspace = true }
 metrics-exporter-prometheus = { version = "0.15.3", default-features = false, features = [
     "http-listener",
 ] }
+minify-html = "0.15.0"
 once_cell = { workspace = true }
 rand = { workspace = true }
+rust-embed = { version = "8.5.0", features = [
+    "include-exclude",
+    "compression",
+] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 simple_crypt = "0.2.3"

@@ -1,3 +1,4 @@
+use crate::dashboard;
 use anyhow::Result;
 use clap::Args;
 use tracing::debug;
@@ -17,6 +18,10 @@ impl Dashboard {
     pub async fn run(&self) -> Result<()> {
         debug!("start dashboard flag: {:?}", self);
 
+        // start http server
+        dashboard::start_server(self.address.parse()?, "./assets", self.tpldir.clone())
+            .await
+            .expect("Failed to start server");
         Ok(())
     }
 }
