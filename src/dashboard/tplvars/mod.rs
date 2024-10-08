@@ -8,6 +8,9 @@ pub use breadcrumb::{nav_active, BreadCrumb, BreadCrumbKey};
 mod user;
 pub use user::{AuthUser, Token};
 
+mod project;
+pub use project::Project;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Page {
     pub title: String,

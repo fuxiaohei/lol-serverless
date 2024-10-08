@@ -2,6 +2,7 @@ use crate::{models::settings, DB};
 use anyhow::{anyhow, Result};
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter, Set};
 use serde::{Deserialize, Serialize};
+use tracing::info;
 
 /// get settings item and deserialize it as json
 pub async fn get<T>(name: &str) -> Result<Option<T>>
@@ -74,4 +75,39 @@ pub async fn is_installed() -> Result<bool> {
 pub async fn set_installed() -> Result<()> {
     let now = chrono::Utc::now().timestamp().to_string();
     set_raw("installed", &now).await
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct DomainSettings {
+    pub domain_suffix: String,
+    pub http_protocol: String,
+}
+
+static DOMAIN_SETTINGS_KEY: &str = "domain-settings";
+
+/// get_domain_settings get domain settings
+pub async fn get_domain_settings() -> Result<DomainSettings> {
+    if let Some(settings) = get(DOMAIN_SETTINGS_KEY).await? {
+        return Ok(settings);
+    }
+    Err(anyhow!("domain settings not found"))
+}
+
+/// set_domain_settings set domain settings
+pub async fn set_domain_settings(domain_suffix: &str, http_protocol: &str) -> Result<()> {
+    let settings = DomainSettings {
+        domain_suffix: domain_suffix.to_string(),
+        http_protocol: http_protocol.to_string(),
+    };
+    set(DOMAIN_SETTINGS_KEY, settings).await
+}
+
+/// init_defaults init defaults
+pub async fn init_defaults() -> Result<()> {
+    let v = get_raw(DOMAIN_SETTINGS_KEY).await?;
+    if v.is_none() {
+        set_domain_settings("localhost", "http").await?;
+        info!("init domain settings")
+    }
+    Ok(())
 }

@@ -41,6 +41,7 @@ pub async fn start_server(
         .route("/sign-out", get(routers::auth::sign_out))
         .route("/projects", get(routers::projects::index))
         .route("/new", get(routers::projects::new))
+        .route("/new/:name", get(routers::projects::handle_new))
         .route(
             "/tokens",
             get(routers::index::tokens).post(routers::index::handle_token),

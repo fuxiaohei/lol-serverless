@@ -8,7 +8,10 @@ use tracing::{debug, info, instrument, warn};
 
 mod migration;
 
+pub mod deploys;
 pub mod models;
+pub mod playground;
+pub mod projects;
 pub mod settings;
 pub mod tokens;
 pub mod users;
@@ -126,6 +129,8 @@ pub async fn connect(args: &DBArgs) -> Result<()> {
 async fn init_defaults() -> Result<()> {
     if settings::is_installed().await? {
         info!("dashboard is already installed, initializing defaults settings");
+        // init default values in tables
+        settings::init_defaults().await?;
         return Ok(());
     }
     warn!("dashboard is not installed");

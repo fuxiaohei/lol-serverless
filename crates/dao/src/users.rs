@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{models::user_info, tokens, DB};
 use anyhow::{anyhow, Result};
 use land_utils::crypt::rand_string;
@@ -153,4 +155,19 @@ pub async fn verify_session(session: &str) -> Result<user_info::Model> {
         user.name, user.last_login_at
     );
     Ok(user)
+}
+
+/// list_by_ids returns a map of users by ids
+pub async fn list_by_ids(ids: Vec<i32>) -> Result<HashMap<i32, user_info::Model>> {
+    let db = DB.get().unwrap();
+    let users = user_info::Entity::find()
+        .filter(user_info::Column::Id.is_in(ids))
+        .all(db)
+        .await
+        .map_err(|e| anyhow!(e))?;
+    let mut map = HashMap::new();
+    for user in users {
+        map.insert(user.id, user);
+    }
+    Ok(map)
 }
