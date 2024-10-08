@@ -6,6 +6,7 @@ use tokio::{net::TcpListener, signal};
 use tower_http::services::ServeDir;
 use tracing::info;
 
+mod examples;
 mod routers;
 mod templates;
 mod tplvars;
@@ -27,7 +28,7 @@ pub async fn start_server(
     let static_assets_dir = format!("{}/static", tpl_dir.unwrap_or(assets_dir.to_string()));
 
     let app = Router::new()
-        .route("/", get(routers::index))
+        .route("/", get(routers::index::index))
         .route(
             "/install",
             get(routers::install::page).post(routers::install::handle),
@@ -38,6 +39,12 @@ pub async fn start_server(
             get(routers::auth::sign_in).post(routers::auth::handle_sign_in),
         )
         .route("/sign-out", get(routers::auth::sign_out))
+        .route("/projects", get(routers::projects::index))
+        .route("/new", get(routers::projects::new))
+        .route(
+            "/tokens",
+            get(routers::index::tokens).post(routers::index::handle_token),
+        )
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(axum::middleware::from_fn(routers::auth::middle))

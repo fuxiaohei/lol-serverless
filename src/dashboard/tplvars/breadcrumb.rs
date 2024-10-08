@@ -7,6 +7,7 @@ use std::collections::HashMap;
 pub enum BreadCrumbKey {
     Dashboard,
     Projects,
+    ProjectNew,
     Tokens,
     None,
 }
@@ -26,7 +27,7 @@ impl BreadCrumb {
                 title: "Dashboard".to_string(),
                 link: None,
             }],
-            BreadCrumbKey::Projects => vec![BreadCrumb {
+            BreadCrumbKey::Projects | BreadCrumbKey::ProjectNew => vec![BreadCrumb {
                 title: "Projects".to_string(),
                 link: None,
             }],

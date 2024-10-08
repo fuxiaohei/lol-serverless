@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> parts/head.hbs}}
+</head>
+
+<body>
+    <div id="root">
+        {{> parts/sidebar.hbs}}
+        <main id="main" class="w-100 overflow-y-auto">
+            {{> parts/topnav.hbs}}
+            <div id="main-container">
+                main-container
+            </div>
+            {{> parts/footer.hbs}}
+        </main>
+    </div>
+    {{> parts/js.hbs}}
+</body>
+
+</html>

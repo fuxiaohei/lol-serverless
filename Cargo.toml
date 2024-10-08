@@ -42,6 +42,7 @@ tracing-subscriber = { workspace = true }
 url = "2.5.2"
 walkdir = "2.5.0"
 xid = "1.1.1"
+toml = "0.8.19"
 
 [build-dependencies]
 vergen-git2 = { version = "1.0.0", features = ["build", "cargo", "rustc"] }

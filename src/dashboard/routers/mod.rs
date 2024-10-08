@@ -1,4 +1,3 @@
-use super::templates::Engine;
 use axum::{
     body::Body,
     extract::{ConnectInfo, OriginalUri, Request},
@@ -11,12 +10,9 @@ use std::{net::SocketAddr, str::FromStr};
 use tracing::{info, instrument, warn};
 
 pub mod auth;
+pub mod index;
 pub mod install;
-
-/// index shows the dashboard page
-pub async fn index(engine: Engine) -> Result<impl IntoResponse, ServerError> {
-    Ok(HtmlMinified("index.hbs", engine, &()))
-}
+pub mod projects;
 
 // ServerError makes our own error that wraps `anyhow::Error`.
 pub struct ServerError(pub StatusCode, pub anyhow::Error);

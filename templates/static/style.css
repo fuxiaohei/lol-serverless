@@ -63,6 +63,19 @@ a.link-hover:hover {
     text-decoration: underline;
 }
 
+html[data-bs-theme="dark"] {
+    --bs-border-color: #34393e !important;
+}
+
+html[data-bs-theme="dark"] .dropdown-menu,
+html[data-bs-theme="dark"] .dropdown-divider {
+    border-color: var(--bs-border-color) !important;
+}
+
+html[data-bs-theme="dark"] .btn-dark {
+    background-color: #34393e !important;
+}
+
 #root {
     height: 100vh;
     max-height: 100vh;
@@ -75,6 +88,10 @@ a.link-hover:hover {
 #sidebar {
     width: 220px;
     background-color: #f9fdfe;
+}
+
+html[data-bs-theme="dark"] #sidebar {
+    background-color: var(--bs-body-bg);
 }
 
 #logo-brand,
@@ -93,6 +110,25 @@ a.link-hover:hover {
     color: #3459e6;
 }
 
+html[data-bs-theme="dark"] #account-nav .nav-link,
+html[data-bs-theme="dark"] #resource-nav .nav-link,
+html[data-bs-theme="dark"] #project-nav .nav-link {
+    color: #878987;
+}
+
+html[data-bs-theme="dark"] #account-nav .nav-link:hover,
+html[data-bs-theme="dark"] #resource-nav .nav-link:hover,
+html[data-bs-theme="dark"] #project-nav .nav-link:hover {
+    background-color: #1a1a1a;
+    color: #c3c6c4;
+}
+
+html[data-bs-theme="dark"] #account-nav .nav-link.active,
+html[data-bs-theme="dark"] #project-nav .nav-link.active {
+    background-color: #1a1a1a !important;
+    color: #e0e3e1 !important;
+}
+
 #user-dropdown .dropdown-menu {
     width: 210px;
 }
@@ -100,4 +136,13 @@ a.link-hover:hover {
 .project-item:hover {
     border-color: #ccc !important;
     box-shadow: 1rem #aaa;
+}
+
+.project-item .lang-logo img {
+    width: 48px;
+    height: 48px;
+}
+
+html[data-bs-theme="dark"] .project-item:hover {
+    border-color: #636262 !important;
 }
