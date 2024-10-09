@@ -1,9 +1,9 @@
 use super::ServerError;
 use crate::dashboard::{
     examples,
-    routers::{redirect, HtmlMinified},
+    routers::{notfound_page, redirect, HtmlMinified},
     templates::Engine,
-    tplvars::{AuthUser, BreadCrumbKey, Empty, Page, Vars},
+    tplvars::{self, AuthUser, BreadCrumbKey, Empty, Page, Vars},
 };
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension};
 use land_dao::{deploys, projects};
@@ -91,4 +91,34 @@ pub async fn handle_new(
         "Create new project",
     );
     Ok(redirect(format!("/projects/{}", project.name).as_str()))
+}
+
+/// single is handler for projects single page, /projects/:name
+pub async fn single(
+    engine: Engine,
+    Extension(user): Extension<AuthUser>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Vars {
+        pub page: Page,
+        pub project_name: String,
+        pub project: tplvars::Project,
+    }
+    let project = projects::get_by_name(&name, Some(user.id)).await?;
+    if project.is_none() {
+        let msg = format!("Project {} not found", name);
+        return Ok(notfound_page(engine, &msg, user).into_response());
+    }
+    let project = tplvars::Project::new_with_source(&project.unwrap()).await?;
+    Ok(HtmlMinified(
+        "project-single.hbs",
+        engine,
+        Vars {
+            page: Page::new(&name, BreadCrumbKey::ProjectSingle, Some(user)),
+            project_name: name,
+            project,
+        },
+    )
+    .into_response())
 }

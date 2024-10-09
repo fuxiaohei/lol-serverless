@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> parts/head.hbs}}
+    <link title="light" rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/a11y-light.min.css" />
+    <link title="dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/a11y-dark.min.css"
+        disabled="disabled" />
+</head>
+
+<body>
+    <div id="root">
+        {{> parts/sidebar.hbs}}
+        <main id="main" class="w-100 overflow-y-auto">
+            {{> parts/topnav.hbs}}
+            <div id="project-single-container" class="overflow-y-auto">
+                {{> components/project-header.hbs}}
+                <div id="project-preview-code" class="d-flex px-3 pb-4">
+                    <div class="card container px-0 m-2 shadow-none">
+                        <div class="card-header y-center small text-body-tertiary p-2">
+                            <i class='bi bi-clock-history me-2'></i>Last Updated: <span class="time-ago ms-2"
+                                data-x-timeago="{{project.updated_at}}"></span>
+                        </div>
+                        <div class="card-body p-1">
+                            <pre class="mb-0"><code class="language-javascript">{{project.source}}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{> parts/footer.hbs}}
+        </main>
+    </div>
+    {{> parts/js.hbs}}
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js"></script>
+    <script>
+        hljs.highlightAll();
+        hljs.initLineNumbersOnLoad();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<div id="project-header" class="p-3 y-center justify-content-between">
+    <div class="y-center">
+        <div class="lang-logo">
+            <img src="/static/img/js-logo.svg" class="me-2" alt="">
+        </div>
+        <div>
+            <p class="mb-1 fw-medium fs-5">{{project.name}}</p>
+            <p class="mb-0 text-body-tertiary">{{project.description}}</p>
+        </div>
+    </div>
+    <div class="btns">
+        {{#if project.is_disabled}}
+        <button id="project-deploy-status-btn" class="btn status-{{project.status}} text-uppercase y-center"
+            data-bs-toggle="tooltip" data-bs-placement="top"
+            data-bs-title="Project is disabled, Please connact to the Administrator">
+            <i class='bi bi-exclamation-circle me-2'></i>{{project.status}}
+        </button>
+        {{else}}
+
+        {{#if project.is_deploy_success}}
+        <button class="btn btn-success">
+            <a href="{{project.prod_domain_url}}" class="y-center link-reset" target="_blank"><i
+                    class='bi bi-globe2 me-2'></i>View</a>
+        </button>
+        {{else}}
+        <button id="project-deploy-status-btn" class="btn status-{{project.deploy_status}} text-uppercase"
+            data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{project.deploy_message}}">
+            <span class="y-center">
+                <i class='bi bi-exclamation-circle me-2'></i>{{project.deploy_status}}
+            </span>
+        </button>
+        {{/if}}
+
+        {{#if project.is_editable}}
+        <button class="ms-3 btn btn-dark">
+            <a href="/projects/{{project.name}}/edit" class="y-center link-reset"><i
+                    class='bi bi-pencil-square me-2'></i>Edit</a>
+        </button>
+        {{/if}}
+
+        {{/if}}
+    </div>
+</div>

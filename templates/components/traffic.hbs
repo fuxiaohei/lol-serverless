@@ -1,0 +1,153 @@
+{{#if project}}
+{{#if project_admin_name}}
+<div id="traffic" x-data-pid="{{project.id}}" class="p-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <p class="mb-0 text-body-tertiary">Traffic analysis</p>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-secondary dropdown-toggle text-body-secondary custom-theme-btn"
+                data-bs-toggle="dropdown" id="traffic-period-btn" type="button">Last 24 Hours
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item traffic-period-select" x-data-v="1d" href="#">Last 24
+                        Hours</a></li>
+                <li><a class="dropdown-item traffic-period-select" x-data-v="7d" href="#">Last 7
+                        Days</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row g-3 py-2">
+        <div class="col-md-6">
+            <div class="border rounded p-3 mb-2">
+                <div class="spinner-border spinner-border-sm" id="requests-chart-loading">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div id="requests-total" class="d-none">
+                    <p class="text-uppercase mb-1">requests</p>
+                    <p class="mb-0 small text-body-secondary">
+                        <span class="success">success <span id="requests-total-success"></span></span>,
+                        <span class="error">error <span id="requests-total-error"></span></span>
+                    </p>
+                </div>
+                <div id="requests-chart"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded p-3 mb-2">
+                <div class="spinner-border spinner-border-sm" id="flows-chart-loading">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div id="flows-total" class="d-none">
+                    <p class="text-uppercase mb-1">Bandwidth</p>
+                    <p class="mb-0 small text-body-secondary">
+                        <span class="success">Out <span id="flows-total-out"></span></span>,
+                        <span class="error">In <span id="flows-total-in"></span></span>
+                    </p>
+                </div>
+                <div id="flows-chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{{else}}
+<div id="traffic" x-data-pid="{{project.id}}" class="px-4 pt-2 pb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <p class="mb-0 text-body-tertiary">Traffic analysis</p>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-secondary dropdown-toggle text-body-secondary custom-theme-btn"
+                data-bs-toggle="dropdown" id="traffic-period-btn" type="button">Last 24 Hours
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item traffic-period-select" x-data-v="1d" href="#">Last 24
+                        Hours</a></li>
+                <li><a class="dropdown-item traffic-period-select" x-data-v="7d" href="#">Last 7
+                        Days</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row g-4 p-4">
+        <div class="border rounded p-3 mb-2">
+            <div class="spinner-border spinner-border-sm" id="requests-chart-loading">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div id="requests-total" class="d-none">
+                <p class="text-uppercase mb-1">requests</p>
+                <p class="mb-0 small text-body-secondary">
+                    <span class="success">success <span id="requests-total-success"></span></span>,
+                    <span class="error">error <span id="requests-total-error"></span></span>
+                </p>
+            </div>
+            <div id="requests-chart"></div>
+        </div>
+        <div class="border rounded p-3 mb-2">
+            <div class="spinner-border spinner-border-sm" id="flows-chart-loading">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div id="flows-total" class="d-none">
+                <p class="text-uppercase mb-1">Bandwidth</p>
+                <p class="mb-0 small text-body-secondary">
+                    <span class="success">Out <span id="flows-total-out"></span></span>,
+                    <span class="error">In <span id="flows-total-in"></span></span>
+                </p>
+            </div>
+            <div id="flows-chart"></div>
+        </div>
+    </div>
+</div>
+{{/if}}
+{{else}}
+<div id="traffic" class="p-3 border-top">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <p class="mb-0 fw-medium fs-5">Global Traffic</p>
+            <p class="mb-0 text-body-tertiary small">Aggregate traffic data for your account.</p>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-secondary dropdown-toggle text-body-secondary custom-theme-btn"
+                data-bs-toggle="dropdown" id="traffic-period-btn" type="button">Last 24 Hours
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item traffic-period-select" x-data-v="1d" href="#">Last 24
+                        Hours</a></li>
+                <li><a class="dropdown-item traffic-period-select" x-data-v="7d" href="#">Last 7
+                        Days</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row g-4 py-3">
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <div class="spinner-border spinner-border-sm" id="requests-chart-loading">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div id="requests-total" class="d-none">
+                    <p class="text-uppercase mb-1">requests</p>
+                    <p class="mb-0 small text-body-secondary">
+                        <span class="success">success <span id="requests-total-success"></span></span>,
+                        <span class="error">error <span id="requests-total-error"></span></span>
+                    </p>
+                </div>
+                <div id="requests-chart"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <div class="spinner-border spinner-border-sm" id="flows-chart-loading">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div id="flows-total" class="d-none">
+                    <p class="text-uppercase mb-1">Bandwidth</p>
+                    <p class="mb-0 small text-body-secondary">
+                        <span class="success">Out <span id="flows-total-out"></span></span>,
+                        <span class="error">In <span id="flows-total-in"></span></span>
+                    </p>
+                </div>
+                <div id="flows-chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}

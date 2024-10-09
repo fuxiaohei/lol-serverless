@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     themeSwitcher.addEventListener('click', function () {
         let newTheme = getStoredTheme() === 'light' ? 'dark' : 'light';
-        // <i class='bx bx-sun'></i> // bxs-moon
+        // <i class='bi bi-brightness-high'></i> // bi-moon-stars-fill
         setTheme(newTheme);
         setStoredTheme(newTheme);
 

@@ -1,3 +1,5 @@
+use super::{templates::Engine, tplvars::AuthUser};
+use crate::dashboard::tplvars::{BreadCrumbKey, Page};
 use axum::{
     body::Body,
     extract::{ConnectInfo, OriginalUri, Request},
@@ -96,6 +98,27 @@ pub fn redirect(url: &str) -> impl IntoResponse {
 /// error_html returns a html response with error message
 pub fn error_html(msg: &str) -> impl IntoResponse {
     Html(format!("<div class=\"htmx-err-message\">{}</div>", msg))
+}
+
+/// notfound_page returns a html response with not found page
+pub fn notfound_page(engine: Engine, msg: &str, user: AuthUser) -> impl IntoResponse {
+    #[derive(Debug, serde::Serialize)]
+    struct Vars {
+        pub page: Page,
+        pub msg: String,
+    }
+    (
+        StatusCode::NOT_FOUND,
+        HtmlMinified(
+            "not-found.hbs",
+            engine,
+            Vars {
+                page: Page::new("Page Not Found", BreadCrumbKey::NotFound, Some(user)),
+                msg: msg.to_string(),
+            },
+        ),
+    )
+        .into_response()
 }
 
 #[instrument("[HTTP]", skip_all)]

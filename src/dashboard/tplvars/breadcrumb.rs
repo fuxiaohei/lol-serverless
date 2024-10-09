@@ -8,7 +8,9 @@ pub enum BreadCrumbKey {
     Dashboard,
     Projects,
     ProjectNew,
+    ProjectSingle,
     Tokens,
+    NotFound,
     None,
 }
 
@@ -35,7 +37,11 @@ impl BreadCrumb {
                 title: "Tokens".to_string(),
                 link: None,
             }],
-            BreadCrumbKey::None => vec![],
+            BreadCrumbKey::ProjectSingle => vec![BreadCrumb {
+                title: "Projects".to_string(),
+                link: Some("/projects".to_string()),
+            }],
+            BreadCrumbKey::None | BreadCrumbKey::NotFound => vec![],
         }
     }
 }

@@ -4,6 +4,19 @@
             class="inline-block border rounded-1 p-1 bg-white">
         <a class="link-reset ps-2 fs-5 fw-bold" href="/">Runtime.land</a>
     </div>
+    {{#if project_name}}
+    <div id="project-nav" class="flex-column mb-auto px-3 py-2">
+        <p class="text-uppercase text-body-tertiary small mb-2">project</p>
+        <nav class="nav flex-column">
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.projectsingle}}"
+                href="/projects/{{project_name}}"><i class='bi bi-speedometer me-2'></i>Overview</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.projecttraffic}}"
+                href="/projects/{{project_name}}/traffic"><i class='bi bi-graph-up me-2'></i>Traffic</a>
+            <a class="vertical-center nav-link rounded {{page.nav_active.projectsettings}}"
+                href="/projects/{{project_name}}/settings"><i class='bi bi-gear me-2'></i>Settings</a>
+        </nav>
+    </div>
+    {{else}}
     <div id="account-nav" class="flex-column mb-auto px-3 py-2">
         <p class="text-uppercase text-body-tertiary small mb-2">account</p>
         <nav class="nav flex-column">
@@ -15,6 +28,7 @@
                     class='bi bi-key-fill me-2'></i>Tokens</a>
         </nav>
     </div>
+    {{/if}}
     <div id="resource-nav" class="p-3">
         <p class="text-uppercase text-body-tertiary small mb-2">resources</p>
         <nav class="nav flex-column">
