@@ -6,6 +6,7 @@ pub mod deploy_state;
 pub mod deployment;
 pub mod playground;
 pub mod project;
+pub mod project_envs;
 pub mod settings;
 pub mod user_info;
 pub mod user_token;

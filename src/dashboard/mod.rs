@@ -1,5 +1,10 @@
 use anyhow::Result;
-use axum::{http::StatusCode, response::IntoResponse, routing::get, Router};
+use axum::{
+    http::StatusCode,
+    response::IntoResponse,
+    routing::{get, post},
+    Router,
+};
 use axum_template::engine::Engine;
 use std::net::SocketAddr;
 use tokio::{net::TcpListener, signal};
@@ -41,6 +46,11 @@ pub async fn start_server(
         .route("/sign-out", get(routers::auth::sign_out))
         .route("/projects", get(routers::projects::index))
         .route("/projects/:name", get(routers::projects::single))
+        .route(
+            "/projects/:name/settings",
+            get(routers::projects::settings).post(routers::projects::handle_settings),
+        )
+        .route("/projects/:name/envs", post(routers::projects::handle_envs))
         .route("/new", get(routers::projects::new))
         .route("/new/:name", get(routers::projects::handle_new))
         .route(

@@ -9,6 +9,7 @@ use tracing::{debug, info, instrument, warn};
 mod migration;
 
 pub mod deploys;
+pub mod envs;
 pub mod models;
 pub mod playground;
 pub mod projects;

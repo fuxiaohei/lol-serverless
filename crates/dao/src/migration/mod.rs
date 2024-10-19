@@ -7,6 +7,7 @@ mod m04_project_table;
 mod m05_playground_table;
 mod m06_deployment_table;
 mod m07_deploystate_table;
+mod m08_projectenvs_table;
 
 pub struct Migrator;
 
@@ -21,6 +22,7 @@ impl MigratorTrait for Migrator {
             Box::new(m05_playground_table::Migration),
             Box::new(m06_deployment_table::Migration),
             Box::new(m07_deploystate_table::Migration),
+            Box::new(m08_projectenvs_table::Migration),
         ]
     }
 }

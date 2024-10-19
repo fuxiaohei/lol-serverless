@@ -95,9 +95,14 @@ pub fn redirect(url: &str) -> impl IntoResponse {
         .unwrap()
 }
 
-/// error_html returns a html response with error message
+/// error_html returns a htmlx response with error message
 pub fn error_html(msg: &str) -> impl IntoResponse {
     Html(format!("<div class=\"htmx-err-message\">{}</div>", msg))
+}
+
+/// ok_html returns a htmlx response with ok message
+pub fn ok_html(msg: &str) -> impl IntoResponse {
+    Html(format!("<div class=\"htmx-ok-message\">{}</div>", msg))
 }
 
 /// notfound_page returns a html response with not found page

@@ -1,14 +1,14 @@
 use super::ServerError;
 use crate::dashboard::{
     examples,
-    routers::{notfound_page, redirect, HtmlMinified},
+    routers::{error_html, hx_redirect, notfound_page, ok_html, redirect, HtmlMinified},
     templates::Engine,
     tplvars::{self, AuthUser, BreadCrumbKey, Empty, Page, Vars},
 };
-use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension};
-use land_dao::{deploys, projects};
-use serde::Serialize;
-use tracing::info;
+use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension, Form, Json};
+use land_dao::{deploys, projects, settings};
+use serde::{Deserialize, Serialize};
+use tracing::{debug, info, warn};
 
 /// index shows the project dashboard page
 pub async fn index(
@@ -121,4 +121,106 @@ pub async fn single(
         },
     )
     .into_response())
+}
+
+/// settings is handler for projects settings page, /projects/:name/settings
+pub async fn settings(
+    engine: Engine,
+    Extension(user): Extension<AuthUser>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Vars {
+        pub page: Page,
+        pub project_name: String,
+        pub project: tplvars::Project,
+        pub domain: String,
+        pub env_keys: Vec<String>,
+    }
+    let project = projects::get_by_name(&name, Some(user.id)).await?;
+    if project.is_none() {
+        let msg = format!("Project {} not found", name);
+        return Ok(notfound_page(engine, &msg, user).into_response());
+    }
+    let domain_settings = settings::get_domain_settings().await?;
+    let project = tplvars::Project::new_with_source(&project.unwrap()).await?;
+    let env = land_dao::envs::get(project.id).await?;
+    let env_keys = if let Some(env) = env {
+        land_dao::envs::get_keys(env).await?
+    } else {
+        vec![]
+    };
+    Ok(HtmlMinified(
+        "project-settings.hbs",
+        engine,
+        Vars {
+            page: Page::new(&name, BreadCrumbKey::ProjectSettings, Some(user)),
+            project_name: name,
+            project,
+            domain: domain_settings.domain_suffix,
+            env_keys,
+        },
+    )
+    .into_response())
+}
+
+/// SettingsForm is the form for updating project settings
+#[derive(Deserialize, Debug)]
+pub struct SettingsForm {
+    pub name: String,
+    pub description: String,
+}
+
+/// handle_settings is handler for projects settings page, /projects/:name/settings
+pub async fn handle_settings(
+    Extension(user): Extension<AuthUser>,
+    Path(name): Path<String>,
+    Form(f): Form<SettingsForm>,
+) -> Result<impl IntoResponse, ServerError> {
+    let project = projects::get_by_name(&name, Some(user.id)).await?;
+    if project.is_none() {
+        return Ok(error_html("Project not found").into_response());
+    }
+    if name != f.name && !projects::is_unique_name(&f.name).await? {
+        warn!(
+            owner_id = user.id,
+            project_name = f.name,
+            "Project name already exists",
+        );
+        return Ok(error_html("Project name already exists").into_response());
+    }
+    let project = project.unwrap();
+    projects::update_names(project.id, &f.name, &f.description).await?;
+    info!(
+        owner_id = user.id,
+        project_old_name = name,
+        project_new_name = f.name,
+        "Update project names",
+    );
+    let resp = hx_redirect(format!("/projects/{}/settings", f.name).as_str())?;
+    Ok(resp.into_response())
+}
+
+/// handle_envs is route of user envs settings page, /projects/{name}/envs
+pub async fn handle_envs(
+    Extension(user): Extension<AuthUser>,
+    Path(name): Path<String>,
+    Json(j): Json<land_dao::envs::EnvsQuery>,
+) -> Result<impl IntoResponse, ServerError> {
+    let project = projects::get_by_name(&name, Some(user.id)).await?;
+    if project.is_none() {
+        return Ok(error_html("Project not found").into_response());
+    }
+    let project = project.unwrap();
+    let env = land_dao::envs::get(project.id).await?;
+    if let Some(env) = env {
+        land_dao::envs::update(env, j).await?;
+        debug!(owner_id = user.id, project_name = name, "Update envs");
+    } else {
+        let _ = land_dao::envs::create(user.id, project.id, j).await?;
+        debug!(owner_id = user.id, project_name = name, "Create envs");
+    }
+    let dp = projects::create_deploy(&project, deploys::DeployType::Envs).await?;
+    info!(project_name = name, dp_id = dp.id, "Update envs");
+    Ok(ok_html("Envs updated").into_response())
 }

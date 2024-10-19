@@ -1,3 +1,22 @@
+// htmx add post json via form
+(() => {
+    htmx.defineExtension('submitjson', {
+        onEvent: function (name, evt) {
+            if (name === "htmx:configRequest") {
+                evt.detail.headers['Content-Type'] = "application/json"
+            }
+        },
+        encodeParameters: function (xhr, parameters, elt) {
+            xhr.overrideMimeType('text/json');
+            let values = {};
+            parameters.entries().forEach(function (entry) {
+                if (!values[entry[0]]) values[entry[0]] = [];
+                values[entry[0]].push(entry[1]);
+            })
+            return (JSON.stringify(values))
+        }
+    });
+})();
 
 document.addEventListener("DOMContentLoaded", function () {
 

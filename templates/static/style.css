@@ -156,7 +156,8 @@ html[data-bs-theme="dark"] #project-nav .nav-link.active {
     box-shadow: 1rem #aaa;
 }
 
-.project-item .lang-logo img {
+.project-item .lang-logo img,
+#project-header .lang-logo img {
     width: 48px;
     height: 48px;
 }
