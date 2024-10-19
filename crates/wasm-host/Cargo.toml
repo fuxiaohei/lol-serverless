@@ -19,8 +19,8 @@ once_cell = { workspace = true }
 reqwest = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
-wasmtime = { version = "25.0.1", features = ["component-model", "async"] }
-wasmtime-wasi = "25.0.1"
+wasmtime = { version = "25.0.2", features = ["component-model", "async"] }
+wasmtime-wasi = "25.0.2"
 
 [dev-dependencies]
 land-wasm-gen = { workspace = true }

@@ -1098,7 +1098,7 @@ mod _rt {
     extern crate alloc as alloc_crate;
 }
 #[cfg(target_arch = "wasm32")]
-#[link_section = "component-type:wit-bindgen:0.33.0:land:worker@0.1.5:http-service-with-all-of-its-exports-removed:encoded world"]
+#[link_section = "component-type:wit-bindgen:0.34.0:land:worker@0.1.5:http-service-with-all-of-its-exports-removed:encoded world"]
 #[doc(hidden)]
 pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1376] = *b"\
 \0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xbd\x09\x01A\x02\x01\
@@ -1131,8 +1131,8 @@ land:asyncio/types@0.1.5\x05\x08\x02\x03\0\x03\x06handle\x01B\x0d\x02\x03\x02\x0
 \x04\0\x06select\x01\x07\x01@\0\x01\0\x04\0\x05ready\x01\x08\x03\0\x1aland:async\
 io/asyncio@0.1.5\x05\x0a\x04\0>land:worker/http-service-with-all-of-its-exports-\
 removed@0.1.5\x04\0\x0b2\x01\0,http-service-with-all-of-its-exports-removed\x03\0\
-\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.218.0\x10wit-bi\
-ndgen-rust\x060.33.0";
+\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.219.1\x10wit-bi\
+ndgen-rust\x060.34.0";
 #[inline(never)]
 #[doc(hidden)]
 pub fn __link_custom_section_describing_imports() {
