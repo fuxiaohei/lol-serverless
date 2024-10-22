@@ -3,7 +3,7 @@ use crate::dashboard::{
     examples,
     routers::{error_html, hx_redirect, notfound_page, ok_html, redirect, HtmlMinified},
     templates::Engine,
-    tplvars::{self, AuthUser, BreadCrumbKey, Empty, Page, Vars},
+    tplvars::{self, AuthUser, BreadCrumbKey, Page},
 };
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension, Form, Json};
 use land_dao::{deploys, projects, settings};
@@ -15,13 +15,24 @@ pub async fn index(
     engine: Engine,
     Extension(user): Extension<AuthUser>,
 ) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Vars {
+        pub page: tplvars::Page,
+        pub projects: Vec<tplvars::Project>,
+    }
+    let (projects_data, _) = land_dao::projects::list(Some(user.id), None, 1, 50).await?;
+    debug!(
+        owner_id = user.id,
+        "List projects, count: {}",
+        projects_data.len()
+    );
     Ok(HtmlMinified(
-        "projects.hbs",
+        "project-list.hbs",
         engine,
-        Vars::new(
-            Page::new("Projects", BreadCrumbKey::Projects, Some(user)),
-            Empty::default(),
-        ),
+        Vars {
+            page: Page::new("Projects", BreadCrumbKey::Projects, Some(user)),
+            projects: tplvars::Project::new_from_models(projects_data, false).await?,
+        },
     ))
 }
 

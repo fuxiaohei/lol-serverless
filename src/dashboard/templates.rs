@@ -1,5 +1,5 @@
 use anyhow::Result;
-use handlebars::Handlebars;
+use handlebars::{handlebars_helper, Handlebars};
 use rust_embed::RustEmbed;
 use std::path::PathBuf;
 use tracing::instrument;
@@ -45,11 +45,13 @@ fn extract(dir: &str) -> Result<()> {
     Ok(())
 }
 
+handlebars_helper!(is_active: |x: str, y: str, z:str| if x == y { z } else { "" });
+
 #[instrument("[TPL]")]
 fn init_handlebars(dir: &str) -> Result<Handlebars<'static>> {
     let mut hbs = Handlebars::new();
     hbs.set_dev_mode(true);
-    // hbs.register_helper("is_active", Box::new(is_active));
+    hbs.register_helper("is_active", Box::new(is_active));
 
     // register templates
     for entry in walkdir::WalkDir::new(dir) {

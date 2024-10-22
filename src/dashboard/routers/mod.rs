@@ -11,6 +11,7 @@ use axum_htmx::HxRedirect;
 use std::{net::SocketAddr, str::FromStr};
 use tracing::{info, instrument, warn};
 
+pub mod admin;
 pub mod auth;
 pub mod index;
 pub mod install;

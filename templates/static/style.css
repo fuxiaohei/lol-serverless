@@ -165,3 +165,29 @@ html[data-bs-theme="dark"] #project-nav .nav-link.active {
 html[data-bs-theme="dark"] .project-item:hover {
     border-color: #636262 !important;
 }
+
+#projects-table .lang-logo img {
+    width: 32px;
+    height: 32px;
+}
+
+#projects-table .badge.status-waiting,
+#projects-table .badge.status-waitdeploy {
+    background-color: #DDD;
+    color: #333;
+}
+
+#projects-table .badge.status-success {
+    background-color: #008000;
+    color: #e2e4e5;
+}
+
+#projects-table .badge.status-failed,
+#projects-table .badge.status-disabled {
+    background-color: #b22b38;
+    color: #e2e4e5;
+}
+
+#projects-table tbody tr:last-child td {
+    border-bottom: none;
+}

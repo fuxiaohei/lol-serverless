@@ -1,0 +1,30 @@
+<div id="admin-domains-container" class="overflow-y-auto">
+    <div>
+        <p class="mb-1 fw-medium fs-5">Domains</p>
+        <p class="mb-0 text-body-tertiary">Manage domains for all projects.</p>
+    </div>
+    <div>
+        <form hx-post="/admin/domains" hx-swap="innerHTML settle:3s" hx-target="#settings-domain-message">
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text">example-domain.</span>
+                        <input type="text" class="form-control" name="domain" value="{{domain_settings.domain_suffix}}">
+                    </div>
+                    <div class="form-text ms-1 mb-3">set the domain suffix for all projects</div>
+                    <div class="form-check form-switch">
+                        <input name="protocol" class="form-check-input" type="checkbox" role="switch"
+                            id="protocol-switch" value="https" {{is_active
+                            domain_settings.http_protocol "https" "checked" }}>
+                        <label class="form-check-label" for="protocol-switch">use HTTPS</label>
+                        <p class="form-text">set the protocol for all projects</p>
+                    </div>
+                    <div class="text-start">
+                        <p id="settings-domain-message" class="htmx-message"></p>
+                        <button class="btn btn-dark">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -39,6 +39,11 @@
                 <li><a class="dropdown-item vertical-center" href="/settings"><i
                             class='bi bi-gear me-2'></i>Settings</a>
                 </li>
+                {{#if page.user.is_admin}}
+                <li><a class="dropdown-item vertical-center" href="/admin"><i
+                            class='bi bi-person-lines-fill me-2'></i>Administration</a>
+                </li>
+                {{/if}}
                 <li><a class="dropdown-item vertical-center" href="/sign-out"><i
                             class='bi bi-box-arrow-right me-2'></i>Sign
                         Out</a></li>
