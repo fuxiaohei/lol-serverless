@@ -6,8 +6,11 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+hmac = "0.12.1"
 http = { workspace = true }
 land-sdk-macro = { workspace = true }
 lazy_static = { workspace = true }
 matchit = "0.8.4"
+sha1 = "0.10.6"
+sha2 = "0.10.8"
 wit-bindgen = { workspace = true }

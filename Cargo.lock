@@ -2260,10 +2260,13 @@ name = "land-sdk"
 version = "0.1.5"
 dependencies = [
  "anyhow",
+ "hmac",
  "http",
  "land-sdk-macro",
  "lazy_static",
  "matchit 0.8.4",
+ "sha1",
+ "sha2",
  "wit-bindgen",
 ]
 
