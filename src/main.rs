@@ -7,8 +7,6 @@ mod cmds;
 mod dashboard;
 mod logging;
 mod version;
-mod worker_server;
-mod kernel;
 
 #[derive(Parser, Debug)]
 enum SubCommands {

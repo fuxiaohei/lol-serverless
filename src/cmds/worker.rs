@@ -49,7 +49,7 @@ impl Worker {
         debug!("start worker server flag: {:?}", self);
 
         // Start server
-        let opts = crate::worker_server::Opts {
+        let opts = land_worker_server::Opts {
             addr: self.address.parse().unwrap(),
             dir: self.dir.clone(),
             default_wasm: None,
@@ -58,7 +58,7 @@ impl Worker {
             enable_metrics: true,
             metrics_addr: Some(self.metrics_addr.clone()),
         };
-        crate::worker_server::start(opts).await?;
+        land_worker_server::start(opts).await?;
         Ok(())
     }
 }

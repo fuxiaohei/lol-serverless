@@ -1,0 +1,16 @@
+[package]
+name = "land-kernel"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+land-utils = { workspace = true }
+lazy_static = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+toml = "0.8.19"
+tracing = { workspace = true }
+walkdir = { workspace = true }

@@ -2256,6 +2256,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "land-kernel"
+version = "0.1.5"
+dependencies = [
+ "anyhow",
+ "land-utils",
+ "lazy_static",
+ "serde",
+ "serde_json",
+ "tokio",
+ "toml",
+ "tracing",
+ "walkdir",
+]
+
+[[package]]
 name = "land-sdk"
 version = "0.1.5"
 dependencies = [
@@ -2325,6 +2340,25 @@ dependencies = [
  "tracing",
  "wasmtime",
  "wasmtime-wasi",
+]
+
+[[package]]
+name = "land-worker-server"
+version = "0.1.5"
+dependencies = [
+ "anyhow",
+ "axum",
+ "hostname 0.4.0",
+ "land-kernel",
+ "land-wasm-host",
+ "metrics",
+ "metrics-exporter-prometheus",
+ "once_cell",
+ "serde",
+ "tokio",
+ "tower-http",
+ "tracing",
+ "xid",
 ]
 
 [[package]]
@@ -3658,13 +3692,12 @@ dependencies = [
  "color-print",
  "gravatar",
  "handlebars",
- "hostname 0.4.0",
  "land-dao",
- "land-utils",
+ "land-kernel",
  "land-wasm-host",
+ "land-worker-server",
  "lazy_static",
  "metrics",
- "metrics-exporter-prometheus",
  "minify-html",
  "once_cell",
  "rand",
@@ -3674,14 +3707,12 @@ dependencies = [
  "strum",
  "time",
  "tokio",
- "toml",
  "tower-http",
  "tracing",
  "tracing-subscriber",
  "url 2.5.2",
  "vergen-git2",
  "walkdir",
- "xid",
 ]
 
 [[package]]

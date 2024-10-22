@@ -15,15 +15,13 @@ clap = { workspace = true }
 color-print = "0.3.6"
 gravatar = "0.2.0"
 handlebars = "6.1.0"
-hostname = "0.4.0"
 land-dao = { workspace = true }
-land-utils =  { workspace = true }
+land-kernel = { workspace = true }
+# land-utils = { workspace = true }
 land-wasm-host = { workspace = true }
+land-worker-server = { workspace = true }
 lazy_static = { workspace = true }
 metrics = { workspace = true }
-metrics-exporter-prometheus = { version = "0.16.0", default-features = false, features = [
-    "http-listener",
-] }
 minify-html = "0.15.0"
 once_cell = { workspace = true }
 rand = { workspace = true }
@@ -36,13 +34,13 @@ serde_json = { workspace = true }
 strum = { workspace = true }
 time = { workspace = true }
 tokio = { workspace = true }
-toml = "0.8.19"
+#toml = "0.8.19"
 tower-http = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 url = "2.5.2"
-walkdir = "2.5.0"
-xid = "1.1.1"
+walkdir = { workspace = true }
+# xid = "1.1.1"
 
 [build-dependencies]
 vergen-git2 = { version = "1.0.1", features = ["build", "cargo", "rustc"] }
@@ -50,10 +48,13 @@ vergen-git2 = { version = "1.0.1", features = ["build", "cargo", "rustc"] }
 [workspace]
 members = [
     "crates/dao",
+    "crates/kernel",
     "crates/sdk",
-    "crates/sdk-macro", "crates/utils",
+    "crates/sdk-macro",
+    "crates/utils",
     "crates/wasm-gen",
     "crates/wasm-host",
+    "crates/worker-server",
     "tests/hello-wasm",
 ]
 
@@ -65,10 +66,12 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 [workspace.dependencies]
 # internal dependencies
 land-dao = { path = "crates/dao" }
+land-kernel = { path = "crates/kernel" }
 land-sdk = { path = "crates/sdk" }
 land-sdk-macro = { path = "crates/sdk-macro" }
 land-wasm-gen = { path = "crates/wasm-gen" }
 land-wasm-host = { path = "crates/wasm-host" }
+land-worker-server = { path = "crates/worker-server" }
 land-utils = { path = "crates/utils" }
 
 # third-party dependencies
@@ -104,4 +107,5 @@ tracing-subscriber = { version = "0.3.18", features = [
     "local-time",
     "env-filter",
 ] }
+walkdir = "2.5.0"
 wit-bindgen = "0.34.0"
