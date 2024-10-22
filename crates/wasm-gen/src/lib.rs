@@ -1,14 +1,15 @@
 use anyhow::{anyhow, Result};
-use wit_component::ComponentEncoder;
 use std::{
     collections::HashMap,
     env::{current_dir, current_exe},
+    io::Write,
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
 use tracing::debug;
 use wasi_preview1_component_adapter_provider::WASI_SNAPSHOT_PREVIEW1_REACTOR_ADAPTER;
 use wit_bindgen_core::{wit_parser::Resolve, Files, WorldGenerator};
+use wit_component::ComponentEncoder;
 
 // GuestGeneratorType is the type of the guest generator.
 pub enum GuestGeneratorType {
@@ -169,5 +170,74 @@ fn encode_component(src: &str, dest: &str) -> Result<()> {
         std::fs::rename(&output, dest)?;
         let _ = std::fs::remove_file(output);
     }
+    Ok(())
+}
+
+/// componentize_js compile to js to wasm component
+pub fn componentize_js(src: &str, target: &str, js_engine: Option<String>) -> Result<()> {
+    // compile js to wizer
+    compile_js(src, target, js_engine)?;
+    componentize(target)
+}
+
+/// compile_js compile js file to wasm module
+fn compile_js(src_path: &str, dst_path: &str, js_engine: Option<String>) -> Result<()> {
+    debug!("Compile js file: {}", src_path);
+    let cmd = find_cmd("wizer")?;
+    let dir = std::path::Path::new(src_path).parent().unwrap();
+    let js_engine_file = dir.join("js_engine.wasm");
+
+    // copy js_engine.wasm to path dir
+    let js_engine_bytes = if let Some(js_engine) = js_engine {
+        debug!("Read js_engine: {}", js_engine);
+        std::fs::read(js_engine)?
+    } else {
+        debug!("Read js_engine from embedded");
+        include_bytes!("../js-engine.wasm").to_vec()
+    };
+    debug!("Read js_engine_bytes: {}", js_engine_bytes.len());
+    std::fs::write(&js_engine_file, js_engine_bytes)?;
+
+    let src_content = std::fs::read(src_path)?;
+
+    // call wizer to compile js to wasm
+    // wizer js_engine.wasm -o {path}.wasm --allow-wasi --inherit-stdio=true --inherit-env=true
+    let mut child = Command::new(cmd)
+        .arg(&js_engine_file)
+        .arg("-o")
+        .arg(dst_path)
+        .arg("--allow-wasi")
+        .arg("--inherit-stdio=true")
+        .arg("--inherit-env=true")
+        .arg("--wasm-bulk-memory=true")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("Failed to execute wizer child process");
+    let mut stdin = child.stdin.take().expect("Failed to get stdin");
+
+    std::thread::spawn(move || {
+        stdin
+            .write_all(src_content.as_slice())
+            .expect("Failed to write to stdin");
+    });
+
+    let output = child
+        .wait_with_output()
+        .expect("Failed to wait on wizer child process");
+    if !output.status.success() {
+        let err = String::from_utf8(output.stderr)?;
+        return Err(anyhow!(err));
+    }
+    // print output
+    let std_out_string = String::from_utf8_lossy(&output.stdout);
+    let std_out_string2 = std_out_string.trim_end();
+    debug!("Wizer output:\n{}", std_out_string2);
+    if std_out_string2 != "success" {
+        return Err(anyhow!("{}", std_out_string2));
+    }
+    debug!("Wizer success, from {} to {}", src_path, dst_path);
+    let _ = std::fs::remove_file(&js_engine_file);
     Ok(())
 }
