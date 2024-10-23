@@ -102,7 +102,7 @@ pub async fn update(m: project_envs::Model, q: EnvsQuery) -> Result<project_envs
 pub async fn create(owner_id: i32, project_id: i32, q: EnvsQuery) -> Result<project_envs::Model> {
     let (secret, encrypt_string) = crypt::encode_map(q.into_map())?;
     let task_id = rand_string(12);
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     let env = project_envs::Model {
         id: 0,
         owner_id,

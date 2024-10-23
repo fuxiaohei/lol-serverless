@@ -44,7 +44,7 @@ pub async fn set_raw(name: &str, value: &str) -> Result<()> {
         .one(db)
         .await
         .map_err(|e| anyhow::anyhow!(e))?;
-    let now = chrono::Utc::now(); // save current time as utc
+    let now = chrono::Utc::now().naive_utc(); // save current time as utc
     if item.is_none() {
         let item = settings::ActiveModel {
             name: Set(name.to_string()),
@@ -106,7 +106,8 @@ pub async fn set_domain_settings(domain_suffix: &str, http_protocol: &str) -> Re
 pub async fn init_defaults() -> Result<()> {
     let v = get_raw(DOMAIN_SETTINGS_KEY).await?;
     if v.is_none() {
-        set_domain_settings("localhost", "http").await?;
+        // 127-0-0-1.sslip.io is a magic domain for local development that supports https
+        set_domain_settings("127-0-0-1.sslip.io", "https").await?;
         info!("init domain settings")
     }
     Ok(())

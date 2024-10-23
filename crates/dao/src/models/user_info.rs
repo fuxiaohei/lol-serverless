@@ -22,10 +22,10 @@ pub struct Model {
     pub oauth_provider: String,
     pub oauth_user_id: Option<String>,
     pub oauth_email_id: Option<String>,
-    pub created_at: DateTimeUtc,
-    pub updated_at: DateTimeUtc,
-    pub last_login_at: DateTimeUtc,
-    pub deleted_at: Option<DateTimeUtc>,
+    pub created_at: DateTime,
+    pub updated_at: DateTime,
+    pub last_login_at: DateTime,
+    pub deleted_at: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

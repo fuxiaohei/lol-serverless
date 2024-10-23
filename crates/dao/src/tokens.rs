@@ -35,7 +35,7 @@ pub async fn create(
     expire: i64,
     usage: Usage,
 ) -> Result<user_token::Model> {
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     let expired_at = now.add(chrono::TimeDelta::try_seconds(expire).unwrap());
     let value: String = land_utils::crypt::rand_string(40);
     let token_model = user_token::Model {
@@ -57,7 +57,7 @@ pub async fn create(
 }
 
 /// get_by_value gets an active token by value
-pub async fn get_by_value(value: &str, usage: Option<Usage>) -> Result<user_token::Model> {
+pub async fn get_by_value(value: &str, usage: Option<Usage>) -> Result<Option<user_token::Model>> {
     let db = DB.get().unwrap();
     let mut select = user_token::Entity::find()
         .filter(user_token::Column::Value.eq(value))
@@ -67,13 +67,13 @@ pub async fn get_by_value(value: &str, usage: Option<Usage>) -> Result<user_toke
     }
     let token = select.one(db).await.map_err(|e| anyhow::anyhow!(e))?;
     if token.is_none() {
-        return Err(anyhow!("Token not found"));
+        return Ok(None);
     }
     let token = token.unwrap();
     if is_expired(&token) {
         return Err(anyhow!("Token is expired"));
     }
-    Ok(token)
+    Ok(Some(token))
 }
 
 /// get_by_name gets an active token by name with owner_id
@@ -96,7 +96,7 @@ pub async fn get_by_name(
 
 /// is_expired checks if the token is expired
 pub fn is_expired(model: &user_token::Model) -> bool {
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     if let Some(expired_at) = model.expired_at {
         if now > expired_at {
             return true;

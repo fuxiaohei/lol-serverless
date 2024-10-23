@@ -37,8 +37,8 @@ impl AuthUser {
             social_provider: None,
             social_link: None,
             is_admin: user.role == UserRole::Admin.to_string(),
-            last_login_at: user.last_login_at.timestamp(),
-            created_at: user.created_at.timestamp(),
+            last_login_at: user.last_login_at.and_utc().timestamp(),
+            created_at: user.created_at.and_utc().timestamp(),
             status: user.status.clone(),
             projects_count: None,
         };
@@ -65,17 +65,17 @@ pub struct Token {
 impl Token {
     pub fn new(m: user_token::Model) -> Self {
         let expired_at = if let Some(expired_at) = m.expired_at {
-            expired_at.timestamp()
+            expired_at.and_utc().timestamp()
         } else {
             0
         };
         let now = chrono::Utc::now().timestamp();
-        let is_new = m.created_at.timestamp() + 30 > now;
+        let is_new = m.created_at.and_utc().timestamp() + 30 > now;
         let mut token = Token {
             value: String::new(),
             name: m.name,
-            created_at: m.created_at.timestamp(),
-            latest_used_at: m.latest_used_at.timestamp(),
+            created_at: m.created_at.and_utc().timestamp(),
+            latest_used_at: m.latest_used_at.and_utc().timestamp(),
             expired_at,
             id: m.id,
             is_new,

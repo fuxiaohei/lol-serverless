@@ -19,9 +19,9 @@ pub struct Model {
     pub dev_domain: String,
     pub prod_domain: String,
     pub created_by: String,
-    pub created_at: DateTimeUtc,
-    pub updated_at: DateTimeUtc,
-    pub deleted_at: Option<DateTimeUtc>,
+    pub created_at: DateTime,
+    pub updated_at: DateTime,
+    pub deleted_at: Option<DateTime>,
     #[sea_orm(column_type = "Text", nullable)]
     pub metadata: Option<String>,
 }

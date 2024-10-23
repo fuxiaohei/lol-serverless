@@ -99,7 +99,7 @@ async fn create_internal(
     created_by: CreatedBy,
 ) -> Result<project::Model> {
     let name = random_unique_name().await?;
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     let mut project = project::Model {
         id: 0,
         owner_id,

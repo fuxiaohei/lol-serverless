@@ -49,7 +49,7 @@ pub struct DBArgs {
     #[clap(
         long("db-database"),
         env("DATABASE_DATABASE"),
-        default_value("runtime-land-db")
+        default_value("rtland-engine")
     )]
     pub database: String,
     /// Database connection pool size

@@ -14,10 +14,10 @@ pub struct Model {
     pub name: String,
     pub status: String,
     pub usage: String,
-    pub created_at: DateTimeUtc,
-    pub latest_used_at: DateTimeUtc,
-    pub expired_at: Option<DateTimeUtc>,
-    pub deleted_at: Option<DateTimeUtc>,
+    pub created_at: DateTime,
+    pub latest_used_at: DateTime,
+    pub expired_at: Option<DateTime>,
+    pub deleted_at: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

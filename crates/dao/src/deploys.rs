@@ -75,7 +75,7 @@ pub async fn create(
     deploy_type: DeployType,
 ) -> Result<deployment::Model> {
     let spec = Spec::default();
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     let model = deployment::Model {
         id: 0,
         owner_id,
@@ -188,7 +188,7 @@ pub async fn refresh_state(
     state_type: StateType,
 ) -> Result<deploy_state::Model> {
     let db = DB.get().unwrap();
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     let model = deploy_state::Entity::find()
         .filter(deploy_state::Column::OwnerId.eq(owner_id))
         .filter(deploy_state::Column::ProjectId.eq(project_id))

@@ -29,7 +29,7 @@ pub async fn create(
     visible: bool,
 ) -> Result<playground::Model> {
     let uuid = ShortUuid::generate().to_string();
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     let p = playground::Model {
         id: 0,
         owner_id,

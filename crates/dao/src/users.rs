@@ -1,10 +1,9 @@
-use std::collections::HashMap;
-
 use crate::{models::user_info, tokens, DB};
 use anyhow::{anyhow, Result};
 use land_utils::crypt::rand_string;
 use sea_orm::{prelude::Expr, ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter};
 use short_uuid::ShortUuid;
+use std::collections::HashMap;
 use tracing::debug;
 
 #[derive(strum::Display)]
@@ -56,7 +55,7 @@ pub async fn create(
     // role is optional, default is normal
     let role = user_role.unwrap_or(UserRole::Normal).to_string();
 
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     let user_model = user_info::Model {
         id: 0,
         uuid,
@@ -135,6 +134,10 @@ async fn update_login_at(user_id: i32) -> Result<()> {
 /// verify_session verifies the session token and returns the user
 pub async fn verify_session(session: &str) -> Result<user_info::Model> {
     let token = tokens::get_by_value(session, Some(tokens::Usage::Session)).await?;
+    if token.is_none() {
+        return Err(anyhow!("Session token not found"));
+    }
+    let token = token.unwrap();
     let user = get_by_id(token.owner_id, None).await?;
     if user.is_none() {
         return Err(anyhow!("User not found"));
@@ -143,7 +146,7 @@ pub async fn verify_session(session: &str) -> Result<user_info::Model> {
     if user.status == UserStatus::Disabled.to_string() {
         return Err(anyhow!("User is disabled"));
     }
-    let now = chrono::Utc::now();
+    let now = chrono::Utc::now().naive_utc();
     let diff = now - user.last_login_at;
     // if last login time is more than 60 seconds, update last login time
     if diff.num_seconds() > 60 {

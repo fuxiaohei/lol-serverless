@@ -24,9 +24,9 @@ pub struct Model {
     pub success_count: i32,
     pub failed_count: i32,
     pub total_count: i32,
-    pub created_at: DateTimeUtc,
-    pub updated_at: DateTimeUtc,
-    pub deleted_at: Option<DateTimeUtc>,
+    pub created_at: DateTime,
+    pub updated_at: DateTime,
+    pub deleted_at: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

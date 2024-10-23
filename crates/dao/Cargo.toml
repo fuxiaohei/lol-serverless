@@ -19,6 +19,7 @@ sea-orm = { version = "1.1.0", default-features = false, features = [
     "with-json",
     "runtime-tokio-rustls",
     "sqlx-sqlite",
+    "sqlx-postgres",
 ] }
 sea-orm-migration = "1.1.0"
 serde = { workspace = true }

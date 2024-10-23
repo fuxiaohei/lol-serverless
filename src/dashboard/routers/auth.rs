@@ -86,8 +86,22 @@ pub async fn sign_out(jar: CookieJar) -> Result<impl IntoResponse, ServerError> 
     }
 
     let token = tokens::get_by_value(session_value, Some(tokens::Usage::Session)).await?;
+    if token.is_none() {
+        warn!("session token not found when sign-out");
+        return Ok((
+            jar.remove(Cookie::from(SESSION_COOKIE_NAME)),
+            redirect("/sign-in"),
+        )
+            .into_response());
+    }
+    let token = token.unwrap();
     tokens::set_expired(token.id, &token.name).await?;
-    Ok(redirect("/sign-in").into_response())
+    warn!("session is expired when sign-out");
+    Ok((
+        jar.remove(Cookie::from(SESSION_COOKIE_NAME)),
+        redirect("/sign-in"),
+    )
+        .into_response())
 }
 
 /// middle is a middleware to check if the user is authenticated

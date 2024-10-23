@@ -17,8 +17,8 @@ pub struct Model {
     pub status: String,
     pub version: String,
     pub visiblity: String,
-    pub created_at: DateTimeUtc,
-    pub deleted_at: Option<DateTimeUtc>,
+    pub created_at: DateTime,
+    pub deleted_at: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
