@@ -16,6 +16,7 @@ pub mod auth;
 pub mod index;
 pub mod install;
 pub mod projects;
+pub mod settings;
 
 // ServerError makes our own error that wraps `anyhow::Error`.
 pub struct ServerError(pub StatusCode, pub anyhow::Error);

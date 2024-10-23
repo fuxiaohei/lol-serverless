@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> parts/head.hbs}}
+</head>
+
+<body>
+    <div id="root">
+        {{> parts/sidebar.hbs}}
+        <main id="main" class="w-100 overflow-y-auto">
+            {{> parts/topnav.hbs}}
+            <div id="main-container">
+                <div id="cli-tokens" class="p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-0 fw-medium fs-5">Command line tokens
+                            <p class="mb-0 small text-body-tertiary">the tokens below are used to authenticate with the
+                                Runtime.land CLI</p>
+                            </p>
+                        </div>
+                    </div>
+                    {{#with data}}
+                    <div class="mt-3">
+                        {{> parts/tokens-list.hbs}}
+                    </div>
+                    {{/with}}
+                </div>
+            </div>
+            {{> parts/footer.hbs}}
+        </main>
+    </div>
+    {{> parts/js.hbs}}
+</body>
+
+</html>

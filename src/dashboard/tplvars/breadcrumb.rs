@@ -6,12 +6,12 @@ use std::collections::HashMap;
 #[strum(serialize_all = "lowercase")]
 pub enum BreadCrumbKey {
     Dashboard,
+    Settings,
     Administration,
     Projects,
     ProjectNew,
     ProjectSingle,
     ProjectSettings,
-    Tokens,
     NotFound,
     None,
 }
@@ -31,16 +31,16 @@ impl BreadCrumb {
                 title: "Dashboard".to_string(),
                 link: None,
             }],
+            BreadCrumbKey::Settings => vec![BreadCrumb {
+                title: "Settings".to_string(),
+                link: None,
+            }],
             BreadCrumbKey::Administration => vec![BreadCrumb {
                 title: "Administration".to_string(),
                 link: None,
             }],
             BreadCrumbKey::Projects | BreadCrumbKey::ProjectNew => vec![BreadCrumb {
                 title: "Projects".to_string(),
-                link: None,
-            }],
-            BreadCrumbKey::Tokens => vec![BreadCrumb {
-                title: "Tokens".to_string(),
                 link: None,
             }],
             BreadCrumbKey::ProjectSingle | BreadCrumbKey::ProjectSettings => vec![BreadCrumb {

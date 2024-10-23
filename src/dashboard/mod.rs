@@ -53,10 +53,8 @@ pub async fn start_server(
         .route("/projects/:name/envs", post(routers::projects::handle_envs))
         .route("/new", get(routers::projects::new))
         .route("/new/:name", get(routers::projects::handle_new))
-        .route(
-            "/tokens",
-            get(routers::index::tokens).post(routers::index::handle_token),
-        )
+        .route("/settings", get(routers::settings::index))
+        .route("/settings/tokens", post(routers::settings::handle_token))
         .route("/admin", get(routers::admin::index))
         .route("/admin/domains", post(routers::admin::update_domains))
         .nest_service("/static", ServeDir::new(static_assets_dir))
