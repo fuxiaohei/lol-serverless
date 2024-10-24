@@ -8,6 +8,7 @@ use tracing::{debug, info, instrument, warn};
 
 mod migration;
 
+pub mod deploy_task;
 pub mod deploys;
 pub mod envs;
 pub mod models;
@@ -16,11 +17,13 @@ pub mod projects;
 pub mod settings;
 pub mod tokens;
 pub mod users;
+pub mod wasm_artifacts;
+pub mod workers;
 
 #[derive(Args)]
 pub struct DBArgs {
     /// Database driver
-    #[clap(long("db-driver"), env("DATABASE_DRIVER"), default_value("sqlite"))]
+    #[clap(long("db-driver"), env("DATABASE_DRIVER"), default_value("postgres"))]
     pub driver: String,
     /// Database filepath, only for sqlite
     #[clap(

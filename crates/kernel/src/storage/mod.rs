@@ -154,3 +154,28 @@ pub async fn update_by_form(f: Form) -> Result<()> {
     load_global().await?;
     Ok(())
 }
+
+/// save bytes storage
+pub async fn save(name: &str, data: Vec<u8>) -> Result<()> {
+    let storage = STORAGE.lock().await;
+    storage.write(name, data).await?;
+    Ok(())
+}
+
+trait UrlBuilder {
+    fn build_url(&self, name: &str) -> String;
+}
+
+/// build_url build url
+pub async fn build_url(name: &str) -> Result<String> {
+    let current = get_current().await?;
+    if current == "fs" {
+        let settings = fs::get().await?;
+        Ok(settings.build_url(name))
+    } else if current == "s3" {
+        let settings = s3::get().await?;
+        Ok(settings.build_url(name))
+    } else {
+        Err(anyhow!("storage {} not supported", current))
+    }
+}

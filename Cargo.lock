@@ -2335,13 +2335,17 @@ name = "land-kernel"
 version = "0.1.5"
 dependencies = [
  "anyhow",
+ "chrono",
  "land-dao",
  "land-utils",
+ "land-wasm-gen",
  "lazy_static",
+ "md5",
  "once_cell",
  "opendal",
  "serde",
  "serde_json",
+ "tempfile",
  "tokio",
  "toml",
  "tracing",

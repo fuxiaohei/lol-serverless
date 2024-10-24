@@ -6,9 +6,12 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+chrono = { workspace = true }
 land-dao = { workspace = true }
 land-utils = { workspace = true }
+land-wasm-gen = { workspace = true }
 lazy_static = { workspace = true }
+md5 = { workspace = true }
 once_cell = { workspace = true }
 opendal = { version = "0.50.1", default-features = false, features = [
     "services-fs",
@@ -17,6 +20,7 @@ opendal = { version = "0.50.1", default-features = false, features = [
 ] }
 serde = { workspace = true }
 serde_json = { workspace = true }
+tempfile = "3.13.0"
 tokio = { workspace = true }
 toml = "0.8.19"
 tracing = { workspace = true }

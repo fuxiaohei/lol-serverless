@@ -1,3 +1,4 @@
+use super::UrlBuilder;
 use anyhow::Result;
 use land_dao::settings;
 use land_utils::obj_hash;
@@ -78,4 +79,22 @@ pub async fn new_operator() -> Result<Operator> {
         .batch_max_operations(100);
     let op = Operator::new(builder)?.finish();
     Ok(op)
+}
+
+impl UrlBuilder for Settings {
+    fn build_url(&self, name: &str) -> String {
+        let mut u = self
+            .url
+            .clone()
+            .unwrap_or_else(|| format!("{}/{}", self.endpoint.trim_end_matches('/'), self.bucket))
+            .trim_end_matches('/')
+            .to_string();
+        if self.directory.is_some() {
+            u.push_str(&format!(
+                "/{}",
+                self.directory.clone().unwrap().trim_end_matches('/')
+            ));
+        }
+        format!("{}/{}", u, name)
+    }
 }

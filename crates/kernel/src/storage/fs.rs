@@ -1,3 +1,4 @@
+use super::UrlBuilder;
 use anyhow::Result;
 use land_dao::settings;
 use opendal::{services::Fs, Operator};
@@ -18,6 +19,12 @@ impl Default for Settings {
             local_path: "./data".to_string(),
             local_url: "/download/{name}".to_string(),
         }
+    }
+}
+
+impl UrlBuilder for Settings {
+    fn build_url(&self, name: &str) -> String {
+        self.local_url.replace("{name}", name)
     }
 }
 
