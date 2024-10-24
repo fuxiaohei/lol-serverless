@@ -57,6 +57,7 @@ pub async fn start_server(
         .route("/settings/tokens", post(routers::settings::handle_token))
         .route("/admin", get(routers::admin::index))
         .route("/admin/domains", post(routers::admin::update_domains))
+        .route("/admin/storage", post(routers::admin::update_storage))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(axum::middleware::from_fn(routers::auth::middle))

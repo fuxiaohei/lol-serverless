@@ -1,0 +1,97 @@
+<div id="admin-storage-container" class="overflow-y">
+    <div class="desc card-text">
+        <p class="mb-1 fw-medium fs-5">Storage</p>
+        <p class="text-body-tertiary">By default Runtime.land uses the local file system to store
+            compiled
+            wasm
+            module files. The worker nodes will download the wasm module files from the storage with
+            url
+            like <code>/download/xxx.wasm</code>. If you have limited disk space, you could optionally
+            connect to an S3
+            compatible storage.</p>
+    </div>
+    <div class="switcher mb-3">
+        <div class="form-check form-switch">
+            <input class="form-check-input" data-x-current="{{storage.current}}" type="checkbox" role="switch"
+                id="storage-switch">
+            <label class="form-check-label" for="storage-switch">Use S3 Storage</label>
+        </div>
+    </div>
+    <hr class="my-4">
+    <form class="d-none" id="fs-storage-form">
+        <h6 class="mb-3">Local Filesystem Storage</h6>
+        <div class="row g-3">
+            <div class="col form-floating mb-3">
+                <input type="text" class="form-control" id="storage-local-path" value="{{storage.fs.local_path}}"
+                    readonly>
+                <label for="storage-local-path">Storage Local Path</label>
+            </div>
+            <div class="form-floating col">
+                <input type="text" class="form-control" id="storage-download-url" value="{{storage.fs.local_url}}"
+                    readonly>
+                <label for="storage-download-url">Download URL</label>
+            </div>
+        </div>
+        <div>
+            <input type="hidden" name="checked" value="fs">
+            <button class="btn btn-dark" disabled>Unsupport to Change currently</button>
+        </div>
+    </form>
+    <form class="d-none" id="s3-storage-form" hx-post="/admin/storage" hx-swap="innerHTML settle:3s"
+        hx-target="#s3-storage-message">
+        <h6 class="mb-3">S3 Storage</h6>
+        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+            <i class='bi bi-bell me-2'></i>
+            <div>
+                If you have existing uploaded wasm module files, you need to manually upload them to
+                <strong>the S3 storage</strong>.
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-6 form-floating mb-3">
+                <input type="text" class="form-control" id="s3-endpoint" placeholder="s3 compatible endpoint"
+                    name="endpoint" value="{{storage.s3.endpoint}}" required />
+                <label for="s3-endpoint">Endpoint <span class="required text-danger">*</span></label>
+            </div>
+            <div class="form-floating col-3">
+                <input type="text" class="form-control" id="s3-bucket" placeholder="bucket name" required name="bucket"
+                    value="{{storage.s3.bucket}}" />
+                <label for="s3-bucket">Bucket <span class="required text-danger">*</span></label>
+            </div>
+            <div class="form-floating col-3">
+                <input type="text" class="form-control" id="s3-region" placeholder="region name" required name="region"
+                    value="{{storage.s3.region}}" />
+                <label for="s3-region">Region <span class="required text-danger">*</span></label>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col form-floating mb-3">
+                <input type="text" class="form-control" id="s3-access-key" placeholder="access key" required
+                    name="access_key" value="{{storage.s3.access_key}}" />
+                <label for="s3-access-key">Access Key <span class="required text-danger">*</span></label>
+            </div>
+            <div class="col form-floating mb-3">
+                <input type="text" class="form-control" id="s3-secret" placeholder="secret" required name="secret_key"
+                    value="{{storage.s3.secret_key}}" />
+                <label for="s3-secret">Secret <span class="required text-danger">*</span></label>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-6 form-floating mb-3">
+                <input type="text" class="form-control" id="s3-directory" placeholder="s3 directory, optional"
+                    name="directory" value="{{storage.s3.directory}}" />
+                <label for="s3-directory">Directory <span class="text-body-secondary">(optional)</span></label>
+            </div>
+            <div class="col-6 form-floating mb-3">
+                <input type="text" class="form-control" id="s3-url" placeholder="s3 access url, optional"
+                    name="access_url" value="{{storage.s3.url}}" />
+                <label for="s3-url">Access URL <span class="text-body-secondary">(optional)</span></label>
+            </div>
+        </div>
+        <div class="text-start">
+            <p id="s3-storage-message" class="htmx-message"></p>
+            <input type="hidden" name="checked" value="s3">
+            <button class="btn btn-dark">Save Changes</button>
+        </div>
+    </form>
+</div>

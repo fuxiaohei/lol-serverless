@@ -41,6 +41,15 @@ async fn get_current() -> Result<String> {
     Ok(current)
 }
 
+/// set_current set current storage name
+async fn set_current(current: &str) -> Result<()> {
+    let current = Current {
+        current: current.to_string(),
+    };
+    settings::set(CURRENT_SETTINGS, &current).await?;
+    Ok(())
+}
+
 /// STORAGE_KEY is the global storage key
 static STORAGE_KEY: Lazy<Mutex<String>> = Lazy::new(|| Mutex::new("".to_string()));
 
@@ -82,4 +91,66 @@ pub async fn load_global() -> Result<()> {
     }
 
     Err(anyhow!("{} not supported", current))
+}
+
+/// Vars is the storage settings template variables
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Vars {
+    pub current: String,
+    pub fs: fs::Settings,
+    pub s3: s3::Settings,
+}
+
+impl Vars {
+    /// get storage settings and convert to template variables
+    pub async fn get() -> Result<Self> {
+        let current: Option<Current> = settings::get(CURRENT_SETTINGS).await?;
+        let current = current.unwrap();
+        Ok(Self {
+            current: current.current.clone(),
+            fs: fs::get().await?,
+            s3: s3::get().await?,
+        })
+    }
+}
+
+/// Form is the storage settings form
+#[derive(Debug, Deserialize)]
+pub struct Form {
+    pub checked: String,
+    pub endpoint: Option<String>,
+    pub bucket: Option<String>,
+    pub region: Option<String>,
+    pub access_key: Option<String>,
+    pub secret_key: Option<String>,
+    pub directory: Option<String>,
+    pub access_url: Option<String>,
+}
+
+/// update_by_form update storage settings by form
+pub async fn update_by_form(f: Form) -> Result<()> {
+    if f.checked == "s3" {
+        let value = s3::Settings {
+            endpoint: f.endpoint.unwrap_or_default(),
+            bucket: f.bucket.unwrap_or_default(),
+            region: f.region.unwrap_or_default(),
+            access_key: f.access_key.unwrap_or_default(),
+            secret_key: f.secret_key.unwrap_or_default(),
+            directory: f.directory.clone(),
+            url: f.access_url.clone(),
+        };
+        s3::set(value).await?;
+        set_current("s3").await?;
+    } else if f.checked == "fs" {
+        let value = fs::Settings {
+            local_path: f.directory.unwrap_or_default(),
+            local_url: f.access_url.unwrap_or_default(),
+        };
+        fs::set(value).await?;
+        set_current("fs").await?;
+    }
+
+    // reload storage operator
+    load_global().await?;
+    Ok(())
 }

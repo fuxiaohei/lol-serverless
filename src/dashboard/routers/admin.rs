@@ -6,6 +6,7 @@ use crate::dashboard::{
 };
 use axum::{response::IntoResponse, Extension, Form};
 use land_dao::settings::{self, DomainSettings};
+use land_kernel::storage;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
@@ -18,6 +19,7 @@ pub async fn index(
     struct Vars {
         pub page: tplvars::Page,
         pub domain_settings: DomainSettings,
+        pub storage: storage::Vars,
     }
     let domain_settings = settings::get_domain_settings().await?;
     Ok(HtmlMinified(
@@ -26,6 +28,7 @@ pub async fn index(
         Vars {
             page: Page::new("Administration", BreadCrumbKey::Administration, Some(user)),
             domain_settings,
+            storage: storage::Vars::get().await?,
         },
     ))
 }
@@ -36,11 +39,19 @@ pub struct UpdateDomainForm {
     pub protocol: Option<String>,
 }
 
-/// update_domains updates the domain settings, /admin/domains
+/// update_domains updates the domain settings, POST /admin/domains
 pub async fn update_domains(
     Form(f): Form<UpdateDomainForm>,
 ) -> Result<impl IntoResponse, ServerError> {
     info!("Update domain settings: {:?}", f);
     settings::set_domain_settings(&f.domain, &f.protocol.unwrap_or("http".to_string())).await?;
     Ok(ok_html("Updated successfully"))
+}
+
+/// update_storage for admin storage, POST /admin/storage
+pub async fn update_storage(
+    Form(form): Form<storage::Form>,
+) -> Result<impl IntoResponse, ServerError> {
+    storage::update_by_form(form).await?;
+    Ok(ok_html("Storage updated"))
 }
