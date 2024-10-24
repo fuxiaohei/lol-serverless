@@ -27,6 +27,12 @@ impl Dashboard {
             .await
             .expect("Failed to connect to database");
 
+        // init storage operator
+        land_kernel::storage::init_defaults().await?;
+        land_kernel::storage::load_global().await?;
+        // start dashboard background tasks
+        land_kernel::deployer::init_background().await;
+
         // start http server
         dashboard::start_server(self.address.parse()?, "./assets", self.tpldir.clone())
             .await

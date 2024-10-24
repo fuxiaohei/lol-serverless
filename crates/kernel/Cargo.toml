@@ -6,8 +6,15 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+land-dao = { workspace = true }
 land-utils = { workspace = true }
 lazy_static = { workspace = true }
+once_cell = { workspace = true }
+opendal = { version = "0.50.1", default-features = false, features = [
+    "services-fs",
+    "services-s3",
+    "services-memory",
+] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 tokio = { workspace = true }
