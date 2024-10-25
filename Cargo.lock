@@ -2343,6 +2343,7 @@ dependencies = [
  "md5",
  "once_cell",
  "opendal",
+ "reqwest",
  "serde",
  "serde_json",
  "tempfile",
@@ -2383,6 +2384,7 @@ version = "0.1.5"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
+ "hostname 0.4.0",
  "md5",
  "rand",
  "serde",
@@ -2432,8 +2434,8 @@ version = "0.1.5"
 dependencies = [
  "anyhow",
  "axum",
- "hostname 0.4.0",
  "land-kernel",
+ "land-utils",
  "land-wasm-host",
  "metrics",
  "metrics-exporter-prometheus",

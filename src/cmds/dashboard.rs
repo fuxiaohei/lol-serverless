@@ -32,6 +32,9 @@ impl Dashboard {
         land_kernel::storage::load_global().await?;
         // start dashboard background tasks
         land_kernel::deployer::init_background().await;
+        // start agent background tasks
+        land_kernel::agent::init_refreshing().await;
+        land_kernel::agent::init_confs().await;
 
         // start http server
         dashboard::start_server(self.address.parse()?, "./assets", self.tpldir.clone())

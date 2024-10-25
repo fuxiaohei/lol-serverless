@@ -25,3 +25,4 @@ tokio = { workspace = true }
 toml = "0.8.19"
 tracing = { workspace = true }
 walkdir = { workspace = true }
+reqwest= { workspace = true }

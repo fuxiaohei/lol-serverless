@@ -7,7 +7,7 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 axum = { workspace = true }
-hostname = "0.4.0"
+land-utils = { workspace = true }
 land-kernel = { workspace = true }
 land-wasm-host = { workspace = true }
 metrics = { workspace = true }

@@ -1,11 +1,18 @@
-use super::{ok_html, ServerError};
+use super::{
+    ok_html,
+    settings::{handle_token_internal, TokenForm},
+    ServerError,
+};
 use crate::dashboard::{
     routers::HtmlMinified,
     templates::Engine,
     tplvars::{self, AuthUser, BreadCrumbKey, Page},
 };
 use axum::{response::IntoResponse, Extension, Form};
-use land_dao::settings::{self, DomainSettings};
+use land_dao::{
+    settings::{self, DomainSettings},
+    tokens,
+};
 use land_kernel::storage;
 use serde::{Deserialize, Serialize};
 use tracing::info;
@@ -77,4 +84,48 @@ pub async fn general(
             storage: storage::Vars::get().await?,
         },
     ))
+}
+
+/// workers shows the workers page
+pub async fn workers(
+    engine: Engine,
+    Extension(user): Extension<AuthUser>,
+) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Data {
+        pub tokens: Vec<tplvars::Token>,
+        pub token_url: String,
+        pub workers: Vec<tplvars::Worker>,
+    }
+
+    let tokens = tokens::list(Some(user.id), Some(tokens::Usage::Worker)).await?;
+    info!(
+        owner_id = user.id,
+        "List workers tokens, count: {}",
+        tokens.len()
+    );
+    let tokens = tplvars::Token::new_from_models(tokens);
+    let workers_value = land_dao::workers::find_all(None).await?;
+    info!("List workers, count: {}", workers_value.len());
+    let workers = workers_value.iter().map(tplvars::Worker::new).collect();
+    Ok(HtmlMinified(
+        "admin/workers.hbs",
+        engine,
+        tplvars::Vars::new(
+            Page::new_admin("Workers", BreadCrumbKey::AdminWorkers, Some(user)),
+            Data {
+                tokens,
+                token_url: "/admin/workers/tokens".to_string(),
+                workers,
+            },
+        ),
+    ))
+}
+
+/// handle_token handles the token form
+pub async fn handle_token(
+    Extension(user): Extension<AuthUser>,
+    Form(f): Form<TokenForm>,
+) -> Result<impl IntoResponse, ServerError> {
+    handle_token_internal(user, f, "/admin/workers", tokens::Usage::Worker).await
 }

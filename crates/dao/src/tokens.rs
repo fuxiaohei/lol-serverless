@@ -5,12 +5,12 @@ use std::ops::Add;
 use tracing::debug;
 
 /// TokenUsage is the usage of the token
-#[derive(strum::Display, PartialEq, strum::EnumString)]
+#[derive(strum::Display, PartialEq, strum::EnumString, Clone)]
 #[strum(serialize_all = "lowercase")]
 pub enum Usage {
     Session, // web page session token
     Cmdline, // land-cli token
-             // Worker,  // land-worker token
+    Worker,  // land-worker token
 }
 
 /// TokenStatus is the status of the token
@@ -164,4 +164,17 @@ pub async fn list(owner_id: Option<i32>, usage: Option<Usage>) -> Result<Vec<use
         .await
         .map_err(|e| anyhow!(e))?;
     Ok(tokens)
+}
+
+/// set_usage_at sets a token to expired
+pub async fn set_usage_at(id: i32) -> Result<()> {
+    let db = DB.get().unwrap();
+    let now = chrono::Utc::now().naive_utc();
+    user_token::Entity::update_many()
+        .col_expr(user_token::Column::LatestUsedAt, Expr::value(now))
+        .filter(user_token::Column::Id.eq(id))
+        .exec(db)
+        .await
+        .map_err(|e| anyhow!(e))?;
+    Ok(())
 }

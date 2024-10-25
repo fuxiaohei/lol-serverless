@@ -6,8 +6,10 @@ use axum::{
     http::{HeaderValue, Response, StatusCode, Uri},
     middleware::Next,
     response::{Html, IntoResponse},
+    Json,
 };
 use axum_htmx::HxRedirect;
+use serde::{Deserialize, Serialize};
 use std::{net::SocketAddr, str::FromStr};
 use tracing::{info, instrument, warn};
 
@@ -17,6 +19,7 @@ pub mod index;
 pub mod install;
 pub mod projects;
 pub mod settings;
+pub mod worker_api;
 
 // ServerError makes our own error that wraps `anyhow::Error`.
 pub struct ServerError(pub StatusCode, pub anyhow::Error);
@@ -49,6 +52,63 @@ where
 impl IntoResponse for ServerError {
     fn into_response(self) -> axum::response::Response {
         let mut resp = (self.0, self.1.to_string()).into_response();
+        let exts = resp.extensions_mut();
+        exts.insert(self);
+        resp
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct JsonResponse<T> {
+    pub status: String,
+    pub message: String,
+    pub data: T,
+}
+
+/// resp_json_ok returns a response with status ok
+fn resp_json_ok(data: impl Serialize, msg: Option<String>) -> impl IntoResponse {
+    let msg = msg.unwrap_or("ok".to_string());
+    Json(JsonResponse {
+        status: "ok".to_string(),
+        message: msg,
+        data,
+    })
+}
+
+/// resp_json_error returns a response with status error
+fn resp_json_error(msg: String) -> impl IntoResponse {
+    Json(JsonResponse {
+        status: "error".to_string(),
+        message: msg,
+        data: (),
+    })
+}
+
+// Make our own error that wraps `anyhow::Error`.
+pub struct JsonError(pub StatusCode, pub anyhow::Error);
+
+impl Clone for JsonError {
+    fn clone(&self) -> Self {
+        Self(self.0, anyhow::anyhow!(self.1.to_string()))
+    }
+}
+
+// This enables using `?` on functions that return `Result<_, anyhow::Error>` to turn them into
+// `Result<_, RespError>`. That way you don't need to do that manually.
+impl<E> From<E> for JsonError
+where
+    E: Into<anyhow::Error>,
+{
+    fn from(err: E) -> Self {
+        Self(StatusCode::INTERNAL_SERVER_ERROR, err.into())
+    }
+}
+
+// Tell axum how to convert `RespError` into a response.
+impl IntoResponse for JsonError {
+    fn into_response(self) -> axum::response::Response {
+        let mut resp = resp_json_error(self.1.to_string()).into_response();
+        *resp.status_mut() = self.0;
         let exts = resp.extensions_mut();
         exts.insert(self);
         resp
@@ -136,8 +196,8 @@ pub async fn logger(request: Request, next: Next) -> Result<axum::response::Resp
     } else {
         request.uri().path().to_owned()
     };
-    if path.starts_with("/static") {
-        // ignore static assets log
+    if path.starts_with("/static") || path.starts_with("/_worker_api") {
+        // ignore static assets log and worker api
         return Ok(next.run(request).await);
     }
     let mut remote = "0.0.0.0".to_string();

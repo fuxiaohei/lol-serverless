@@ -101,7 +101,7 @@ async fn compile_playground(
 
     // 4.5. create wasm artifact record
     let now_text = chrono::Utc::now().format("%Y%m%d%H%M%S").to_string();
-    let file_name = format!("{}/{}_{}.wasm", project.uuid, dp.domain, now_text);
+    let file_name = format!("wasm/{}/{}_{}.wasm", project.uuid, dp.domain, now_text);
     let file_data = std::fs::read(&target_wasm)?;
     let file_hash = format!("{:x}", md5::compute(&file_data));
     let file_size = file_data.len() as i32;

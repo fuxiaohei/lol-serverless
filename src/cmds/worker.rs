@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Args;
+use land_kernel::agent;
 use tracing::debug;
 
 /// Worker command starts a worker node that connects to the land-server.
@@ -47,6 +48,15 @@ fn validate_url(url: &str) -> Result<String, String> {
 impl Worker {
     pub async fn run(&self) -> Result<()> {
         debug!("start worker server flag: {:?}", self);
+
+        // init agent role backgoround
+        agent::init_ip(self.ip.clone()).await?;
+        agent::init_background(
+            self.server_url.clone(),
+            self.token.clone(),
+            self.dir.clone(),
+        )
+        .await;
 
         // Start server
         let opts = land_worker_server::Opts {

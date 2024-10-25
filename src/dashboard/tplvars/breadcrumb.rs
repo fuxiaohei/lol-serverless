@@ -9,6 +9,7 @@ pub enum BreadCrumbKey {
     Settings,
     AdminGeneral,
     AdminOverview,
+    AdminWorkers,
     Projects,
     ProjectNew,
     ProjectSingle,
@@ -54,6 +55,16 @@ impl BreadCrumb {
                     link: Some("/admin/general".to_string()),
                 },
             ],
+            BreadCrumbKey::AdminWorkers => vec![
+                BreadCrumb {
+                    title: "Administration".to_string(),
+                    link: None,
+                },
+                BreadCrumb {
+                    title: "Workers".to_string(),
+                    link: Some("/admin/workers".to_string()),
+                },
+            ],
             BreadCrumbKey::AdminOverview => vec![BreadCrumb {
                 title: "Administration".to_string(),
                 link: None,
@@ -66,7 +77,7 @@ impl BreadCrumb {
 /// nav_active sets active navbar items
 pub fn nav_active(breadcrumb: &BreadCrumbKey) -> HashMap<String, String> {
     let mut nav_active = HashMap::new();
-    println!("breadcrumb: {:?}", breadcrumb.to_string());
+    // println!("breadcrumb: {:?}", breadcrumb.to_string());
     nav_active.insert(breadcrumb.to_string(), "active".to_string());
     nav_active
 }

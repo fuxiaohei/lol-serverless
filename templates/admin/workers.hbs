@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> parts/head.hbs}}
+</head>
+
+<body>
+    <div id="root">
+        {{> parts/sidebar.hbs}}
+        <main id="main" class="w-100 overflow-y-auto">
+            {{> parts/topnav.hbs}}
+            <div id="main-container">
+                <div id="admin-workers" class="p-3">
+                    <div id="workers-table" class="mb-4 border-bottom">
+                        <table class="table shadow-none bg-transparent">
+                            <thead>
+                                <tr>
+                                    <th scope="col">IP</th>
+                                    <th scope="col">Hostname</th>
+                                    <th scope="col">Region</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each data.workers}}
+                                <tr>
+                                    <td class="fw-bold">{{ip}}</td>
+                                    <td>{{hostname}}</td>
+                                    <td>{{region}}</td>
+                                    <td class="status-{{status}}">{{status}}</td>
+                                    <td class="text-body-tertiary">
+                                        Last Seen at
+                                        <span class="time-ago ms-1" data-bs-toggle="tooltip"
+                                            data-bs-title="{{last_seen_at}}"
+                                            data-x-timeago="{{last_seen_at}}"></span></span>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>Runtime.land uses worker nodes to execute the compiled wasm module files. It needs token
+                        to register itself to the master node.
+                    </p>
+                    {{#with data}}
+                    {{> parts/tokens-list.hbs}}
+                    {{/with}}
+                </div>
+            </div>
+            {{> parts/footer.hbs}}
+        </main>
+    </div>
+    {{> parts/js.hbs}}
+</body>
+
+</html>

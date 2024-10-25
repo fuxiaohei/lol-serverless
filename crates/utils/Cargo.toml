@@ -12,3 +12,4 @@ rand = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 simple_crypt = "0.2.3"
+hostname = "0.4.0"

@@ -5,7 +5,7 @@ use crate::dashboard::{
     tplvars::{AuthUser, BreadCrumbKey, Empty, Page, Vars},
 };
 use axum::{
-    extract::Request,
+    extract::{OriginalUri, Request},
     http::StatusCode,
     middleware::Next,
     response::{IntoResponse, Response},
@@ -125,6 +125,13 @@ pub async fn middle(mut request: Request, next: Next) -> Result<Response, Server
         return Ok(next.run(request).await);
     }
 
+    // worker api check auth token, not session
+    if path.starts_with("/_worker_api") {
+        return worker_auth(request, next).await.map_err(|status_code| {
+            ServerError::status_code(status_code, &status_code.to_string())
+        });
+    }
+
     // get session value
     let headers = request.headers();
     let jar = CookieJar::from_headers(headers);
@@ -189,5 +196,62 @@ pub async fn middle(mut request: Request, next: Next) -> Result<Response, Server
     }
 
     request.extensions_mut().insert(session_user);
+    Ok(next.run(request).await)
+}
+
+async fn worker_auth(request: Request, next: Next) -> Result<Response, StatusCode> {
+    let path = if let Some(path) = request.extensions().get::<OriginalUri>() {
+        // This will include nested routes
+        path.0.path().to_owned()
+    } else {
+        request.uri().path().to_owned()
+    };
+
+    let auth_header = request.headers().get("Authorization");
+    if auth_header.is_none() {
+        warn!(path = path, "No authorization header");
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+    let auth_value = auth_header
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .trim_start_matches("Bearer ");
+    if auth_value.is_empty() {
+        warn!(path = path, "Authorization header is empty");
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+
+    // get worker token
+    let token = match tokens::get_by_value(auth_value, Some(tokens::Usage::Worker)).await {
+        Ok(t) => t,
+        Err(e) => {
+            warn!(path = path, "Error getting token: {}", e);
+            return Err(StatusCode::INTERNAL_SERVER_ERROR);
+        }
+    };
+    if token.is_none() {
+        warn!(path = path, "Token not found");
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+    let token = token.unwrap();
+    if tokens::is_expired(&token) {
+        warn!(path = path, "Token is expired");
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+    if token.status != tokens::Status::Active.to_string() {
+        warn!(path = path, "Token is not active");
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+    // check if the token is used in the last 60 seconds
+    if chrono::Utc::now().timestamp() - token.latest_used_at.and_utc().timestamp() > 60 {
+        match tokens::set_usage_at(token.id).await {
+            Ok(_) => {}
+            Err(e) => {
+                warn!(path = path, "Error update usage at: {}", e);
+                return Err(StatusCode::INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
     Ok(next.run(request).await)
 }

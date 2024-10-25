@@ -41,21 +41,11 @@ static ENDPOINT_NAME: OnceCell<String> = OnceCell::new();
 static ENABLE_WASMTIME_AOT: OnceCell<bool> = OnceCell::new();
 static ENABLE_METRICS: OnceCell<bool> = OnceCell::new();
 
-/// get hostname
-fn get_hostname() -> Result<String> {
-    // get env HOSTNAME first
-    let mut h = std::env::var("HOSTNAME").unwrap_or_else(|_| "".to_string());
-    if h.is_empty() {
-        h = hostname::get().unwrap().to_str().unwrap().to_string();
-    }
-    Ok(h)
-}
-
 async fn init_opts(opts: &Opts) -> Result<()> {
     let hostname = if let Some(endpoint) = &opts.endpoint_name {
         endpoint.clone()
     } else {
-        get_hostname()?
+        land_utils::get_hostname()?
     };
 
     debug!("Endpoint: {}", hostname);

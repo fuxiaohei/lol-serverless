@@ -1,7 +1,10 @@
+use std::collections::HashMap;
+
 use crate::{models::wasm_artifacts, DB};
 use anyhow::Result;
 use sea_orm::{
     prelude::Expr, ActiveModelTrait, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
+    QueryOrder,
 };
 
 #[derive(strum::Display)]
@@ -62,4 +65,22 @@ pub async fn set_success(id: i32, target: Option<String>) -> Result<()> {
         .exec(db)
         .await?;
     Ok(())
+}
+
+/// list_success_by_deploys list success wasm_artifacts by deploy ids
+pub async fn list_success_by_deploys(
+    deploy_ids: Vec<i32>,
+) -> Result<HashMap<i32, wasm_artifacts::Model>> {
+    let db = DB.get().unwrap();
+    let models = wasm_artifacts::Entity::find()
+        .filter(wasm_artifacts::Column::DeployId.is_in(deploy_ids))
+        .filter(wasm_artifacts::Column::Status.eq(Status::Success.to_string()))
+        .order_by_asc(wasm_artifacts::Column::Id)
+        .all(db)
+        .await?;
+    let mut map = HashMap::new();
+    for model in models {
+        map.insert(model.deploy_id, model);
+    }
+    Ok(map)
 }
