@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> parts/head.hbs}}
+</head>
+
+<body>
+    <div id="root">
+        {{> parts/sidebar.hbs}}
+        <main id="main" class="w-100 overflow-y-auto">
+            {{> parts/topnav.hbs}}
+            <div id="main-container">
+                <div id="configs-nav" class="overflow-y-auto p-3">
+                    <nav>
+                        <div class="nav nav-tabs nav-pills mb-3 pb-3" id="configs-nav-tab" role="tablist">
+                            <button class="nav-link active p-2 me-1" id="configs-nav-domains-tab" data-bs-toggle="tab"
+                                data-bs-target="#configs-nav-domains" type="button">Domains</button>
+                            <button class="nav-link p-2 me-1" id="configs-nav-profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#configs-nav-storage" type="button">Storage</button>
+                            <button class="nav-link p-2 me-1" id="configs-nav-contact-tab" data-bs-toggle="tab"
+                                data-bs-target="#configs-nav-contact" type="button">Contact</button>
+                            <button class="nav-link p-2" id="configs-nav-disabled-tab" data-bs-toggle="tab"
+                                data-bs-target="configs-#nav-disabled" type="button" disabled>Disabled</button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="configs-nav-domains" role="tabpanel" tabindex="0">
+                            {{> components/admin-domains.hbs}}
+                        </div>
+                        <div class="tab-pane fade" id="configs-nav-storage" role="tabpanel" tabindex="0">
+                            {{> components/admin-storage.hbs}}
+                        </div>
+                        <div class="tab-pane fade" id="configs-nav-contact" role="tabpanel" tabindex="0">You can use it
+                            with tabs, pills, and any other .nav-powered navigation.</div>
+                        <div class="tab-pane fade" id="configs-nav-disabled" role="tabpanel" tabindex="0">The tabs
+                            plugin also works with pills.</div>
+                    </div>
+                </div>
+            </div>
+            {{> parts/footer.hbs}}
+        </main>
+    </div>
+    {{> parts/js.hbs}}
+    <script type="text/javascript">
+        const switcher = document.getElementById("storage-switch");
+        const fs_storage_form = document.getElementById("fs-storage-form");
+        const s3_storage_form = document.getElementById("s3-storage-form");
+        const current = switcher.getAttribute("data-x-current");
+        if (current == "s3") {
+            switcher.setAttribute("checked", "checked");
+            s3_storage_form.classList.remove("d-none");
+        } else {
+            fs_storage_form.classList.remove("d-none");
+        }
+        switcher.addEventListener("change", function (e) {
+            var checked = e.target.checked;
+            if (checked) {
+                fs_storage_form.classList.add("d-none");
+                s3_storage_form.classList.remove("d-none");
+            } else {
+                fs_storage_form.classList.remove("d-none");
+                s3_storage_form.classList.add("d-none");
+            }
+        });
+    </script>
+</body>
+
+</html>

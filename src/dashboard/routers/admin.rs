@@ -26,7 +26,7 @@ pub async fn index(
         "admin.hbs",
         engine,
         Vars {
-            page: Page::new("Administration", BreadCrumbKey::Administration, Some(user)),
+            page: Page::new_admin("Administration", BreadCrumbKey::AdminOverview, Some(user)),
             domain_settings,
             storage: storage::Vars::get().await?,
         },
@@ -54,4 +54,27 @@ pub async fn update_storage(
 ) -> Result<impl IntoResponse, ServerError> {
     storage::update_by_form(form).await?;
     Ok(ok_html("Storage updated"))
+}
+
+/// general shows the admin general settings page
+pub async fn general(
+    engine: Engine,
+    Extension(user): Extension<AuthUser>,
+) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Vars {
+        pub page: tplvars::Page,
+        pub domain_settings: DomainSettings,
+        pub storage: storage::Vars,
+    }
+    let domain_settings = settings::get_domain_settings().await?;
+    Ok(HtmlMinified(
+        "admin/general.hbs",
+        engine,
+        Vars {
+            page: Page::new_admin("Administration", BreadCrumbKey::AdminGeneral, Some(user)),
+            domain_settings,
+            storage: storage::Vars::get().await?,
+        },
+    ))
 }

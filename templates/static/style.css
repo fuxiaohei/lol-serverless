@@ -117,32 +117,25 @@ html[data-bs-theme="dark"] #sidebar {
     height: 60px;
 }
 
-#account-nav .nav-link:hover,
-#resource-nav .nav-link:hover {
+.sidebar-nav .nav-link:hover {
     background-color: #e2e4e5;
 }
 
-#account-nav .nav-link.active,
-#project-nav .nav-link.active {
+.sidebar-nav .nav-link.active {
     background-color: #d4e9f4 !important;
     color: #3459e6;
 }
 
-html[data-bs-theme="dark"] #account-nav .nav-link,
-html[data-bs-theme="dark"] #resource-nav .nav-link,
-html[data-bs-theme="dark"] #project-nav .nav-link {
+html[data-bs-theme="dark"] .sidebar-nav .nav-link {
     color: #878987;
 }
 
-html[data-bs-theme="dark"] #account-nav .nav-link:hover,
-html[data-bs-theme="dark"] #resource-nav .nav-link:hover,
-html[data-bs-theme="dark"] #project-nav .nav-link:hover {
+html[data-bs-theme="dark"] .sidebar-nav .nav-link:hover {
     background-color: #1a1a1a;
     color: #c3c6c4;
 }
 
-html[data-bs-theme="dark"] #account-nav .nav-link.active,
-html[data-bs-theme="dark"] #project-nav .nav-link.active {
+html[data-bs-theme="dark"] .sidebar-nav .nav-link.active {
     background-color: #1a1a1a !important;
     color: #e0e3e1 !important;
 }

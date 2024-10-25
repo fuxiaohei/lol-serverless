@@ -18,6 +18,7 @@ pub struct Page {
     pub breadcrumb: Vec<BreadCrumb>,
     pub user: Option<AuthUser>,
     pub version: String,
+    pub is_in_admin: bool,
 }
 
 impl Page {
@@ -29,6 +30,18 @@ impl Page {
             breadcrumb: BreadCrumb::new(&breadcrumb),
             user,
             version: version::short(),
+            is_in_admin: false,
+        }
+    }
+    /// new_admin creates a new admin page var
+    pub fn new_admin(title: &str, breadcrumb: BreadCrumbKey, user: Option<AuthUser>) -> Self {
+        Page {
+            title: title.to_string(),
+            nav_active: nav_active(&breadcrumb),
+            breadcrumb: BreadCrumb::new(&breadcrumb),
+            user,
+            version: version::short(),
+            is_in_admin: true,
         }
     }
 }
