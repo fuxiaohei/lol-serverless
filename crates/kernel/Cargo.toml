@@ -18,6 +18,7 @@ opendal = { version = "0.50.1", default-features = false, features = [
     "services-s3",
     "services-memory",
 ] }
+reqwest = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 tempfile = "3.13.0"
@@ -25,4 +26,3 @@ tokio = { workspace = true }
 toml = "0.8.19"
 tracing = { workspace = true }
 walkdir = { workspace = true }
-reqwest= { workspace = true }

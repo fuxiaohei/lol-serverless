@@ -7,8 +7,8 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 axum = { workspace = true }
-land-utils = { workspace = true }
 land-kernel = { workspace = true }
+land-utils = { workspace = true }
 land-wasm-host = { workspace = true }
 metrics = { workspace = true }
 metrics-exporter-prometheus = { version = "0.16.0", default-features = false, features = [
