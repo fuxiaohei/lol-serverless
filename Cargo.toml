@@ -1,5 +1,5 @@
 [workspace]
-members = ["land-cli", "land-server", "land-worker"]
+members = ["crates/wasm-gen", "land-cli", "land-server", "land-worker"]
 default-members = ["land-cli"]
 resolver = "2"
 
@@ -9,3 +9,13 @@ edition = "2021"
 authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
 [workspace.dependencies]
+# internal dependencies
+land-wasm-gen = { path = "lib/wasm-gen" }
+
+# third-party dependencies
+anyhow = "1.0.91"
+tracing = "0.1.40"
+wasi-preview1-component-adapter-provider = "25.0.1"
+wit-bindgen-core = "0.34.0"
+wit-bindgen-rust = "0.34.0"
+wit-component = "0.219.1"
