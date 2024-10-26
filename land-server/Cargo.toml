@@ -5,3 +5,7 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+land-helpers = { workspace = true }
+tokio = { workspace = true }

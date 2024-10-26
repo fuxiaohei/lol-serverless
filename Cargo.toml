@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "crates/helpers",
     "crates/sdk",
     "crates/sdk-macro",
     "crates/wasm-gen",
@@ -18,6 +19,7 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
 [workspace.dependencies]
 # internal dependencies
+land-helpers = { path = "crates/helpers" }
 land-sdk-macro = { path = "crates/sdk-macro" }
 land-wasm-gen = { path = "crates/wasm-gen" }
 
@@ -26,6 +28,7 @@ anyhow = "1.0.91"
 async-trait = "0.1.83"
 axum = "0.7.7"
 bytes = "1.8.0"
+clap = { version = "4.5.20", features = ["derive", "env"] }
 http = "1.1.0"
 lazy_static = "1.5.0"
 reqwest = { version = "0.12.8", default-features = false, features = [
@@ -33,8 +36,14 @@ reqwest = { version = "0.12.8", default-features = false, features = [
     "rustls-tls",
     "json",
 ] }
+time = { version = "0.3.36", features = ["local-offset"] }
 tokio = { version = "1.41.0", features = ["full"] }
 tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = [
+    "time",
+    "local-time",
+    "env-filter",
+] }
 wasmtime = { version = "26.0.0", features = ["component-model", "async"] }
 wasmtime-wasi = "26.0.0"
 wasi-preview1-component-adapter-provider = "25.0.1"

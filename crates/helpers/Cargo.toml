@@ -1,0 +1,13 @@
+[package]
+name = "land-helpers"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+clap = { workspace = true }
+time = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[build-dependencies]
+vergen-git2 = { version = "1.0.1", features = ["build", "cargo", "rustc"] }
