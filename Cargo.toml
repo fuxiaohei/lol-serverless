@@ -1,0 +1,11 @@
+[workspace]
+members = ["land-cli", "land-server", "land-worker"]
+default-members = ["land-cli"]
+resolver = "2"
+
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+authors = ["fuxiaohei <fudong0797@gmail.com>"]
+
+[workspace.dependencies]

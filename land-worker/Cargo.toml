@@ -1,0 +1,7 @@
+[package]
+name = "land-worker"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
