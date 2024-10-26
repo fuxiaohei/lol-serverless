@@ -20,9 +20,9 @@ struct Args {
     /// Template directory
     #[clap(long)]
     tpldir: Option<String>,
-    // Database connection args.
-    //#[clap(flatten)]
-    //dbargs: land_dao::DBArgs,
+    /// Database connection args.
+    #[clap(flatten)]
+    dbargs: land_dao::DBArgs,
 }
 
 #[tokio::main]
@@ -32,6 +32,14 @@ async fn main() -> anyhow::Result<()> {
         land_helpers::version::println(env!("CARGO_PKG_NAME"), args.output.verbose);
         return Ok(());
     }
+
+    // Initialize logging
+    land_helpers::logging::init(args.output.verbose);
+
+    // Connect to database
+    land_dao::connect(&args.dbargs)
+        .await
+        .expect("Failed to connect to database");
 
     Ok(())
 }

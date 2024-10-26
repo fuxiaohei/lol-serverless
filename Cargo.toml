@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "crates/dao",
     "crates/helpers",
     "crates/sdk",
     "crates/sdk-macro",
@@ -19,6 +20,7 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
 [workspace.dependencies]
 # internal dependencies
+land-dao = { path = "crates/dao" }
 land-helpers = { path = "crates/helpers" }
 land-sdk-macro = { path = "crates/sdk-macro" }
 land-wasm-gen = { path = "crates/wasm-gen" }

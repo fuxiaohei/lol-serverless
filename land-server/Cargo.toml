@@ -7,5 +7,6 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 clap = { workspace = true }
+land-dao = { workspace = true }
 land-helpers = { workspace = true }
 tokio = { workspace = true }
