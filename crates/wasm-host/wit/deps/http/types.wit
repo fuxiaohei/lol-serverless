@@ -1,0 +1,68 @@
+package land:http;
+
+interface types{
+
+    // HTTP Status Codes
+    type status-code = u16;
+
+    // HTTP Request Methods, use uppercase
+    type method = string;
+
+    // HTTP Request Headers
+    type headers = list<tuple<string, string>>;
+
+    // HTTP URI
+    type uri = string;
+
+    // HTTP Request Body
+    type body-handle = u32;
+
+    // HTTP Request
+    record request{
+        method: method,
+        uri: uri,
+        headers: headers,
+        body: option<body-handle>
+    }
+
+    // HTTP Response
+    record response{
+        status: status-code,
+        headers: headers,
+        body: option<body-handle>
+    }
+
+    // HTTP errors returned by the runtime.
+    variant request-error {
+        // The request failed due to a network error.
+        network-error(string),
+        // The request failed due to a timeout.
+        timeout,
+        // The request failed due to a invalid url.
+        invalid-url,
+        // The request failed due to a forbidden destination.
+        destination-not-allowed,
+        // The request failed due to over requests limit.
+        too-many-requests,
+        // The request failed due to invalid request 
+        invalid-request(string),
+    }
+
+    // Fetch redirect policy
+    enum redirect-policy {
+        // Follow redirects.
+        follow,
+        // Do not follow redirects. User handles the 3xx response.
+        manual,
+        // Throw an error when a 3xx response is received.
+        error,
+    }
+
+    // HTTP request option
+    record request-options{
+        // The request timeout in milliseconds.
+        timeout: u32,
+        // Follow redirects.
+        redirect: redirect-policy,
+    }
+}

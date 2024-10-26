@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/wasm-gen", "land-cli", "land-server", "land-worker"]
+members = ["crates/wasm-gen", "crates/wasm-host", "land-cli", "land-server", "land-worker"]
 default-members = ["land-cli"]
 resolver = "2"
 
@@ -10,11 +10,23 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
 [workspace.dependencies]
 # internal dependencies
-land-wasm-gen = { path = "lib/wasm-gen" }
+land-wasm-gen = { path = "crates/wasm-gen" }
 
 # third-party dependencies
 anyhow = "1.0.91"
+async-trait = "0.1.83"
+axum = "0.7.7"
+bytes = "1.8.0"
+lazy_static = "1.5.0"
+reqwest = { version = "0.12.8", default-features = false, features = [
+    "stream",
+    "rustls-tls",
+    "json",
+] }
+tokio = { version = "1.41.0", features = ["full"] }
 tracing = "0.1.40"
+wasmtime = { version = "26.0.0", features = ["component-model", "async"] }
+wasmtime-wasi = "26.0.0"
 wasi-preview1-component-adapter-provider = "25.0.1"
 wit-bindgen-core = "0.34.0"
 wit-bindgen-rust = "0.34.0"

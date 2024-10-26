@@ -1,0 +1,6 @@
+package land:worker;
+
+world http-handler {
+    export land:http/incoming;
+    export land:asyncio/context;
+}
