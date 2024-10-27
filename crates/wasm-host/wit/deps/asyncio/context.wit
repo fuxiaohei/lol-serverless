@@ -1,4 +1,4 @@
-package land:asyncio;
+package land:asyncio@0.2.0;
 
 interface context {
     // is ctx pending

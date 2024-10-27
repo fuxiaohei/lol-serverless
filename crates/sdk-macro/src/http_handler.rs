@@ -218,19 +218,19 @@ pub mod exports {
                 }
                 #[doc(hidden)]
                 #[macro_export]
-                macro_rules! __export_land_asyncio_context_cabi {
+                macro_rules! __export_land_asyncio_context_0_2_0_cabi {
                     ($ty:ident with_types_in $($path_to_types:tt)*) => {
                         const _ : () = { #[export_name =
-                        "land:asyncio/context#is-pending"] unsafe extern "C" fn
+                        "land:asyncio/context@0.2.0#is-pending"] unsafe extern "C" fn
                         export_is_pending() -> i32 { $($path_to_types)*::
                         _export_is_pending_cabi::<$ty > () } #[export_name =
-                        "land:asyncio/context#select"] unsafe extern "C" fn
+                        "land:asyncio/context@0.2.0#select"] unsafe extern "C" fn
                         export_select() -> i32 { $($path_to_types)*::
                         _export_select_cabi::<$ty > () } };
                     };
                 }
                 #[doc(hidden)]
-                pub use __export_land_asyncio_context_cabi;
+                pub use __export_land_asyncio_context_0_2_0_cabi;
             }
         }
         #[allow(dead_code)]
@@ -371,23 +371,23 @@ pub mod exports {
                 }
                 #[doc(hidden)]
                 #[macro_export]
-                macro_rules! __export_land_http_incoming_cabi {
+                macro_rules! __export_land_http_incoming_0_2_0_cabi {
                     ($ty:ident with_types_in $($path_to_types:tt)*) => {
                         const _ : () = { #[export_name =
-                        "land:http/incoming#handle-request"] unsafe extern "C" fn
+                        "land:http/incoming@0.2.0#handle-request"] unsafe extern "C" fn
                         export_handle_request(arg0 : * mut u8, arg1 : usize, arg2 : * mut
                         u8, arg3 : usize, arg4 : * mut u8, arg5 : usize, arg6 : i32, arg7
                         : i32,) -> * mut u8 { $($path_to_types)*::
                         _export_handle_request_cabi::<$ty > (arg0, arg1, arg2, arg3,
                         arg4, arg5, arg6, arg7) } #[export_name =
-                        "cabi_post_land:http/incoming#handle-request"] unsafe extern "C"
-                        fn _post_return_handle_request(arg0 : * mut u8,) {
+                        "cabi_post_land:http/incoming@0.2.0#handle-request"] unsafe
+                        extern "C" fn _post_return_handle_request(arg0 : * mut u8,) {
                         $($path_to_types)*:: __post_return_handle_request::<$ty > (arg0)
                         } };
                     };
                 }
                 #[doc(hidden)]
-                pub use __export_land_http_incoming_cabi;
+                pub use __export_land_http_incoming_0_2_0_cabi;
                 #[repr(align(4))]
                 struct _RetArea([::core::mem::MaybeUninit<u8>; 20]);
                 static mut _RET_AREA: _RetArea = _RetArea(
@@ -512,16 +512,16 @@ macro_rules! __export_http_handler_impl {
     };
     ($ty:ident with_types_in $($path_to_types_root:tt)*) => {
         $($path_to_types_root)*::
-        exports::land::http::incoming::__export_land_http_incoming_cabi!($ty
+        exports::land::http::incoming::__export_land_http_incoming_0_2_0_cabi!($ty
         with_types_in $($path_to_types_root)*:: exports::land::http::incoming);
         $($path_to_types_root)*::
-        exports::land::asyncio::context::__export_land_asyncio_context_cabi!($ty
+        exports::land::asyncio::context::__export_land_asyncio_context_0_2_0_cabi!($ty
         with_types_in $($path_to_types_root)*:: exports::land::asyncio::context); const _
         : () = { #[cfg(target_arch = "wasm32")] #[link_section =
-        "component-type:wit-bindgen:0.34.0:land:worker:http-handler:imports and exports"]
-        #[doc(hidden)] pub static __WIT_BINDGEN_COMPONENT_TYPE : [u8; 751] = *
+        "component-type:wit-bindgen:0.34.0:land:worker@0.2.0:http-handler:imports and exports"]
+        #[doc(hidden)] pub static __WIT_BINDGEN_COMPONENT_TYPE : [u8; 775] = *
         b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xec\x04\x01A\x02\x01\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\x84\x05\x01A\x02\x01\
 A\x08\x01B\x16\x01{\x04\0\x0bstatus-code\x03\0\0\x01s\x04\0\x06method\x03\0\x02\x01\
 o\x02ss\x01p\x04\x04\0\x07headers\x03\0\x05\x01s\x04\0\x03uri\x03\0\x07\x01y\x04\
 \0\x0bbody-handle\x03\0\x09\x01k\x0a\x01r\x04\x06method\x03\x03uri\x08\x07header\
@@ -530,24 +530,24 @@ s\x06\x04body\x0b\x04\0\x07request\x03\0\x0c\x01r\x03\x06status\x01\x07headers\x
 eout\0\0\x0binvalid-url\0\0\x17destination-not-allowed\0\0\x11too-many-requests\0\
 \0\x0finvalid-request\x01s\0\x04\0\x0drequest-error\x03\0\x10\x01m\x03\x06follow\
 \x06manual\x05error\x04\0\x0fredirect-policy\x03\0\x12\x01r\x02\x07timeouty\x08r\
-edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\0\x0fland:http/types\x05\0\x02\
-\x03\0\0\x07request\x02\x03\0\0\x08response\x01B\x06\x02\x03\x02\x01\x01\x04\0\x07\
-request\x03\0\0\x02\x03\x02\x01\x02\x04\0\x08response\x03\0\x02\x01@\x01\x03req\x01\
-\0\x03\x04\0\x0ehandle-request\x01\x04\x04\0\x12land:http/incoming\x05\x03\x01B\x03\
-\x01@\0\0\x7f\x04\0\x0ais-pending\x01\0\x04\0\x06select\x01\0\x04\0\x14land:asyn\
-cio/context\x05\x04\x04\0\x18land:worker/http-handler\x04\0\x0b\x12\x01\0\x0chtt\
-p-handler\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.\
-219.1\x10wit-bindgen-rust\x060.34.0";
+edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\0\x15land:http/types@0.2.0\x05\
+\0\x02\x03\0\0\x07request\x02\x03\0\0\x08response\x01B\x06\x02\x03\x02\x01\x01\x04\
+\0\x07request\x03\0\0\x02\x03\x02\x01\x02\x04\0\x08response\x03\0\x02\x01@\x01\x03\
+req\x01\0\x03\x04\0\x0ehandle-request\x01\x04\x04\0\x18land:http/incoming@0.2.0\x05\
+\x03\x01B\x03\x01@\0\0\x7f\x04\0\x0ais-pending\x01\0\x04\0\x06select\x01\0\x04\0\
+\x1aland:asyncio/context@0.2.0\x05\x04\x04\0\x1eland:worker/http-handler@0.2.0\x04\
+\0\x0b\x12\x01\0\x0chttp-handler\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\
+\x0dwit-component\x070.219.1\x10wit-bindgen-rust\x060.34.0";
         };
     };
 }
 #[doc(inline)]
 pub use __export_http_handler_impl as export;
 #[cfg(target_arch = "wasm32")]
-#[link_section = "component-type:wit-bindgen:0.34.0:land:worker:http-handler-with-all-of-its-exports-removed:encoded world"]
+#[link_section = "component-type:wit-bindgen:0.34.0:land:worker@0.2.0:http-handler-with-all-of-its-exports-removed:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 639] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xdc\x03\x01A\x02\x01\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 651] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xe8\x03\x01A\x02\x01\
 A\x02\x01B\x16\x01{\x04\0\x0bstatus-code\x03\0\0\x01s\x04\0\x06method\x03\0\x02\x01\
 o\x02ss\x01p\x04\x04\0\x07headers\x03\0\x05\x01s\x04\0\x03uri\x03\0\x07\x01y\x04\
 \0\x0bbody-handle\x03\0\x09\x01k\x0a\x01r\x04\x06method\x03\x03uri\x08\x07header\
@@ -556,10 +556,10 @@ s\x06\x04body\x0b\x04\0\x07request\x03\0\x0c\x01r\x03\x06status\x01\x07headers\x
 eout\0\0\x0binvalid-url\0\0\x17destination-not-allowed\0\0\x11too-many-requests\0\
 \0\x0finvalid-request\x01s\0\x04\0\x0drequest-error\x03\0\x10\x01m\x03\x06follow\
 \x06manual\x05error\x04\0\x0fredirect-policy\x03\0\x12\x01r\x02\x07timeouty\x08r\
-edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\0\x0fland:http/types\x05\0\x04\
-\08land:worker/http-handler-with-all-of-its-exports-removed\x04\0\x0b2\x01\0,htt\
-p-handler-with-all-of-its-exports-removed\x03\0\0\0G\x09producers\x01\x0cprocess\
-ed-by\x02\x0dwit-component\x070.219.1\x10wit-bindgen-rust\x060.34.0";
+edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\0\x15land:http/types@0.2.0\x05\
+\0\x04\0>land:worker/http-handler-with-all-of-its-exports-removed@0.2.0\x04\0\x0b\
+2\x01\0,http-handler-with-all-of-its-exports-removed\x03\0\0\0G\x09producers\x01\
+\x0cprocessed-by\x02\x0dwit-component\x070.219.1\x10wit-bindgen-rust\x060.34.0";
 #[inline(never)]
 #[doc(hidden)]
 pub fn __link_custom_section_describing_imports() {

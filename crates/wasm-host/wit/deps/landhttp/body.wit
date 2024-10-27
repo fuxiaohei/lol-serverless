@@ -1,4 +1,4 @@
-package land:http;
+package land:http@0.2.0;
 
 interface body {
     use types.{body-handle};

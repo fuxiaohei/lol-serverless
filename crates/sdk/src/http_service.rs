@@ -26,7 +26,7 @@ pub mod land {
                     let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
                     let ptr0 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:asyncio/asyncio")]
+                    #[link(wasm_import_module = "land:asyncio/asyncio@0.2.0")]
                     extern "C" {
                         #[link_name = "new"]
                         fn wit_import(_: *mut u8);
@@ -62,7 +62,7 @@ pub mod land {
                     let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
                     let ptr0 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:asyncio/asyncio")]
+                    #[link(wasm_import_module = "land:asyncio/asyncio@0.2.0")]
                     extern "C" {
                         #[link_name = "sleep"]
                         fn wit_import(_: i32, _: *mut u8);
@@ -98,7 +98,7 @@ pub mod land {
                     let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
                     let ptr0 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:asyncio/asyncio")]
+                    #[link(wasm_import_module = "land:asyncio/asyncio@0.2.0")]
                     extern "C" {
                         #[link_name = "select"]
                         fn wit_import(_: *mut u8);
@@ -131,7 +131,7 @@ pub mod land {
             pub fn ready() {
                 unsafe {
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:asyncio/asyncio")]
+                    #[link(wasm_import_module = "land:asyncio/asyncio@0.2.0")]
                     extern "C" {
                         #[link_name = "ready"]
                         fn wit_import();
@@ -392,7 +392,7 @@ pub mod land {
                     let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 16]);
                     let ptr0 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:http/body")]
+                    #[link(wasm_import_module = "land:http/body@0.2.0")]
                     extern "C" {
                         #[link_name = "read"]
                         fn wit_import(_: i32, _: i32, _: *mut u8);
@@ -474,7 +474,7 @@ pub mod land {
                     let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 16]);
                     let ptr0 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:http/body")]
+                    #[link(wasm_import_module = "land:http/body@0.2.0")]
                     extern "C" {
                         #[link_name = "read-all"]
                         fn wit_import(_: i32, _: *mut u8);
@@ -555,7 +555,7 @@ pub mod land {
                     let len0 = vec0.len();
                     let ptr1 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:http/body")]
+                    #[link(wasm_import_module = "land:http/body@0.2.0")]
                     extern "C" {
                         #[link_name = "write"]
                         fn wit_import(_: i32, _: *mut u8, _: usize, _: *mut u8);
@@ -631,7 +631,7 @@ pub mod land {
                     let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 16]);
                     let ptr0 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:http/body")]
+                    #[link(wasm_import_module = "land:http/body@0.2.0")]
                     extern "C" {
                         #[link_name = "new"]
                         fn wit_import(_: *mut u8);
@@ -707,7 +707,7 @@ pub mod land {
                     let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 16]);
                     let ptr0 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:http/body")]
+                    #[link(wasm_import_module = "land:http/body@0.2.0")]
                     extern "C" {
                         #[link_name = "new-stream"]
                         fn wit_import(_: *mut u8);
@@ -848,7 +848,7 @@ pub mod land {
                     } = options;
                     let ptr9 = ret_area.0.as_mut_ptr().cast::<u8>();
                     #[cfg(target_arch = "wasm32")]
-                    #[link(wasm_import_module = "land:http/fetching")]
+                    #[link(wasm_import_module = "land:http/fetching@0.2.0")]
                     extern "C" {
                         #[link_name = "send-request"]
                         fn wit_import(
@@ -1098,10 +1098,10 @@ mod _rt {
     extern crate alloc as alloc_crate;
 }
 #[cfg(target_arch = "wasm32")]
-#[link_section = "component-type:wit-bindgen:0.34.0:land:worker:http-service-with-all-of-its-exports-removed:encoded world"]
+#[link_section = "component-type:wit-bindgen:0.34.0:land:worker@0.2.0:http-service-with-all-of-its-exports-removed:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1340] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\x99\x09\x01A\x02\x01\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1376] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xbd\x09\x01A\x02\x01\
 A\x10\x01B\x16\x01{\x04\0\x0bstatus-code\x03\0\0\x01s\x04\0\x06method\x03\0\x02\x01\
 o\x02ss\x01p\x04\x04\0\x07headers\x03\0\x05\x01s\x04\0\x03uri\x03\0\x07\x01y\x04\
 \0\x0bbody-handle\x03\0\x09\x01k\x0a\x01r\x04\x06method\x03\x03uri\x08\x07header\
@@ -1110,28 +1110,29 @@ s\x06\x04body\x0b\x04\0\x07request\x03\0\x0c\x01r\x03\x06status\x01\x07headers\x
 eout\0\0\x0binvalid-url\0\0\x17destination-not-allowed\0\0\x11too-many-requests\0\
 \0\x0finvalid-request\x01s\0\x04\0\x0drequest-error\x03\0\x10\x01m\x03\x06follow\
 \x06manual\x05error\x04\0\x0fredirect-policy\x03\0\x12\x01r\x02\x07timeouty\x08r\
-edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\0\x0fland:http/types\x05\0\x02\
-\x03\0\0\x0bbody-handle\x01B\x13\x02\x03\x02\x01\x01\x04\0\x0bbody-handle\x03\0\0\
-\x01q\x06\x0einvalid-handle\0\0\x09read-only\0\0\x0bread-closed\0\0\x0bread-fail\
-ed\x01s\0\x0cwrite-failed\x01s\0\x0cwrite-closed\0\0\x04\0\x0abody-error\x03\0\x02\
-\x01p}\x01o\x02\x04\x7f\x01j\x01\x05\x01\x03\x01@\x02\x06handle\x01\x04sizey\0\x06\
-\x04\0\x04read\x01\x07\x01j\x01\x04\x01\x03\x01@\x01\x06handle\x01\0\x08\x04\0\x08\
-read-all\x01\x09\x01j\x01w\x01\x03\x01@\x02\x06handle\x01\x04data\x04\0\x0a\x04\0\
-\x05write\x01\x0b\x01j\x01\x01\x01\x03\x01@\0\0\x0c\x04\0\x03new\x01\x0d\x04\0\x0a\
-new-stream\x01\x0d\x03\0\x0eland:http/body\x05\x02\x02\x03\0\0\x07request\x02\x03\
-\0\0\x08response\x02\x03\0\0\x0drequest-error\x02\x03\0\0\x0frequest-options\x01\
-B\x0b\x02\x03\x02\x01\x03\x04\0\x07request\x03\0\0\x02\x03\x02\x01\x04\x04\0\x08\
-response\x03\0\x02\x02\x03\x02\x01\x05\x04\0\x0drequest-error\x03\0\x04\x02\x03\x02\
-\x01\x06\x04\0\x0frequest-options\x03\0\x06\x01j\x01\x03\x01\x05\x01@\x02\x03req\
-\x01\x07options\x07\0\x08\x04\0\x0csend-request\x01\x09\x03\0\x12land:http/fetch\
-ing\x05\x07\x01B\x02\x01y\x04\0\x06handle\x03\0\0\x03\0\x12land:asyncio/types\x05\
-\x08\x02\x03\0\x03\x06handle\x01B\x0d\x02\x03\x02\x01\x09\x04\0\x06handle\x03\0\0\
-\x01j\x01\x01\0\x01@\0\0\x02\x04\0\x03new\x01\x03\x01@\x01\x02msy\0\x02\x04\0\x05\
-sleep\x01\x04\x01k\x01\x01o\x02\x05\x7f\x01@\0\0\x06\x04\0\x06select\x01\x07\x01\
-@\0\x01\0\x04\0\x05ready\x01\x08\x03\0\x14land:asyncio/asyncio\x05\x0a\x04\08lan\
-d:worker/http-service-with-all-of-its-exports-removed\x04\0\x0b2\x01\0,http-serv\
-ice-with-all-of-its-exports-removed\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\
-\x0dwit-component\x070.219.1\x10wit-bindgen-rust\x060.34.0";
+edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\0\x15land:http/types@0.2.0\x05\
+\0\x02\x03\0\0\x0bbody-handle\x01B\x13\x02\x03\x02\x01\x01\x04\0\x0bbody-handle\x03\
+\0\0\x01q\x06\x0einvalid-handle\0\0\x09read-only\0\0\x0bread-closed\0\0\x0bread-\
+failed\x01s\0\x0cwrite-failed\x01s\0\x0cwrite-closed\0\0\x04\0\x0abody-error\x03\
+\0\x02\x01p}\x01o\x02\x04\x7f\x01j\x01\x05\x01\x03\x01@\x02\x06handle\x01\x04siz\
+ey\0\x06\x04\0\x04read\x01\x07\x01j\x01\x04\x01\x03\x01@\x01\x06handle\x01\0\x08\
+\x04\0\x08read-all\x01\x09\x01j\x01w\x01\x03\x01@\x02\x06handle\x01\x04data\x04\0\
+\x0a\x04\0\x05write\x01\x0b\x01j\x01\x01\x01\x03\x01@\0\0\x0c\x04\0\x03new\x01\x0d\
+\x04\0\x0anew-stream\x01\x0d\x03\0\x14land:http/body@0.2.0\x05\x02\x02\x03\0\0\x07\
+request\x02\x03\0\0\x08response\x02\x03\0\0\x0drequest-error\x02\x03\0\0\x0frequ\
+est-options\x01B\x0b\x02\x03\x02\x01\x03\x04\0\x07request\x03\0\0\x02\x03\x02\x01\
+\x04\x04\0\x08response\x03\0\x02\x02\x03\x02\x01\x05\x04\0\x0drequest-error\x03\0\
+\x04\x02\x03\x02\x01\x06\x04\0\x0frequest-options\x03\0\x06\x01j\x01\x03\x01\x05\
+\x01@\x02\x03req\x01\x07options\x07\0\x08\x04\0\x0csend-request\x01\x09\x03\0\x18\
+land:http/fetching@0.2.0\x05\x07\x01B\x02\x01y\x04\0\x06handle\x03\0\0\x03\0\x18\
+land:asyncio/types@0.2.0\x05\x08\x02\x03\0\x03\x06handle\x01B\x0d\x02\x03\x02\x01\
+\x09\x04\0\x06handle\x03\0\0\x01j\x01\x01\0\x01@\0\0\x02\x04\0\x03new\x01\x03\x01\
+@\x01\x02msy\0\x02\x04\0\x05sleep\x01\x04\x01k\x01\x01o\x02\x05\x7f\x01@\0\0\x06\
+\x04\0\x06select\x01\x07\x01@\0\x01\0\x04\0\x05ready\x01\x08\x03\0\x1aland:async\
+io/asyncio@0.2.0\x05\x0a\x04\0>land:worker/http-service-with-all-of-its-exports-\
+removed@0.2.0\x04\0\x0b2\x01\0,http-service-with-all-of-its-exports-removed\x03\0\
+\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.219.1\x10wit-bi\
+ndgen-rust\x060.34.0";
 #[inline(never)]
 #[doc(hidden)]
 pub fn __link_custom_section_describing_imports() {

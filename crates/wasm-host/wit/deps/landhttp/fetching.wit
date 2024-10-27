@@ -1,4 +1,4 @@
-package land:http;
+package land:http@0.2.0;
 
 interface fetching {
     use types.{request,response,request-error,request-options};
