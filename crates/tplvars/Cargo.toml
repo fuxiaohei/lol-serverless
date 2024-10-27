@@ -1,0 +1,10 @@
+[package]
+name = "land-tplvars"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+land-helpers = { workspace = true }
+serde = { workspace = true }
+strum = { workspace = true }

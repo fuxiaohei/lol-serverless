@@ -1,5 +1,9 @@
 use clap::Parser;
 
+mod server;
+mod templates;
+mod routers;
+
 #[derive(Parser, Debug)]
 #[clap(author, version)]
 #[clap(disable_version_flag = true)] // handled manually
@@ -40,6 +44,11 @@ async fn main() -> anyhow::Result<()> {
     land_dao::connect(&args.dbargs)
         .await
         .expect("Failed to connect to database");
+
+    // start http server
+    server::start(args.address.parse()?, "./assets", args.tpldir.clone())
+        .await
+        .expect("Failed to start server");
 
     Ok(())
 }

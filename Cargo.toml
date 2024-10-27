@@ -4,6 +4,7 @@ members = [
     "crates/helpers",
     "crates/sdk",
     "crates/sdk-macro",
+    "crates/tplvars",
     "crates/wasm-gen",
     "crates/wasm-host",
     "land-cli",
@@ -23,6 +24,7 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 land-dao = { path = "crates/dao" }
 land-helpers = { path = "crates/helpers" }
 land-sdk-macro = { path = "crates/sdk-macro" }
+land-tplvars = { path = "crates/tplvars" }
 land-wasm-gen = { path = "crates/wasm-gen" }
 
 # third-party dependencies
@@ -43,12 +45,19 @@ serde_json = "1.0.132"
 strum = { version = "0.26.3", features = ["derive"] }
 time = { version = "0.3.36", features = ["local-offset"] }
 tokio = { version = "1.41.0", features = ["full"] }
+tower-http = { version = "0.6.1", features = [
+    "timeout",
+    "cors",
+    "fs",
+    "trace",
+] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = [
     "time",
     "local-time",
     "env-filter",
 ] }
+walkdir = "2.5.0"
 wasmtime = { version = "26.0.0", features = ["component-model", "async"] }
 wasmtime-wasi = "26.0.0"
 wasi-preview1-component-adapter-provider = "25.0.1"

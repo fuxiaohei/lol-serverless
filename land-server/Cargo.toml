@@ -6,7 +6,23 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+axum = { workspace = true }
+axum-extra = { version = "0.9.4", features = ["cookie"] }
+axum-htmx = "0.6.0"
+axum-template = { version = "2.4.0", features = ["handlebars"] }
 clap = { workspace = true }
+handlebars = "6.2.0"
+http = { workspace = true }
 land-dao = { workspace = true }
 land-helpers = { workspace = true }
+land-tplvars = { workspace = true }
+minify-html = "0.15.0"
+rust-embed = { version = "8.5.0", features = [
+    "include-exclude",
+    "compression",
+] }
+serde = { workspace = true }
 tokio = { workspace = true }
+tower-http = { workspace = true }
+tracing = { workspace = true }
+walkdir = { workspace = true }
