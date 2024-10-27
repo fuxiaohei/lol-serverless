@@ -5,6 +5,7 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+land-dao = { workspace = true }
 land-helpers = { workspace = true }
 serde = { workspace = true }
 strum = { workspace = true }

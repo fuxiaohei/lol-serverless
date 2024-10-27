@@ -3,11 +3,14 @@ use clap::Args;
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use sea_orm_migration::MigratorTrait;
 use std::{sync::OnceLock, time::Duration};
-use tracing::{debug, info, instrument};
+use tracing::{debug, info, instrument, warn};
 
 mod migration;
 
 pub mod models;
+pub mod settings;
+pub mod tokens;
+pub mod users;
 
 #[derive(Args)]
 pub struct DBArgs {
@@ -112,8 +115,18 @@ pub async fn connect(args: &DBArgs) -> Result<()> {
     DB.set(db).unwrap();
     info!("Init success: {}", args.url_safe());
 
-    // initialize settings
-    // init_defaults().await?;
+    // initialize default values
+    init_defaults().await?;
 
+    Ok(())
+}
+
+/// init_defaults initializes default values in db.
+async fn init_defaults() -> Result<()> {
+    if settings::is_installed().await? {
+        info!("System is installed, init defaults if needed");
+        return Ok(());
+    }
+    warn!("System is not installed, skip init defaults");
     Ok(())
 }

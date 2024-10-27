@@ -10,7 +10,9 @@ axum = { workspace = true }
 axum-extra = { version = "0.9.4", features = ["cookie"] }
 axum-htmx = "0.6.0"
 axum-template = { version = "2.4.0", features = ["handlebars"] }
+chrono = { workspace = true }
 clap = { workspace = true }
+gravatar = "0.2.0"
 handlebars = "6.2.0"
 http = { workspace = true }
 land-dao = { workspace = true }
@@ -22,6 +24,7 @@ rust-embed = { version = "8.5.0", features = [
     "compression",
 ] }
 serde = { workspace = true }
+time = { workspace = true }
 tokio = { workspace = true }
 tower-http = { workspace = true }
 tracing = { workspace = true }

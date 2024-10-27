@@ -6,6 +6,7 @@ authors = { workspace = true }
 
 [dependencies]
 clap = { workspace = true }
+rand = { workspace = true }
 time = { workspace = true }
 tracing-subscriber = { workspace = true }
 
