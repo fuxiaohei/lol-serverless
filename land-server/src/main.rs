@@ -19,7 +19,7 @@ struct Args {
     #[clap(flatten)]
     output: land_helpers::logging::TraceArgs,
     /// Address to listen on.
-    #[clap(long, default_value("0.0.0.0:9840"))]
+    #[clap(long, default_value("0.0.0.0:8640"))]
     address: String,
     /// Template directory
     #[clap(long)]

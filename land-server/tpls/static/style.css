@@ -1,0 +1,143 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
+
+html,
+body {
+    font-family: Montserrat, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html[data-bs-theme="light"] body#root {
+    background-color: #FAFAFA;
+}
+
+
+.htmx-err-message {
+    color: #b22b38;
+    background-color: #f8d7da;
+    border-color: #f68490;
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+}
+
+.htmx-err-show {
+    display: block !important;
+}
+
+.htmx-ok-message {
+    color: #008000;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+}
+
+.htmx-message {
+    display: none;
+}
+
+.htmx-message.htmx-settling {
+    display: block;
+}
+
+i.bi {
+    font-size: 18px;
+}
+
+.vertical-center,
+.y-center {
+    display: flex;
+    align-items: center;
+}
+
+.btn.btn-reset {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+a.link-reset {
+    text-decoration: none;
+    color: inherit !important;
+}
+
+a.link-hover:hover {
+    text-decoration: underline;
+}
+
+html[data-bs-theme="dark"] {
+    --bs-border-color: #34393e !important;
+}
+
+html[data-bs-theme="dark"] .dropdown-menu,
+html[data-bs-theme="dark"] .dropdown-divider {
+    border-color: var(--bs-border-color) !important;
+}
+
+html[data-bs-theme="dark"] .btn-dark {
+    background-color: #34393e !important;
+}
+
+.hljs-ln-line.hljs-ln-numbers {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align: center;
+    color: #ccc;
+    border-right: 1px solid #CCC;
+    vertical-align: top;
+    padding-right: 8px !important;
+}
+
+.hljs-ln-line.hljs-ln-code {
+    padding-left: 6px !important;
+}
+
+#root {
+    height: 100vh;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+}
+
+#sidebar {
+    width: 220px;
+    background-color: #f9fdfe;
+}
+
+html[data-bs-theme="dark"] #sidebar {
+    background-color: var(--bs-body-bg);
+}
+
+
+#logo-brand,
+#top-nav {
+    height: 60px;
+}
+
+.sidebar-nav .nav-link:hover {
+    background-color: #e2e4e5;
+}
+
+.sidebar-nav .nav-link.active {
+    background-color: #d4e9f4 !important;
+    color: #3459e6;
+}
+
+html[data-bs-theme="dark"] .sidebar-nav .nav-link {
+    color: #878987;
+}
+
+html[data-bs-theme="dark"] .sidebar-nav .nav-link:hover {
+    background-color: #1a1a1a;
+    color: #c3c6c4;
+}
+
+html[data-bs-theme="dark"] .sidebar-nav .nav-link.active {
+    background-color: #1a1a1a !important;
+    color: #e0e3e1 !important;
+}

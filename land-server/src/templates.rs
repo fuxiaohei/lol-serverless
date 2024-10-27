@@ -2,7 +2,7 @@ use anyhow::Result;
 use handlebars::{handlebars_helper, Handlebars};
 use rust_embed::RustEmbed;
 use std::path::PathBuf;
-use tracing::{debug, instrument};
+use tracing::{debug, info, instrument};
 
 /// Engine is the template engine for axum_template
 pub type Engine = axum_template::engine::Engine<Handlebars<'static>>;
@@ -67,6 +67,7 @@ fn init_handlebars(dir: &str) -> Result<Handlebars<'static>> {
 /// or load from the tpldir directory.
 pub fn new_handlebar(dir: &str, tpl_dir: Option<String>) -> Result<Handlebars<'static>> {
     if let Some(tpl_dir) = tpl_dir {
+        info!(dir = tpl_dir.as_str(), "Load templates from directory");
         return init_handlebars(&tpl_dir);
     }
     extract(dir)?;
