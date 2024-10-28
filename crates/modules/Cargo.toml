@@ -5,6 +5,15 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
+land-dao = { workspace = true }
+land-helpers = { workspace = true }
+opendal = { version = "0.50.1", default-features = false, features = [
+    "services-fs",
+    "services-s3",
+    "services-memory",
+] }
 rust-embed = { workspace = true }
 serde = { workspace = true }
-anyhow = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }

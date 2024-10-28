@@ -16,6 +16,7 @@ use std::{net::SocketAddr, str::FromStr};
 use tower_http::services::ServeDir;
 use tracing::{debug, info, instrument, warn};
 
+mod admin;
 mod auth;
 mod install;
 mod projects;
@@ -43,6 +44,10 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
         .route("/projects", get(projects::index))
         .route("/new", get(projects::new))
         .route("/new/:name", get(projects::handle_new))
+        .route("/admin", get(admin::index))
+        .route("/admin/general", get(admin::general))
+        .route("/admin/domains", post(admin::update_domains))
+        .route("/admin/storage", post(admin::update_storage))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(axum::middleware::from_fn(auth::middle))
@@ -241,4 +246,9 @@ pub fn redirect(url: &str) -> impl IntoResponse {
 /// error_htmx returns a htmx response with error message
 pub fn error_htmx(msg: &str) -> impl IntoResponse {
     Html(format!("<div class=\"htmx-err-message\">{}</div>", msg))
+}
+
+/// ok_htmx returns a htmx response with ok message
+pub fn ok_htmx(msg: &str) -> impl IntoResponse {
+    Html(format!("<div class=\"htmx-ok-message\">{}</div>", msg))
 }

@@ -5,8 +5,12 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
 clap = { workspace = true }
+md5 =  { workspace = true }
 rand = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
 time = { workspace = true }
 tracing-subscriber = { workspace = true }
 

@@ -17,8 +17,8 @@ handlebars = "6.2.0"
 http = { workspace = true }
 land-dao = { workspace = true }
 land-helpers = { workspace = true }
-land-tplvars = { workspace = true }
 land-modules = { workspace = true }
+land-tplvars = { workspace = true }
 minify-html = "0.15.0"
 rust-embed = { workspace = true }
 serde = { workspace = true }

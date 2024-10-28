@@ -4,6 +4,23 @@
             class="inline-block border rounded-1 p-1 bg-white">
         <a class="link-reset ps-2 fs-5 fw-bold" href="/">Runtime.land</a>
     </div>
+    {{#if page.is_in_admin}}
+    <div id="admin-nav" class="sidebar-nav flex-column mb-auto px-3 py-2">
+        <p class="text-uppercase text-body-tertiary small mb-2">administration</p>
+        <nav class="nav flex-column">
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.admin}}" href="/admin"><i
+                    class='bi bi-speedometer2 me-2'></i>Overview</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.admincontents}}" href="/admin/contents"><i
+                    class='bi bi-body-text me-2'></i>Contents</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.admindeploys}}" href="/admin/deploys"><i
+                    class='bi bi-cloud-arrow-down me-2'></i>Deploys</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.adminworkers}}" href="/admin/workers"><i
+                    class='bi bi-diagram-2 me-2'></i>Workers</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.admingeneral}}" href="/admin/general"><i
+                    class='bi bi-gear-wide-connected me-2'></i>General</a>
+        </nav>
+    </div>
+    {{else}}
     <div id="account-nav" class="sidebar-nav flex-column mb-auto px-3 py-2">
         <p class="text-uppercase text-body-tertiary small mb-2">account</p>
         <nav class="nav flex-column">
@@ -15,6 +32,7 @@
                     class='bi bi-gear me-2'></i>Settings</a>
         </nav>
     </div>
+    {{/if}}
     <div id="resource-nav" class="sidebar-nav p-3">
         <p class="text-uppercase text-body-tertiary small mb-2">resources</p>
         <nav class="nav flex-column">
