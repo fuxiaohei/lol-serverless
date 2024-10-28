@@ -19,19 +19,26 @@ pub enum UserRole {
     Admin,
 }
 
+#[derive(Default)]
+/// OAuthParams is the oauth params
+pub struct OAuthParams {
+    user_id: String,
+    email_id: String,
+    provider: String,
+}
+
 /// create creates a new user
 pub async fn create(
     name: String,
     nick_name: String,
     mut email: String,
     avatar: String,
-    oauth_user_id: String,
-    oauth_provider: String,
     password: Option<String>,
     user_role: Option<UserRole>,
+    oauth: OAuthParams,
 ) -> Result<user_info::Model> {
     // currently must be clerk-xxx if oauth_provider is not empty
-    if !oauth_provider.is_empty() && !oauth_provider.starts_with("clerk@") {
+    if !oauth.provider.is_empty() && !oauth.provider.starts_with("clerk@") {
         return Err(anyhow::anyhow!("OAuth provider is not supported"));
     }
     // generate randompassword , and create user
@@ -39,7 +46,7 @@ pub async fn create(
     let password = if let Some(password) = password {
         password
     } else {
-        oauth_user_id.clone()
+        oauth.user_id.clone()
     };
     let full_password = format!("{}{}", password_salt, password);
     let password = bcrypt::hash(full_password, bcrypt::DEFAULT_COST)?;
@@ -69,9 +76,9 @@ pub async fn create(
         last_login_at: now,
         updated_at: now,
         deleted_at: None,
-        oauth_user_id: Some(oauth_user_id),
-        oauth_email_id: None,
-        oauth_provider,
+        oauth_user_id: Some(oauth.user_id),
+        oauth_email_id: Some(oauth.email_id),
+        oauth_provider: oauth.provider,
     };
     let mut user_active_model: user_info::ActiveModel = user_model.into();
     user_active_model.id = Default::default();

@@ -193,17 +193,15 @@ pub async fn middle(mut request: Request, next: Next) -> Result<Response, Server
     let session_user = land_tplvars::User::new(&user);
 
     // check admin path
-    if path.starts_with("/admin") {
-        if !session_user.is_admin {
-            warn!(path = path, "User is not admin: {}", session_user.email);
-            if method != "GET" {
-                return Err(ServerError::status_code(
-                    StatusCode::UNAUTHORIZED,
-                    "Restricted access",
-                ));
-            }
-            return Ok(redirect("/").into_response());
+    if path.starts_with("/admin") && !session_user.is_admin {
+        warn!(path = path, "User is not admin: {}", session_user.email);
+        if method != "GET" {
+            return Err(ServerError::status_code(
+                StatusCode::UNAUTHORIZED,
+                "Restricted access",
+            ));
         }
+        return Ok(redirect("/").into_response());
     }
 
     request.extensions_mut().insert(session_user);

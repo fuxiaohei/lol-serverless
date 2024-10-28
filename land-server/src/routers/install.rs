@@ -72,10 +72,9 @@ pub async fn handle(
         user_name,
         install_form.email,
         avatar,
-        String::new(),
-        String::new(),
         Some(install_form.password),
         Some(land_dao::users::UserRole::Admin),
+        land_dao::users::OAuthParams::default(),
     )
     .await?;
 
