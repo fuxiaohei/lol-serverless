@@ -30,6 +30,7 @@ land-sdk-macro = { path = "crates/sdk-macro" }
 land-tplvars = { path = "crates/tplvars" }
 land-wasm-gen = { path = "crates/wasm-gen" }
 land-wasm-host = { path = "crates/wasm-host" }
+land-worker-server = { path = "crates/worker-server" }
 
 # third-party dependencies
 anyhow = "1.0.91"

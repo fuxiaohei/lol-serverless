@@ -2410,6 +2410,14 @@ dependencies = [
 [[package]]
 name = "land-worker"
 version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "land-helpers",
+ "land-worker-server",
+ "tokio",
+ "url 2.5.2",
+]
 
 [[package]]
 name = "land-worker-server"
