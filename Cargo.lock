@@ -2082,6 +2082,7 @@ dependencies = [
 name = "land-tplvars"
 version = "0.2.0"
 dependencies = [
+ "chrono",
  "land-dao",
  "land-helpers",
  "serde",

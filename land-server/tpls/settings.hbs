@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> partial/head.hbs}}
+</head>
+
+<body id="root">
+    {{> partial/sidebar.hbs}}
+    <main id="main" class="w-100 overflow-y-auto">
+        {{> partial/topnav.hbs}}
+        <div id="main-container">
+            <div id="user-profile" class="p-3 d-flex justify-content-start border-bottom">
+                <div class="user-avatar pe-3 border-end me-3">
+                    <img src="{{page.user.avatar_url}}" alt="user-avatar" width="64" height="64" class="rounded">
+                </div>
+                <div class="user-info">
+                    <h4>{{page.user.name}}</h4>
+                    <p class="text-muted mb-1">{{page.user.email}}</p>
+                </div>
+            </div>
+            <div id="tokens-container" class="p-3">
+                <div class="d-flex justify-content-between align-items-center pb-3">
+                    <div>
+                        <p class="mb-0 fw-medium fs-5">Command line tokens
+                        <p class="mb-0 small text-body-tertiary">the tokens below are used to authenticate with the
+                            Runtime.land CLI</p>
+                        </p>
+                    </div>
+                </div>
+                {{#with data}}
+                {{> partial/tokens.hbs}}
+                {{/with}}
+            </div>
+        </div>
+        {{> partial/footer.hbs}}
+    </main>
+    {{> partial/js.hbs}}
+</body>
+
+</html>

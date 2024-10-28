@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 mod user;
-pub use user::User;
+pub use user::{Token, User};
 
 /// Page is the template page vars, for every page
 #[derive(Serialize, Deserialize, Debug)]
@@ -35,6 +35,7 @@ impl Page {
 #[strum(serialize_all = "lowercase")]
 pub enum BreadCrumbKey {
     Dashboard,
+    Settings,
     NotFound,
     None,
 }
@@ -53,6 +54,10 @@ impl BreadCrumb {
             BreadCrumbKey::Dashboard => vec![BreadCrumb {
                 title: "Dashboard".to_string(),
                 link: None,
+            }],
+            BreadCrumbKey::Settings => vec![BreadCrumb {
+                title: "Settings".to_string(),
+                link: Some("/".to_string()),
             }],
             BreadCrumbKey::None | BreadCrumbKey::NotFound => vec![],
         }
