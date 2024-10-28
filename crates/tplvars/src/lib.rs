@@ -5,6 +5,9 @@ use std::collections::HashMap;
 mod user;
 pub use user::{Token, User};
 
+mod projects;
+pub use projects::Project;
+
 /// Page is the template page vars, for every page
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Page {
@@ -36,7 +39,6 @@ impl Page {
 pub enum BreadCrumbKey {
     Dashboard,
     Projects,
-    ProjectNew,
     Settings,
     NotFound,
     None,
@@ -62,7 +64,7 @@ impl BreadCrumb {
         match key {
             BreadCrumbKey::Dashboard => vec![BreadCrumb::single("Dashboard")],
             BreadCrumbKey::Settings => vec![BreadCrumb::single("Settings")],
-            BreadCrumbKey::Projects | BreadCrumbKey::ProjectNew => {
+            BreadCrumbKey::Projects => {
                 vec![BreadCrumb::single("Projects")]
             }
             BreadCrumbKey::None | BreadCrumbKey::NotFound => vec![],

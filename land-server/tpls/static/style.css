@@ -146,6 +146,7 @@ html[data-bs-theme="dark"] .sidebar-nav .nav-link.active {
     background-color: #FFF;
 }
 
+#projects-overview .lang-logo img,
 #project-new-container .lang-logo img {
     width: 48px;
     height: 48px;

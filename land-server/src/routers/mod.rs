@@ -10,10 +10,11 @@ use axum::{
 };
 use axum_htmx::HxRedirect;
 use http::{HeaderValue, StatusCode, Uri};
-use land_tplvars::{BreadCrumbKey, Empty};
+use land_tplvars::BreadCrumbKey;
+use serde::Serialize;
 use std::{net::SocketAddr, str::FromStr};
 use tower_http::services::ServeDir;
-use tracing::{info, instrument, warn};
+use tracing::{debug, info, instrument, warn};
 
 mod auth;
 mod install;
@@ -41,6 +42,7 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
         .route("/settings/tokens", post(settings::handle_token))
         .route("/projects", get(projects::index))
         .route("/new", get(projects::new))
+        .route("/new/:name", get(projects::handle_new))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(axum::middleware::from_fn(auth::middle))
@@ -55,10 +57,21 @@ pub async fn index(
     engine: Engine,
     Extension(user): Extension<land_tplvars::User>,
 ) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Data {
+        pub projects: Vec<land_tplvars::Project>,
+    }
+    let (projects, _) = land_dao::projects::list(Some(user.id), None, 1, 5).await?;
+    debug!("projects: {:?}", projects.len());
     Ok(HtmlMinified(
         "index.hbs",
         engine,
-        Empty::new_vars("Dashboard", BreadCrumbKey::Dashboard, Some(user)),
+        land_tplvars::Vars::new(
+            land_tplvars::Page::new("Dashboard", BreadCrumbKey::Dashboard, Some(user)),
+            Data {
+                projects: land_tplvars::Project::new_from_models(projects, false).await?,
+            },
+        ),
     ))
 }
 

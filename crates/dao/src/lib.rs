@@ -7,7 +7,10 @@ use tracing::{debug, info, instrument, warn};
 
 mod migration;
 
+pub mod deploys;
 pub mod models;
+pub mod playground;
+pub mod projects;
 pub mod settings;
 pub mod tokens;
 pub mod users;
@@ -125,6 +128,8 @@ pub async fn connect(args: &DBArgs) -> Result<()> {
 async fn init_defaults() -> Result<()> {
     if settings::is_installed().await? {
         info!("System is installed, init defaults if needed");
+        // init default settings
+        settings::init_defaults().await?;
         return Ok(());
     }
     warn!("System is not installed, skip init defaults");
