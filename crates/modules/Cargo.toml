@@ -8,6 +8,7 @@ authors = { workspace = true }
 anyhow = { workspace = true }
 land-dao = { workspace = true }
 land-helpers = { workspace = true }
+lazy_static = { workspace = true }
 opendal = { version = "0.50.1", default-features = false, features = [
     "services-fs",
     "services-s3",
@@ -15,5 +16,7 @@ opendal = { version = "0.50.1", default-features = false, features = [
 ] }
 rust-embed = { workspace = true }
 serde = { workspace = true }
+serde_json = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
+walkdir = { workspace = true }

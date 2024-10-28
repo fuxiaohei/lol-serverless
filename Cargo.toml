@@ -8,6 +8,7 @@ members = [
     "crates/tplvars",
     "crates/wasm-gen",
     "crates/wasm-host",
+    "crates/worker-server",
     "land-cli",
     "land-server",
     "land-worker",
@@ -28,6 +29,7 @@ land-modules = { path = "crates/modules" }
 land-sdk-macro = { path = "crates/sdk-macro" }
 land-tplvars = { path = "crates/tplvars" }
 land-wasm-gen = { path = "crates/wasm-gen" }
+land-wasm-host = { path = "crates/wasm-host" }
 
 # third-party dependencies
 anyhow = "1.0.91"
@@ -38,6 +40,7 @@ chrono = "0.4.38"
 clap = { version = "4.5.20", features = ["derive", "env"] }
 http = "1.1.0"
 lazy_static = "1.5.0"
+metrics = "0.24.0"
 md5 = "0.7.0"
 rand = "0.8.5"
 reqwest = { version = "0.12.8", default-features = false, features = [
