@@ -2027,6 +2027,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "land-modules"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "rust-embed",
+ "serde",
+]
+
+[[package]]
 name = "land-sdk"
 version = "0.2.0"
 dependencies = [
@@ -2067,6 +2076,7 @@ dependencies = [
  "http",
  "land-dao",
  "land-helpers",
+ "land-modules",
  "land-tplvars",
  "minify-html",
  "rust-embed",

@@ -35,6 +35,8 @@ impl Page {
 #[strum(serialize_all = "lowercase")]
 pub enum BreadCrumbKey {
     Dashboard,
+    Projects,
+    ProjectNew,
     Settings,
     NotFound,
     None,
@@ -48,17 +50,21 @@ pub struct BreadCrumb {
 }
 
 impl BreadCrumb {
+    /// single creates a single breadcrumb item
+    pub fn single(name: &str) -> Self {
+        BreadCrumb {
+            title: name.to_string(),
+            link: None,
+        }
+    }
     /// new creates breadcrumb items
     pub fn new(key: &BreadCrumbKey) -> Vec<BreadCrumb> {
         match key {
-            BreadCrumbKey::Dashboard => vec![BreadCrumb {
-                title: "Dashboard".to_string(),
-                link: None,
-            }],
-            BreadCrumbKey::Settings => vec![BreadCrumb {
-                title: "Settings".to_string(),
-                link: Some("/".to_string()),
-            }],
+            BreadCrumbKey::Dashboard => vec![BreadCrumb::single("Dashboard")],
+            BreadCrumbKey::Settings => vec![BreadCrumb::single("Settings")],
+            BreadCrumbKey::Projects | BreadCrumbKey::ProjectNew => {
+                vec![BreadCrumb::single("Projects")]
+            }
             BreadCrumbKey::None | BreadCrumbKey::NotFound => vec![],
         }
     }

@@ -18,11 +18,9 @@ http = { workspace = true }
 land-dao = { workspace = true }
 land-helpers = { workspace = true }
 land-tplvars = { workspace = true }
+land-modules = { workspace = true }
 minify-html = "0.15.0"
-rust-embed = { version = "8.5.0", features = [
-    "include-exclude",
-    "compression",
-] }
+rust-embed = { workspace = true }
 serde = { workspace = true }
 time = { workspace = true }
 tokio = { workspace = true }

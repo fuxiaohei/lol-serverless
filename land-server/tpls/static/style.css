@@ -141,3 +141,12 @@ html[data-bs-theme="dark"] .sidebar-nav .nav-link.active {
     background-color: #1a1a1a !important;
     color: #e0e3e1 !important;
 }
+
+#projects-overview .project-item:hover {
+    background-color: #FFF;
+}
+
+#project-new-container .lang-logo img {
+    width: 48px;
+    height: 48px;
+}

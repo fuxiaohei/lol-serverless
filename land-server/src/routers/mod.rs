@@ -17,6 +17,7 @@ use tracing::{info, instrument, warn};
 
 mod auth;
 mod install;
+mod projects;
 mod settings;
 
 /// handle_notfound returns a not found response.
@@ -38,6 +39,8 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
         .route("/sign-out", get(auth::sign_out))
         .route("/settings", get(settings::index))
         .route("/settings/tokens", post(settings::handle_token))
+        .route("/projects", get(projects::index))
+        .route("/new", get(projects::new))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(axum::middleware::from_fn(auth::middle))
