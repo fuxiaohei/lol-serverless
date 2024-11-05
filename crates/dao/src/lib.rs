@@ -3,10 +3,14 @@ use clap::Args;
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use sea_orm_migration::MigratorTrait;
 use std::{sync::OnceLock, time::Duration};
-use tracing::{debug, info, instrument};
+use tracing::{debug, info, instrument, warn};
 
 mod migration;
+
+pub mod deploys;
 pub mod models;
+pub mod playground;
+pub mod projects;
 pub mod settings;
 pub mod tokens;
 pub mod users;
@@ -116,7 +120,19 @@ pub async fn connect(args: &DBArgs) -> Result<()> {
     info!("Init success: {}", args.url_safe());
 
     // initialize default values
-    // init_defaults().await?;
+    init_defaults().await?;
 
+    Ok(())
+}
+
+/// init_defaults initializes default values in db.
+async fn init_defaults() -> Result<()> {
+    if settings::is_installed().await? {
+        info!("System is installed, init defaults if needed");
+        // init default settings
+        settings::init_defaults().await?;
+        return Ok(());
+    }
+    warn!("System is not installed, skip init defaults");
     Ok(())
 }

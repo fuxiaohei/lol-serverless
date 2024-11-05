@@ -15,6 +15,7 @@ clap = { workspace = true }
 gravatar = "0.2.0"
 handlebars = "6.2.0"
 land-dao = { workspace = true }
+land-service = { workspace = true }
 land-tplvars = { workspace = true }
 land-utils = { workspace = true }
 minify-html = "0.15.0"

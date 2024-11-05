@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> partial/head.hbs}}
+</head>
+
+<body>
+    <div id="root">
+        {{> partial/sidebar.hbs}}
+        <main id="main" class="w-100 overflow-y-auto">
+            {{> partial/topnav.hbs}}
+            <div id="project-new-container" class="p-3">
+                <div>
+                    <p class="mb-1 fw-medium fs-5">Create New Project</p>
+                    <p class="mb-0 text-body-tertiary">Create a new project from following templates.</p>
+                </div>
+                <div class="row g-4 py-3">
+                    {{#each data.examples}}
+                    <div class="col-md-4">
+                        <a href="/new/{{link}}" class="d-flex flex-column project-item border rounded p-3 link-reset">
+                            <div class="meta d-flex justify-content-between align-items-top mb-2">
+                                <div class="title">
+                                    <h6>{{title}}</h6>
+                                    <p class="mb-1 text-body-secondary small">{{description}}</p>
+                                </div>
+                                <div class="lang-logo-48">
+                                    <img src="/static/img/javascript.svg" class="ms-2 {{lang}}-svg" alt="{{lang}}">
+                                </div>
+                            </div>
+                            <div class="ops d-flex justify-content-end">
+                                <button class="btn btn-dark btn-sm y-center"><i
+                                        class='bi bi-pencil-square me-2'></i>Edit in
+                                    Playground</button>
+                            </div>
+                        </a>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{> partial/footer.hbs}}
+        </main>
+    </div>
+    {{> partial/js.hbs}}
+</body>
+
+</html>

@@ -1,12 +1,12 @@
 [package]
-name = "land-tplvars"
+name = "land-service"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
-land-dao = { workspace = true }
-land-utils = { workspace = true }
+rust-embed = { workspace = true }
 serde = { workspace = true }
-strum = { workspace = true }
+toml = "0.8.19"
+tracing = { workspace = true }

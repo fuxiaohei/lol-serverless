@@ -11,6 +11,8 @@ bcrypt = "0.15.1"
 chrono = { workspace = true }
 clap = { workspace = true }
 land-utils = { workspace = true }
+rand =  { workspace = true }
+random_word = { version = "0.4.3", features = ["en"] }
 sea-orm = { version = "1.1.0", default-features = false, features = [
     "with-chrono",
     "with-json",

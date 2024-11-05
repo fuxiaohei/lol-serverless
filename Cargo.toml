@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "crates/dao",
+    "crates/dao", "crates/service",
     "crates/tplvars",
     "crates/utils",
     "land-cli",
@@ -20,6 +20,7 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 land-dao = { path = "crates/dao" }
 land-tplvars = { path = "crates/tplvars" }
 land-utils = { path = "crates/utils" }
+land-service = { path = "crates/service" }
 
 # thirdparty dependencies
 anyhow = "1.0.92"

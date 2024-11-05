@@ -5,6 +5,9 @@ use std::collections::HashMap;
 mod user;
 pub use user::User;
 
+mod project;
+pub use project::Project;
+
 /// Page is the template page vars, for every page
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Page {
@@ -48,7 +51,8 @@ impl BreadCrumb {
     /// new creates breadcrumb items
     pub fn new(key: &BreadCrumbKey) -> Vec<BreadCrumb> {
         match key {
-            BreadCrumbKey::Dashboard => vec![BreadCrumb::title("Dashboard")],
+            BreadCrumbKey::Dashboard => vec![Self::title("Dashboard")],
+            BreadCrumbKey::Projects => vec![Self::title("Projects")],
             BreadCrumbKey::None => vec![],
         }
     }
@@ -59,6 +63,7 @@ impl BreadCrumb {
 #[strum(serialize_all = "lowercase")]
 pub enum BreadCrumbKey {
     Dashboard,
+    Projects,
     None,
 }
 
@@ -78,6 +83,19 @@ pub fn new_empty(title: &str, breadcrumb: BreadCrumbKey, user: Option<User>) -> 
     Vars {
         page: Page::new(title, breadcrumb, user),
         data: Empty::default(),
+    }
+}
+
+/// new_vars creates a new template vars
+pub fn new_vars(
+    title: &str,
+    breadcrumb: BreadCrumbKey,
+    user: Option<User>,
+    data: impl Serialize,
+) -> Vars<impl Serialize> {
+    Vars {
+        page: Page::new(title, breadcrumb, user),
+        data,
     }
 }
 

@@ -9,7 +9,61 @@
     {{> partial/sidebar.hbs}}
     <main id="main" class="w-100 overflow-y-auto">
         {{> partial/topnav.hbs}}
-        <div id="main-container">main-main-main</div>
+        <div id="main-container">
+            <div id="projects-overview" class="p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-0 fw-medium fs-5">Recent Projects</p>
+                        <p class="mb-0 small text-body-tertiary">Show the most recent projects you have deployed.
+                        </p>
+                    </div>
+                    <a href="/new" class="link-reset">
+                        <button class="btn btn-dark vertical-center">
+                            <i class='bi bi-plus-lg me-2'></i>New Projects
+                        </button>
+                    </a>
+                </div>
+                <div class="row g-3 py-3">
+                    {{#each data.projects}}
+                    <div class="col-md-4">
+                        <a href="/projects/{{name}}"
+                            class="d-flex flex-column project-item border rounded p-3 text-reset text-decoration-none">
+                            <div class="meta d-flex justify-content-between align-items-top mb-1">
+                                <div class="title">
+                                    <h6 class="fw-bold mb-1">{{name}}
+                                        {{#if is_disabled}}
+                                        <span class="text-uppercase badge small text-bg-danger">disabled</span>
+                                        {{/if}}
+                                    </h6>
+                                    <p class="mb-0 text-body-tertiary small">edit with
+                                        <span class="text-uppercase">{{created_by}}</span>
+                                    </p>
+                                </div>
+                                <div class="lang-logo-48">
+                                    <img src="/static/img/javascript.svg" class="ms-2 {{lang}}-svg" alt="{{lang}}">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-start">
+                                <button class="btn project-link btn-reset btn-sm ps-0 y-center"
+                                    x-data-url="{{prod_domain_url}}">
+                                    <i class='bi bi-link me-1 fs-6'></i>
+                                    <span class="link text-decoration-underline">{{prod_domain_full}}</span>
+                                </button>
+                            </div>
+                            <p class="mb-1 text-body-secondary small">Last updated: <span class="time-ago ms-1"
+                                    data-x-timeago="{{updated_at}}"></span></p>
+                        </a>
+                    </div>
+                    {{/each}}
+                    <div class="col-md-4">
+                        <a href="/projects" style="border-style: dashed !important;"
+                            class="d-flex flex-column project-item border rounded p-3 text-reset text-decoration-none project-item-new">
+                            View All Projects
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
         {{> partial/footer.hbs}}
     </main>
     {{> partial/js.hbs}}

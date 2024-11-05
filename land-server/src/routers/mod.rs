@@ -1,11 +1,15 @@
 use crate::templates::{self, Engine};
 use anyhow::Result;
 use axum::{http::StatusCode, middleware, response::IntoResponse, routing::get, Extension, Router};
-use land_tplvars::BreadCrumbKey;
+use land_dao::projects;
+use land_tplvars::{new_vars, BreadCrumbKey, Project};
+use serde::Serialize;
 use tower_http::services::ServeDir;
+use tracing::debug;
 
 mod auth;
 mod install;
+mod project;
 mod utils;
 
 /// handle_notfound returns a not found response.
@@ -23,6 +27,9 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
     let app = Router::new()
         .route("/", get(index))
         .route("/install", get(install::index).post(install::handle))
+        .route("/new", get(project::new))
+        .route("/new/:name", get(project::handle_new))
+        .route("/projects", get(project::index))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(middleware::from_fn(auth::middle))
@@ -37,10 +44,23 @@ pub async fn index(
     engine: Engine,
     Extension(user): Extension<land_tplvars::User>,
 ) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Data {
+        pub projects: Vec<Project>,
+    }
+    let (projects, _) = projects::list(Some(user.id), None, 1, 5).await?;
+    debug!("projects: {:?}", projects.len());
     Ok(HtmlMinified(
         "index.hbs",
         engine,
-        land_tplvars::new_empty("Dashboard", BreadCrumbKey::Dashboard, Some(user)),
+        new_vars(
+            "Dashboard",
+            BreadCrumbKey::Dashboard,
+            Some(user),
+            Data {
+                projects: Project::new_from_models(projects, false).await?,
+            },
+        ),
     ))
 }
 
