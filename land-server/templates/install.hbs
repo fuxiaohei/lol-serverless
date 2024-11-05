@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> partial/head.hbs}}
+</head>
+
+<body>
+    <main id="root">
+        <div id="install-wrapper" class="mx-auto" style="width: 400px;">
+            <h1 class="text-center my-4">
+                <img src="/static/img/logo.png" width="64" height="64" class="border rounded me-2 p-2">
+                Runtime.land
+            </h1>
+            <p class="text-center">
+                Create your admin account to install Runtime.land locally.
+            </p>
+            <div class="card shadow-none">
+                <div class="card-body">
+                    <form id="install-form" hx-post="/install" hx-swap="innerHTML settle:3s"
+                        hx-target="#install-message">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email
+                                <small class="text-danger">*</small>
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <p class="form-text">The email will be used to send you notifications and reset your
+                                password. It's recommended to provide a valid email address.</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password
+                                <small class="text-danger">*</small>
+                            </label>
+                            <input type="password" class="form-control" id="password" name="password" required
+                                minlength="8">
+                            <p class="form-text">The password must be at least 8 characters long.</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password-confirm" class="form-label">Confirm Password
+                                <small class="text-danger">*</small>
+                            </label>
+                            <input type="password" class="form-control" id="password-confirm" name="password-confirm"
+                                required>
+                        </div>
+                        <div id="install-message" class="my-3 htmx-message"></div>
+                        <button type="submit" class="btn btn-primary">Create and Install</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    {{> partial/js.hbs}}
+</body>
+
+</html>

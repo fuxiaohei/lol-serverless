@@ -7,6 +7,9 @@ use tracing::{debug, info, instrument};
 
 mod migration;
 pub mod models;
+pub mod settings;
+pub mod tokens;
+pub mod users;
 
 /// DBArgs is command line arguments for database connection.
 #[derive(Args)]

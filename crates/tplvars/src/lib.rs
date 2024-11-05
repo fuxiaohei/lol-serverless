@@ -49,6 +49,7 @@ impl BreadCrumb {
     pub fn new(key: &BreadCrumbKey) -> Vec<BreadCrumb> {
         match key {
             BreadCrumbKey::Dashboard => vec![BreadCrumb::title("Dashboard")],
+            BreadCrumbKey::None => vec![],
         }
     }
 }
@@ -58,6 +59,7 @@ impl BreadCrumb {
 #[strum(serialize_all = "lowercase")]
 pub enum BreadCrumbKey {
     Dashboard,
+    None,
 }
 
 /// Vars is the template vars for whole page

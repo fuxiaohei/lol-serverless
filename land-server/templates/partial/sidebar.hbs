@@ -1,0 +1,62 @@
+<aside id="sidebar" class="d-flex flex-column flex-shrink-0 border-end">
+    <div class="brand d-flex align-items-center border-bottom justify-content-center" id="logo-brand">
+        <img src="/static/img/logo.png" alt="logo" width="30" height="30"
+            class="inline-block border rounded-1 p-1 bg-white">
+        <a class="link-reset ps-2 fs-5 fw-bold" href="/">Runtime.land</a>
+    </div>
+    {{#if data.project_name}}
+    <div id="project-nav" class="sidebar-nav flex-column mb-auto px-3 py-2">
+        <p class="text-uppercase text-body-tertiary small mb-2">project</p>
+        <nav class="nav flex-column">
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.projectsingle}}"
+                href="/projects/{{data.project_name}}"><i class='bi bi-speedometer me-2'></i>Overview</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.projecttraffic}}"
+                href="/projects/{{data.project_name}}/deployments"><i
+                    class='bi bi-cloud-arrow-down-fill me-2'></i>Deployments</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.projecttraffic}}"
+                href="/projects/{{data.project_name}}/traffic"><i class='bi bi-graph-up me-2'></i>Traffic</a>
+            <a class="vertical-center nav-link rounded {{page.nav_active.projectsettings}}"
+                href="/projects/{{data.project_name}}/settings"><i class='bi bi-gear me-2'></i>Settings</a>
+        </nav>
+    </div>
+    {{else}}
+    {{#if page.is_in_admin}}
+    <div id="admin-nav" class="sidebar-nav flex-column mb-auto px-3 py-2">
+        <p class="text-uppercase text-body-tertiary small mb-2">administration</p>
+        <nav class="nav flex-column">
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.admin}}" href="/admin"><i
+                    class='bi bi-speedometer2 me-2'></i>Overview</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.admincontents}}" href="/admin/contents"><i
+                    class='bi bi-body-text me-2'></i>Contents</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.admindeploys}}" href="/admin/deploys"><i
+                    class='bi bi-cloud-arrow-down me-2'></i>Deploys</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.adminworkers}}" href="/admin/workers"><i
+                    class='bi bi-diagram-2 me-2'></i>Workers</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.admingeneral}}" href="/admin/general"><i
+                    class='bi bi-gear-wide-connected me-2'></i>General</a>
+        </nav>
+    </div>
+    {{else}}
+    <div id="account-nav" class="sidebar-nav flex-column mb-auto px-3 py-2">
+        <p class="text-uppercase text-body-tertiary small mb-2">account</p>
+        <nav class="nav flex-column">
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.dashboard}}" href="/"><i
+                    class='bi bi-speedometer me-2'></i>Dashboard</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.projects}}" href="/projects"><i
+                    class='bi bi-kanban me-2'></i>Projects</a>
+            <a class="mb-1 vertical-center nav-link rounded {{page.nav_active.settings}}" href="/settings"><i
+                    class='bi bi-gear me-2'></i>Settings</a>
+        </nav>
+    </div>
+    {{/if}}
+    {{/if}}
+    <div id="resource-nav" class="sidebar-nav p-3">
+        <p class="text-uppercase text-body-tertiary small mb-2">resources</p>
+        <nav class="nav flex-column">
+            <a class="nav-link mb-1 vertical-center rounded" href="https://runtime.land/docs/" target="_blank"><i
+                    class='bi bi-file-earmark-ruled-fill me-2'></i>Docs</a>
+            <a class="nav-link vertical-center rounded" href="https://github.com/fuxiaohei/runtime-land/issues/new"
+                target="_blank"><i class='bi bi-chat-dots-fill me-2'></i>Feedback</a>
+        </nav>
+    </div>
+</aside>

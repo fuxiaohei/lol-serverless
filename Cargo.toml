@@ -11,7 +11,7 @@ default-members = ["land-cli"]
 resolver = "2"
 
 [workspace.package]
-version = "0.2.0-b1"
+version = "0.2.0-b2"
 edition = "2021"
 authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
@@ -26,6 +26,8 @@ anyhow = "1.0.92"
 async-trait = "0.1.83"
 axum = "0.7.7"
 clap = { version = "4.5.20", features = ["derive", "env"] }
+chrono = "0.4.38"
+rand = "0.8.5"
 rust-embed = { version = "8.5.0", features = [
     "include-exclude",
     "compression",
@@ -46,5 +48,10 @@ tracing-subscriber = { version = "0.3.18", features = [
     "time",
     "local-time",
     "env-filter",
+] }
+uuid = { version = "1.11.0", features = [
+    "v4",
+    "fast-rng",
+    "macro-diagnostics",
 ] }
 walkdir = "2.5.0"

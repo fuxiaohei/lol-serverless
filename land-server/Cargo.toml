@@ -7,8 +7,12 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 axum = { workspace = true }
+axum-extra = { version = "0.9.4", features = ["cookie"] }
+axum-htmx = "0.6.0"
 axum-template = { version = "2.4.0", features = ["handlebars"] }
+chrono = { workspace = true }
 clap = { workspace = true }
+gravatar = "0.2.0"
 handlebars = "6.2.0"
 land-dao = { workspace = true }
 land-tplvars = { workspace = true }
@@ -16,6 +20,7 @@ land-utils = { workspace = true }
 minify-html = "0.15.0"
 rust-embed = { workspace = true }
 serde = { workspace = true }
+time = { workspace = true }
 tokio = { workspace = true }
 tower-http = { workspace = true }
 tracing = { workspace = true }

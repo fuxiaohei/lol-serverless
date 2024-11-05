@@ -1,8 +1,12 @@
 use crate::templates::{self, Engine};
 use anyhow::Result;
-use axum::{http::StatusCode, response::IntoResponse, routing::get, Router};
+use axum::{http::StatusCode, middleware, response::IntoResponse, routing::get, Extension, Router};
 use land_tplvars::BreadCrumbKey;
 use tower_http::services::ServeDir;
+
+mod auth;
+mod install;
+mod utils;
 
 /// handle_notfound returns a not found response.
 async fn handle_notfound() -> impl IntoResponse {
@@ -18,8 +22,12 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
 
     let app = Router::new()
         .route("/", get(index))
+        .route("/install", get(install::index).post(install::handle))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
+        .route_layer(middleware::from_fn(auth::middle))
+        .route_layer(middleware::from_fn(install::middle))
+        .route_layer(middleware::from_fn(utils::logger))
         .with_state(Engine::from(hbs));
     Ok(app)
 }
@@ -27,12 +35,12 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
 /// index shows the dashboard page
 pub async fn index(
     engine: Engine,
-    // Extension(user): Extension<land_tplvars::User>,
+    Extension(user): Extension<land_tplvars::User>,
 ) -> Result<impl IntoResponse, ServerError> {
     Ok(HtmlMinified(
         "index.hbs",
         engine,
-        land_tplvars::new_empty("Dashboard", BreadCrumbKey::Dashboard, None),
+        land_tplvars::new_empty("Dashboard", BreadCrumbKey::Dashboard, Some(user)),
     ))
 }
 
@@ -41,7 +49,7 @@ pub struct ServerError(pub StatusCode, pub anyhow::Error);
 
 impl ServerError {
     /// status_code creates a new `ServerError` with the given status code and message.
-    pub fn _status_code(code: StatusCode, msg: &str) -> Self {
+    pub fn status_code(code: StatusCode, msg: &str) -> Self {
         Self(code, anyhow::anyhow!(msg.to_string()))
     }
 }
