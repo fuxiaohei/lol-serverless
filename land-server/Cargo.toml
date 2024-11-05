@@ -5,3 +5,18 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
+axum = { workspace = true }
+axum-template = { version = "2.4.0", features = ["handlebars"] }
+clap = { workspace = true }
+handlebars = "6.2.0"
+land-dao = { workspace = true }
+land-tplvars = { workspace = true }
+land-utils = { workspace = true }
+minify-html = "0.15.0"
+rust-embed = { workspace = true }
+serde = { workspace = true }
+tokio = { workspace = true }
+tower-http = { workspace = true }
+tracing = { workspace = true }
+walkdir = { workspace = true }

@@ -1,5 +1,12 @@
 [workspace]
-members = ["land-cli", "land-server", "land-worker"]
+members = [
+    "crates/dao",
+    "crates/tplvars",
+    "crates/utils",
+    "land-cli",
+    "land-server",
+    "land-worker",
+]
 default-members = ["land-cli"]
 resolver = "2"
 
@@ -7,3 +14,37 @@ resolver = "2"
 version = "0.2.0-b1"
 edition = "2021"
 authors = ["fuxiaohei <fudong0797@gmail.com>"]
+
+[workspace.dependencies]
+# internal dependencies
+land-dao = { path = "crates/dao" }
+land-tplvars = { path = "crates/tplvars" }
+land-utils = { path = "crates/utils" }
+
+# thirdparty dependencies
+anyhow = "1.0.92"
+async-trait = "0.1.83"
+axum = "0.7.7"
+clap = { version = "4.5.20", features = ["derive", "env"] }
+rust-embed = { version = "8.5.0", features = [
+    "include-exclude",
+    "compression",
+] }
+serde = { version = "1.0.214", features = ["derive"] }
+serde_json = "1.0.132"
+strum = { version = "0.26.3", features = ["derive"] }
+time = { version = "0.3.36", features = ["local-offset"] }
+tokio = { version = "1.41.0", features = ["full"] }
+tower-http = { version = "0.6.1", features = [
+    "timeout",
+    "cors",
+    "fs",
+    "trace",
+] }
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = [
+    "time",
+    "local-time",
+    "env-filter",
+] }
+walkdir = "2.5.0"
