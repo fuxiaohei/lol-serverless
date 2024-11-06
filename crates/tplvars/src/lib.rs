@@ -31,6 +31,12 @@ impl Page {
             is_in_admin: false,
         }
     }
+    /// new_admin creates a new page var for admin
+    pub fn new_admin(title: &str, breadcrumb: BreadCrumbKey, user: Option<User>) -> Self {
+        let mut page = Page::new(title, breadcrumb, user);
+        page.is_in_admin = true;
+        page
+    }
 }
 
 /// BreadCrumb is breadcrumb value item
@@ -48,6 +54,8 @@ pub enum BreadCrumbKey {
     Projects,
     ProjectSingle,
     ProjectSettings,
+    Admin,
+    AdminGeneral,
     NotFound,
     None,
 }
@@ -67,6 +75,7 @@ impl BreadCrumb {
             BreadCrumbKey::Projects
             | BreadCrumbKey::ProjectSingle
             | BreadCrumbKey::ProjectSettings => vec![Self::title("Projects")],
+            BreadCrumbKey::Admin | BreadCrumbKey::AdminGeneral => vec![Self::title("Admin")],
             BreadCrumbKey::None | BreadCrumbKey::NotFound => vec![],
         }
     }
@@ -91,6 +100,14 @@ pub fn new_empty(title: &str, breadcrumb: BreadCrumbKey, user: Option<User>) -> 
     }
 }
 
+/// new_empty_admin creates a new empty template vars for admin
+pub fn new_empty_admin(title: &str, breadcrumb: BreadCrumbKey, user: Option<User>) -> Vars<Empty> {
+    Vars {
+        page: Page::new_admin(title, breadcrumb, user),
+        data: Empty::default(),
+    }
+}
+
 /// new_vars creates a new template vars
 pub fn new_vars(
     title: &str,
@@ -100,6 +117,19 @@ pub fn new_vars(
 ) -> Vars<impl Serialize> {
     Vars {
         page: Page::new(title, breadcrumb, user),
+        data,
+    }
+}
+
+/// new_vars_admin creates a new template vars for admin
+pub fn new_vars_admin(
+    title: &str,
+    breadcrumb: BreadCrumbKey,
+    user: Option<User>,
+    data: impl Serialize,
+) -> Vars<impl Serialize> {
+    Vars {
+        page: Page::new_admin(title, breadcrumb, user),
         data,
     }
 }

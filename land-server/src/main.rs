@@ -48,6 +48,10 @@ async fn main() -> Result<()> {
         .await
         .expect("Failed to connect to database");
 
+    // init storage operator
+    land_service::storage::init_defaults().await?;
+    land_service::storage::load_global().await?;
+
     // start http server
     server::start(args.address.parse()?, "./assets", args.tpldir.clone())
         .await

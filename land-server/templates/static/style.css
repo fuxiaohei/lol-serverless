@@ -154,6 +154,11 @@ html[data-bs-theme="dark"] #projects-overview .project-item:hover {
     height: 48px;
 }
 
+.lang-logo-32 img {
+    width: 32px;
+    height: 32px;
+}
+
 #projects-table th,
 #projects-table td {
     background-color: transparent !important;

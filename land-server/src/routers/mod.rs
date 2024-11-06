@@ -13,6 +13,7 @@ use serde::Serialize;
 use tower_http::services::ServeDir;
 use tracing::debug;
 
+mod admin;
 mod auth;
 mod install;
 mod project;
@@ -42,6 +43,10 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
             get(project::settings).post(project::handle_update_settings),
         )
         .route("/projects/:name/envs", post(project::handle_update_envs))
+        .route("/admin", get(admin::index))
+        .route("/admin/general", get(admin::general))
+        .route("/admin/domains", post(admin::handle_update_domains))
+        .route("/admin/storage", post(admin::handle_update_storage))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(middleware::from_fn(auth::middle))
