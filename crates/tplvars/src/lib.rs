@@ -40,6 +40,18 @@ pub struct BreadCrumb {
     pub link: Option<String>,
 }
 
+/// BreadCrumb enum
+#[derive(strum::Display, Clone, PartialEq)]
+#[strum(serialize_all = "lowercase")]
+pub enum BreadCrumbKey {
+    Dashboard,
+    Projects,
+    ProjectSingle,
+    ProjectSettings,
+    NotFound,
+    None,
+}
+
 impl BreadCrumb {
     /// title creates a breadcrumb item with title only
     pub fn title(name: &str) -> Self {
@@ -52,19 +64,12 @@ impl BreadCrumb {
     pub fn new(key: &BreadCrumbKey) -> Vec<BreadCrumb> {
         match key {
             BreadCrumbKey::Dashboard => vec![Self::title("Dashboard")],
-            BreadCrumbKey::Projects => vec![Self::title("Projects")],
-            BreadCrumbKey::None => vec![],
+            BreadCrumbKey::Projects
+            | BreadCrumbKey::ProjectSingle
+            | BreadCrumbKey::ProjectSettings => vec![Self::title("Projects")],
+            BreadCrumbKey::None | BreadCrumbKey::NotFound => vec![],
         }
     }
-}
-
-/// BreadCrumb enum
-#[derive(strum::Display, Clone, PartialEq)]
-#[strum(serialize_all = "lowercase")]
-pub enum BreadCrumbKey {
-    Dashboard,
-    Projects,
-    None,
 }
 
 /// Vars is the template vars for whole page

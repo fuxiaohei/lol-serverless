@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> partial/head.hbs}}
+</head>
+
+<body id="root">
+    {{> partial/sidebar.hbs}}
+    <main id="main" class="w-100 overflow-y-auto">
+        {{> partial/topnav.hbs}}
+        <div id="project-single-container" class="overflow-y-auto">
+            {{#with data}}
+            {{> partial/project-header.hbs}}
+            <div id="project-settings" class="border-top d-flex p-3">
+                <form class="container p-0" hx-swap="innerHTML settle:3s" hx-target="#projects-names-message"
+                    hx-post="/projects/{{project.name}}/settings">
+                    <div class="mb-3">
+                        <p class="mb-1 fw-medium fs-5">General Settings</p>
+                        <p class="mb-0 text-body-tertiary">General settings for the project.</p>
+                    </div>
+                    <div class="mb-3 w-50">
+                        <div class="input-group">
+                            <input name="name" type="text" class="form-control" value="{{project.prod_domain}}"
+                                required>
+                            <span class="input-group-text">.{{domain}}</span>
+                        </div>
+                        <p class="form-text mb-0">The name of the project is used to create the access domain.</p>
+                    </div>
+                    <div class="mb-3">
+                        <input name="description" type="text" class="form-control" value="{{project.description}}"
+                            required />
+                        <p class="form-text mb-0">The description is used to describe the project.</p>
+                    </div>
+                    <div id="projects-names-message" class="hx-message mb-3 w-50"></div>
+                    <button class="btn btn-dark" type="submit">Save</button>
+                </form>
+            </div>
+            <div id="project-envs-settings" class="p-3 border-top">
+                <div class="mb-3">
+                    <p class="mb-1 fw-medium fs-5">Environment Variables</p>
+                    <p class="mb-0 text-body-tertiary">Use environment variables to provide secrets and environment
+                        information in current project. You can access them by using the <code>env</code> API.</p>
+                </div>
+                <dic class="card shadow-none mb-3">
+                    <div class="card-body p-1">
+                        <form hx-swap="innerHTML settle:3s" hx-target="#env-res-message" hx-ext="submitjson"
+                            hx-post="/projects/{{project.name}}/envs">
+                            <ul class="list-group list-group-flush shadow-none">
+                                {{#each env_keys}}
+                                <li class="list-group-item p-2 y-center justify-content-between">
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0 bg-transparent shadow-none"><i
+                                                class='bi bi-key'></i></span>
+                                        <input type="text" name="key" readonly
+                                            class="form-control border-0 shadow-none fw-bold" value={{this}}>
+                                        <input type="hidden" name="value" value="-" />
+                                        <input type="hidden" name="action" value="keep" />
+                                        <button class="btn btn-reset border-0 bg-transparent shadow-none env-del-btn"><i
+                                                class='bi bi-trash'></i></button>
+                                    </div>
+                                </li>
+                                {{/each}}
+                                <li id="env-add-tpl"
+                                    class="d-none list-group-item p-2 y-center justify-content-between">
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0 bg-transparent shadow-none"><i
+                                                class='bi bi-key'></i></span>
+                                        <input type="text" name="key" class="form-control border-0 shadow-none"
+                                            placeholder="KEY">
+                                        <input type="text" name="value" class="form-control border-0 shadow-none"
+                                            placeholder="VALUE">
+                                        <input type="hidden" name="action" value="add" />
+                                        <button type="button"
+                                            class="btn btn-reset border-0 bg-transparent shadow-none env-item-del-btn"><i
+                                                class='bi bi-x'></i></button>
+                                    </div>
+                                </li>
+                                <li class="list-group-item p-2 y-center justify-content-start mt-1">
+                                    <button type="button" id="env-add-btn" class="btn btn-dark y-center me-3">
+                                        <i class='bi bi-plus me-1'></i>Add Variable
+                                    </button>
+                                    <button type="submit" class="btn btn-dark y-center me-3">
+                                        Save
+                                    </button>
+                                    <div id="env-res-message" class="hx-message"></div>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </dic>
+            </div>
+            {{/with}}
+        </div>
+        {{> partial/footer.hbs}}
+    </main>
+    {{> partial/js.hbs}}
+    <script type="text/javascript">
+        document.getElementById("env-add-btn").addEventListener("click", function () {
+            const tpl = document.getElementById("env-add-tpl");
+            const tpl2 = tpl.cloneNode(true);
+            tpl2.removeAttribute("id");
+            tpl2.classList.remove("d-none");
+            tpl2.querySelector("input[name=key]").setAttribute("required", "required");
+            tpl2.querySelector("input[name=value]").setAttribute("required", "required");
+            tpl2.querySelectorAll(".env-item-del-btn").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    const li = btn.parentNode.parentNode;
+                    li.remove();
+                });
+            });
+            // insert tpl2 before tpl
+            tpl.parentNode.insertBefore(tpl2, tpl);
+        });
+        document.querySelectorAll(".env-del-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                const li = btn.parentNode.parentNode;
+                li.remove();
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,6 +1,12 @@
 use crate::templates::{self, Engine};
 use anyhow::Result;
-use axum::{http::StatusCode, middleware, response::IntoResponse, routing::get, Extension, Router};
+use axum::{
+    http::StatusCode,
+    middleware,
+    response::IntoResponse,
+    routing::{get, post},
+    Extension, Router,
+};
 use land_dao::projects;
 use land_tplvars::{new_vars, BreadCrumbKey, Project};
 use serde::Serialize;
@@ -30,6 +36,12 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
         .route("/new", get(project::new))
         .route("/new/:name", get(project::handle_new))
         .route("/projects", get(project::index))
+        .route("/projects/:name", get(project::single))
+        .route(
+            "/projects/:name/settings",
+            get(project::settings).post(project::handle_update_settings),
+        )
+        .route("/projects/:name/envs", post(project::handle_update_envs))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(middleware::from_fn(auth::middle))

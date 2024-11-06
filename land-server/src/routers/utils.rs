@@ -1,12 +1,14 @@
 use super::ServerError;
+use crate::{routers::HtmlMinified, templates::Engine};
 use axum::{
     body::Body,
     extract::{ConnectInfo, OriginalUri, Request},
     http::{HeaderValue, Response, StatusCode, Uri},
     middleware::Next,
-    response::IntoResponse,
+    response::{Html, IntoResponse},
 };
 use axum_htmx::HxRedirect;
+use land_tplvars::{new_vars, BreadCrumbKey};
 use std::{net::SocketAddr, str::FromStr};
 use tracing::{info, instrument, warn};
 
@@ -24,6 +26,40 @@ pub fn hx_redirect(url: &str) -> Result<impl IntoResponse, ServerError> {
     let uri = Uri::from_str(url)?;
     let parts = HxRedirect(uri);
     Ok((parts, ()).into_response())
+}
+
+/// notfound_page returns a html response with not found page
+pub fn notfound_page(engine: Engine, msg: &str, user: land_tplvars::User) -> impl IntoResponse {
+    #[derive(Debug, serde::Serialize)]
+    struct Data {
+        pub msg: String,
+    }
+    (
+        StatusCode::NOT_FOUND,
+        HtmlMinified(
+            "not-found.hbs",
+            engine,
+            new_vars(
+                "Page Not Found",
+                BreadCrumbKey::NotFound,
+                Some(user),
+                Data {
+                    msg: msg.to_string(),
+                },
+            ),
+        ),
+    )
+        .into_response()
+}
+
+/// error_htmx returns a htmx response with error message
+pub fn error_htmx(msg: &str) -> impl IntoResponse {
+    Html(format!("<div class=\"htmx-err-message\">{}</div>", msg))
+}
+
+/// ok_htmx returns a htmx response with ok message
+pub fn ok_htmx(msg: &str) -> impl IntoResponse {
+    Html(format!("<div class=\"htmx-ok-message\">{}</div>", msg))
 }
 
 /// logger is a middleware that logs the request and response.
