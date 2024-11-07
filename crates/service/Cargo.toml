@@ -8,7 +8,7 @@ authors = { workspace = true }
 anyhow = { workspace = true }
 land-dao = { workspace = true }
 land-utils = { workspace = true }
-opendal = { version = "0.50.1", default-features = false, features = [
+opendal = { version = "0.50.2", default-features = false, features = [
     "services-fs",
     "services-s3",
     "services-memory",

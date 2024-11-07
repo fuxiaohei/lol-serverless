@@ -23,7 +23,7 @@ land-utils = { path = "crates/utils" }
 land-service = { path = "crates/service" }
 
 # thirdparty dependencies
-anyhow = "1.0.92"
+anyhow = "1.0.93"
 async-trait = "0.1.83"
 axum = "0.7.7"
 clap = { version = "4.5.20", features = ["derive", "env"] }
@@ -38,7 +38,7 @@ serde = { version = "1.0.214", features = ["derive"] }
 serde_json = "1.0.132"
 strum = { version = "0.26.3", features = ["derive"] }
 time = { version = "0.3.36", features = ["local-offset"] }
-tokio = { version = "1.41.0", features = ["full"] }
+tokio = { version = "1.41.1", features = ["full"] }
 tower-http = { version = "0.6.1", features = [
     "timeout",
     "cors",
