@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 mod user;
-pub use user::User;
+pub use user::{Token, User};
 
 mod project;
 pub use project::Project;
@@ -54,6 +54,7 @@ pub enum BreadCrumbKey {
     Projects,
     ProjectSingle,
     ProjectSettings,
+    Settings,
     Admin,
     AdminGeneral,
     NotFound,
@@ -72,6 +73,7 @@ impl BreadCrumb {
     pub fn new(key: &BreadCrumbKey) -> Vec<BreadCrumb> {
         match key {
             BreadCrumbKey::Dashboard => vec![Self::title("Dashboard")],
+            BreadCrumbKey::Settings => vec![Self::title("Settings")],
             BreadCrumbKey::Projects
             | BreadCrumbKey::ProjectSingle
             | BreadCrumbKey::ProjectSettings => vec![Self::title("Projects")],

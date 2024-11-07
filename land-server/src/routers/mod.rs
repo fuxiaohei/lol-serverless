@@ -17,6 +17,7 @@ mod admin;
 mod auth;
 mod install;
 mod project;
+mod setting;
 mod utils;
 
 /// handle_notfound returns a not found response.
@@ -45,6 +46,8 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
             get(project::settings).post(project::handle_update_settings),
         )
         .route("/projects/:name/envs", post(project::handle_update_envs))
+        .route("/settings", get(setting::index))
+        .route("/settings/tokens", post(setting::handle_token))
         .route("/admin", get(admin::index))
         .route("/admin/general", get(admin::general))
         .route("/admin/domains", post(admin::handle_update_domains))
