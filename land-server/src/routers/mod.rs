@@ -34,6 +34,8 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
     let app = Router::new()
         .route("/", get(index))
         .route("/install", get(install::index).post(install::handle))
+        .route("/sign-in", get(auth::sign_in).post(auth::handle_sign_in))
+        .route("/sign-out", get(auth::sign_out))
         .route("/new", get(project::new))
         .route("/new/:name", get(project::handle_new))
         .route("/projects", get(project::index))

@@ -1,11 +1,109 @@
-use axum::{extract::{OriginalUri, Request}, http::StatusCode, middleware::Next, response::{IntoResponse, Response}};
-use axum_extra::extract::CookieJar;
+use super::{HtmlMinified, ServerError};
+use crate::{
+    routers::{
+        install::InstallFlag,
+        utils::{error_htmx, hx_redirect, redirect},
+    },
+    templates::Engine,
+};
+use axum::{
+    extract::{OriginalUri, Request},
+    http::StatusCode,
+    middleware::Next,
+    response::{IntoResponse, Response},
+    Form,
+};
+use axum_extra::extract::{
+    cookie::{Cookie, SameSite},
+    CookieJar,
+};
+use land_dao::{tokens, users};
+use land_tplvars::{new_empty, BreadCrumbKey};
+use serde::Deserialize;
 use tracing::{debug, warn};
-use crate::routers::{install::InstallFlag, utils::redirect};
-use super::ServerError;
 
 /// SESSION_COOKIE_NAME is the session cookie name
 pub static SESSION_COOKIE_NAME: &str = "_runtime_land_session";
+
+/// sign_in shows sign-in page
+pub async fn sign_in(engine: Engine) -> Result<impl IntoResponse, ServerError> {
+    Ok(HtmlMinified(
+        "sign-in.hbs",
+        engine,
+        new_empty("Sign In", BreadCrumbKey::None, None),
+    ))
+}
+
+/// SignInForm is the form from sign-in page
+#[derive(Debug, Deserialize)]
+pub struct SignInForm {
+    pub email: String,
+    pub password: String,
+}
+
+/// handle_sign_in handles the sign-in logic
+/// if success, redirect to homepage
+pub async fn handle_sign_in(
+    jar: CookieJar,
+    Form(f): Form<SignInForm>,
+) -> Result<impl IntoResponse, ServerError> {
+    let user = users::get_by_email(&f.email, Some(users::UserStatus::Active)).await?;
+    if user.is_none() {
+        warn!("user is not found: {}", f.email);
+        return Ok(error_htmx("User is not found or inactive").into_response());
+    }
+    let user = user.unwrap();
+    if !users::verify_password(&user, &f.password) {
+        warn!("password is invalid: {}", f.email);
+        return Ok(error_htmx("Password is invalid").into_response());
+    }
+
+    // create new session
+    let session = tokens::create_session(user.id, 3600 * 24).await?;
+    let mut session_cookie = Cookie::new(super::auth::SESSION_COOKIE_NAME, session.value.clone());
+    session_cookie.set_max_age(Some(time::Duration::days(1)));
+    session_cookie.set_path("/");
+    session_cookie.set_same_site(Some(SameSite::Strict));
+    session_cookie.set_http_only(true);
+    debug!(
+        "sign-in session created: {:?}, {:?}",
+        session, session_cookie
+    );
+
+    // redirect to home page
+    let resp = hx_redirect("/")?;
+    Ok((jar.add(session_cookie), resp).into_response())
+}
+
+/// sign_out handles the sign-out logic
+pub async fn sign_out(jar: CookieJar) -> Result<impl IntoResponse, ServerError> {
+    let session_value = jar
+        .get(SESSION_COOKIE_NAME)
+        .map(|c| c.value())
+        .unwrap_or_default();
+    if session_value.is_empty() {
+        warn!("session is empty when sign-out");
+        return Ok(redirect("/sign-in").into_response());
+    }
+
+    let token = tokens::get_by_value(session_value, Some(tokens::Usage::Session)).await?;
+    if token.is_none() {
+        warn!("session token not found when sign-out");
+        return Ok((
+            jar.remove(Cookie::from(SESSION_COOKIE_NAME)),
+            redirect("/sign-in"),
+        )
+            .into_response());
+    }
+    let token = token.unwrap();
+    tokens::set_expired(token.id, &token.name).await?;
+    warn!("session is expired when sign-out");
+    Ok((
+        jar.remove(Cookie::from(SESSION_COOKIE_NAME)),
+        redirect("/sign-in"),
+    )
+        .into_response())
+}
 
 /// middle is a middleware to check if the user is authenticated
 pub async fn middle(mut request: Request, next: Next) -> Result<Response, ServerError> {
