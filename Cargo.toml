@@ -1,8 +1,10 @@
 [workspace]
 members = [
-    "crates/dao", "crates/service",
+    "crates/dao",
+    "crates/service",
     "crates/tplvars",
     "crates/utils",
+    "crates/worker-server",
     "land-cli",
     "land-server",
     "land-worker",
@@ -21,6 +23,7 @@ land-dao = { path = "crates/dao" }
 land-tplvars = { path = "crates/tplvars" }
 land-utils = { path = "crates/utils" }
 land-service = { path = "crates/service" }
+land-worker-server = { path = "crates/worker-server" }
 
 # thirdparty dependencies
 anyhow = "1.0.93"
@@ -28,6 +31,7 @@ async-trait = "0.1.83"
 axum = "0.7.7"
 clap = { version = "4.5.20", features = ["derive", "env"] }
 chrono = "0.4.38"
+metrics = "0.24.0"
 md5 = "0.7.0"
 rand = "0.8.5"
 rust-embed = { version = "8.5.0", features = [

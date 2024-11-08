@@ -8,6 +8,7 @@ authors = { workspace = true }
 anyhow = { workspace = true }
 base64 = "0.22.1"
 clap = { workspace = true }
+hostname = "0.4.0"
 md5 = { workspace = true }
 rand = { workspace = true }
 serde = { workspace = true }

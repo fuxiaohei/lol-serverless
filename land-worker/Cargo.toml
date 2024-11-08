@@ -5,3 +5,9 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+land-utils = { workspace = true }
+land-worker-server = { workspace = true }
+tokio = { workspace = true }
+url = "2.5.2"

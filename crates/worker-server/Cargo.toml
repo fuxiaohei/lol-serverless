@@ -1,0 +1,19 @@
+[package]
+name = "land-worker-server"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+axum = { workspace = true }
+land-utils = { workspace = true }
+metrics = { workspace = true }
+metrics-exporter-prometheus = { version = "0.16.0", default-features = false, features = [
+    "http-listener",
+] }
+serde = { workspace = true }
+tokio = { workspace = true }
+tower-http = { workspace = true }
+tracing = { workspace = true }
+xid = "1.1.1"
