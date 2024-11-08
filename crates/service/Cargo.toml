@@ -6,15 +6,19 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+chrono = { workspace = true }
 land-dao = { workspace = true }
 land-utils = { workspace = true }
+lazy_static = { workspace = true }
 opendal = { version = "0.50.2", default-features = false, features = [
     "services-fs",
     "services-s3",
     "services-memory",
 ] }
+reqwest = { workspace = true }
 rust-embed = { workspace = true }
 serde = { workspace = true }
+serde_json = { workspace = true }
 tokio = { workspace = true }
 toml = "0.8.19"
 tracing = { workspace = true }

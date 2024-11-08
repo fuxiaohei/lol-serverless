@@ -19,6 +19,7 @@ mod install;
 mod project;
 mod setting;
 mod utils;
+mod worker_api;
 
 /// handle_notfound returns a not found response.
 async fn handle_notfound() -> impl IntoResponse {
@@ -52,6 +53,9 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
         .route("/admin/general", get(admin::general))
         .route("/admin/domains", post(admin::handle_update_domains))
         .route("/admin/storage", post(admin::handle_update_storage))
+        .route("/admin/workers", get(admin::workers))
+        .route("/admin/workers/tokens", post(admin::handle_workers_token))
+        .route("/_worker_api/heartbeat", post(worker_api::heartbeat))
         .nest_service("/static", ServeDir::new(static_assets_dir))
         .fallback(handle_notfound)
         .route_layer(middleware::from_fn(auth::middle))

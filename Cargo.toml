@@ -33,7 +33,13 @@ clap = { version = "4.5.20", features = ["derive", "env"] }
 chrono = "0.4.38"
 metrics = "0.24.0"
 md5 = "0.7.0"
+lazy_static = "1.5.0"
 rand = "0.8.5"
+reqwest = { version = "0.12.9", default-features = false, features = [
+    "stream",
+    "rustls-tls",
+    "json",
+] }
 rust-embed = { version = "8.5.0", features = [
     "include-exclude",
     "compression",

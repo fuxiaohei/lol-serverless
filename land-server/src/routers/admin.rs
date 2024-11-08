@@ -1,9 +1,12 @@
-use super::{HtmlMinified, ServerError};
+use super::{
+    setting::{handle_token_internal, TokenForm},
+    HtmlMinified, ServerError,
+};
 use crate::{routers::utils::ok_htmx, templates::Engine};
 use axum::{response::IntoResponse, Extension, Form};
-use land_dao::settings;
+use land_dao::{settings, tokens, workers};
 use land_service::storage;
-use land_tplvars::{new_empty_admin, new_vars_admin, BreadCrumbKey};
+use land_tplvars::{new_empty_admin, new_vars_admin, BreadCrumbKey, Token, Worker};
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
@@ -66,4 +69,56 @@ pub async fn handle_update_storage(
 ) -> Result<impl IntoResponse, ServerError> {
     storage::update_by_form(form).await?;
     Ok(ok_htmx("Storage updated"))
+}
+
+/// workers shows the workers page
+pub async fn workers(
+    engine: Engine,
+    Extension(user): Extension<land_tplvars::User>,
+) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Data {
+        pub tokens: Vec<land_tplvars::Token>,
+        pub token_url: String,
+        pub workers: Vec<Worker>,
+    }
+
+    let tokens = tokens::list(Some(user.id), Some(tokens::Usage::Worker)).await?;
+    info!(
+        owner_id = user.id,
+        "List workers tokens, count: {}",
+        tokens.len()
+    );
+    let tokens = Token::new_from_models(tokens);
+    let workers_value = workers::find_all(None).await?;
+    info!("List workers, count: {}", workers_value.len());
+    let workers = workers_value.iter().map(Worker::new).collect();
+    Ok(HtmlMinified(
+        "admin/workers.hbs",
+        engine,
+        new_vars_admin(
+            "Workers",
+            BreadCrumbKey::AdminWorkers,
+            Some(user),
+            Data {
+                tokens,
+                token_url: "/admin/workers/tokens".to_string(),
+                workers,
+            },
+        ),
+    ))
+}
+
+/// handle_workers_token handles the workers token form
+pub async fn handle_workers_token(
+    Extension(user): Extension<land_tplvars::User>,
+    Form(f): Form<TokenForm>,
+) -> Result<impl IntoResponse, ServerError> {
+    handle_token_internal(
+        user.id,
+        f,
+        "/admin/workers",
+        land_dao::tokens::Usage::Worker,
+    )
+    .await
 }

@@ -52,6 +52,9 @@ async fn main() -> Result<()> {
     land_service::storage::init_defaults().await?;
     land_service::storage::load_global().await?;
 
+    // init workers living refreshing
+    land_service::workerlivings::init_refreshing().await;
+
     // start http server
     server::start(args.address.parse()?, "./assets", args.tpldir.clone())
         .await

@@ -1,4 +1,5 @@
 pub mod crypt;
+pub mod localip;
 pub mod logger;
 pub mod version;
 

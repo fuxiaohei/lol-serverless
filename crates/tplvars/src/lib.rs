@@ -8,6 +8,9 @@ pub use user::{Token, User};
 mod project;
 pub use project::Project;
 
+mod worker;
+pub use worker::Worker;
+
 /// Page is the template page vars, for every page
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Page {
@@ -57,6 +60,7 @@ pub enum BreadCrumbKey {
     Settings,
     Admin,
     AdminGeneral,
+    AdminWorkers,
     NotFound,
     None,
 }
@@ -77,7 +81,9 @@ impl BreadCrumb {
             BreadCrumbKey::Projects
             | BreadCrumbKey::ProjectSingle
             | BreadCrumbKey::ProjectSettings => vec![Self::title("Projects")],
-            BreadCrumbKey::Admin | BreadCrumbKey::AdminGeneral => vec![Self::title("Admin")],
+            BreadCrumbKey::Admin | BreadCrumbKey::AdminGeneral | BreadCrumbKey::AdminWorkers => {
+                vec![Self::title("Admin")]
+            }
             BreadCrumbKey::None | BreadCrumbKey::NotFound => vec![],
         }
     }

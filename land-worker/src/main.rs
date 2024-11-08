@@ -1,6 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
-use land_utils::{logger, version};
+use land_service::edgesyncer;
+use land_utils::{localip, logger, version};
 
 #[derive(Parser, Debug)]
 #[clap(author, version)]
@@ -25,7 +26,7 @@ struct Args {
     #[clap(long, env = "LAND_DATA_DIR", default_value = "./data")]
     dir: String,
     /// The url of cloud server
-    #[clap(long = "url",env = "LAND_SERVER_URL", value_parser = validate_url,default_value("http://127.0.0.1:8640"))]
+    #[clap(long = "url",env = "LAND_SERVER_URL", value_parser = validate_url,default_value("http://127.0.0.1:8844"))]
     pub server_url: String,
     /// The service name to generate traefik conf
     #[clap(
@@ -65,8 +66,19 @@ async fn main() -> Result<()> {
     // Initialize tracing
     logger::init(args.output.verbose);
 
-     // Start server
-     let opts = land_worker_server::Opts {
+    // Initialize local ip info
+    localip::init(args.ip.clone()).await?;
+
+    // Initialize edge-syncer actions
+    edgesyncer::heartbeat::init(
+        args.server_url.clone(),
+        args.token.clone(),
+        args.dir.clone(),
+    )
+    .await;
+
+    // Start server
+    let opts = land_worker_server::Opts {
         addr: args.address.parse().unwrap(),
         dir: args.dir,
         default_wasm: None,

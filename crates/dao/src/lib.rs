@@ -15,6 +15,8 @@ pub mod projects;
 pub mod settings;
 pub mod tokens;
 pub mod users;
+pub mod wasm_artifacts;
+pub mod workers;
 
 /// DBArgs is command line arguments for database connection.
 #[derive(Args)]

@@ -11,10 +11,12 @@ clap = { workspace = true }
 hostname = "0.4.0"
 md5 = { workspace = true }
 rand = { workspace = true }
+reqwest = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 simple_crypt = "0.2.3"
 time = { workspace = true }
+tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 
 [build-dependencies]
