@@ -1,6 +1,8 @@
 [workspace]
 members = [
-    "crates/dao", "crates/sdk", "crates/sdk-macro",
+    "crates/dao",
+    "crates/sdk",
+    "crates/sdk-macro",
     "crates/service",
     "crates/tplvars",
     "crates/utils",
@@ -24,6 +26,8 @@ authors = ["fuxiaohei <fudong0797@gmail.com>"]
 land-dao = { path = "crates/dao" }
 land-tplvars = { path = "crates/tplvars" }
 land-utils = { path = "crates/utils" }
+land-sdk = { path = "crates/sdk" }
+land-sdk-macro = { path = "crates/sdk-macro" }
 land-service = { path = "crates/service" }
 land-wasm-gen = { path = "crates/wasm-gen" }
 land-wasm-host = { path = "crates/wasm-host" }
@@ -36,6 +40,7 @@ axum = "0.7.7"
 bytes = "1.8.0"
 clap = { version = "4.5.20", features = ["derive", "env"] }
 chrono = "0.4.38"
+http = "1.1.0"
 metrics = "0.24.0"
 md5 = "0.7.0"
 lazy_static = "1.5.0"
@@ -77,4 +82,5 @@ wasmtime-wasi = "26.0.1"
 wasi-preview1-component-adapter-provider = "25.0.1"
 wit-bindgen-core = "0.34.0"
 wit-bindgen-rust = "0.34.0"
+wit-bindgen = "0.34.0"
 wit-component = "0.219.1"

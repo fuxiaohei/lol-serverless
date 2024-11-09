@@ -292,7 +292,7 @@ dependencies = [
  "hyper",
  "hyper-util",
  "itoa",
- "matchit",
+ "matchit 0.7.3",
  "memchr",
  "mime",
  "percent-encoding 2.3.1",
@@ -2421,10 +2421,27 @@ dependencies = [
 [[package]]
 name = "land-sdk"
 version = "0.2.0-b3"
+dependencies = [
+ "anyhow",
+ "hmac",
+ "http",
+ "land-sdk-macro",
+ "lazy_static",
+ "matchit 0.8.5",
+ "sha1",
+ "sha2",
+ "wit-bindgen",
+]
 
 [[package]]
 name = "land-sdk-macro"
 version = "0.2.0-b3"
+dependencies = [
+ "anyhow",
+ "http",
+ "quote",
+ "syn 2.0.87",
+]
 
 [[package]]
 name = "land-server"
@@ -2767,6 +2784,12 @@ name = "matchit"
 version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e7465ac9959cc2b1404e8e2367b43684a6d13790fe23056cc8c6c5a6b7bcb94"
+
+[[package]]
+name = "matchit"
+version = "0.8.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd0aa4b8ca861b08d68afc8702af3250776898c1508b278e1da9d01e01d4b45c"
 
 [[package]]
 name = "maybe-owned"
@@ -6355,6 +6378,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "wit-bindgen"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7e11ad55616555605a60a8b2d1d89e006c2076f46c465c892cc2c153b20d4b30"
+dependencies = [
+ "wit-bindgen-rt",
+ "wit-bindgen-rust-macro",
+]
+
+[[package]]
 name = "wit-bindgen-core"
 version = "0.34.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6363,6 +6396,15 @@ dependencies = [
  "anyhow",
  "heck 0.5.0",
  "wit-parser 0.219.1",
+]
+
+[[package]]
+name = "wit-bindgen-rt"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "744845cde309b8fa32408d6fb67456449278c66ea4dcd96de29797b302721f02"
+dependencies = [
+ "bitflags 2.6.0",
 ]
 
 [[package]]
@@ -6379,6 +6421,21 @@ dependencies = [
  "wasm-metadata",
  "wit-bindgen-core",
  "wit-component",
+]
+
+[[package]]
+name = "wit-bindgen-rust-macro"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c967731fc5d50244d7241ecfc9302a8929db508eea3c601fbc5371b196ba38a5"
+dependencies = [
+ "anyhow",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.87",
+ "wit-bindgen-core",
+ "wit-bindgen-rust",
 ]
 
 [[package]]
