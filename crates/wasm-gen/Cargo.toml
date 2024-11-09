@@ -1,0 +1,14 @@
+[package]
+name = "land-wasm-gen"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+tracing = { workspace = true }
+wasi-preview1-component-adapter-provider = { workspace = true }
+which = "7.0.0"
+wit-bindgen-core = { workspace = true }
+wit-bindgen-rust = { workspace = true }
+wit-component = { workspace = true }

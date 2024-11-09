@@ -1,0 +1,7 @@
+[package]
+name = "land-sdk"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]

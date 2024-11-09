@@ -1,0 +1,14 @@
+package land:asyncio@0.2.0;
+
+interface asyncio{
+    use types.{handle};
+
+    // new async task handle
+    new: func() -> result<handle>;
+    // new sleep time task handle and sleep
+    sleep: func(ms: u32) -> result<handle>;
+    // select async task, return task handle or need waiting
+    select: func() -> tuple<option<handle>, bool>;
+    // ready wating async task ready
+    ready: func();
+}

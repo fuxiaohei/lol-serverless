@@ -1,0 +1,6 @@
+package land:asyncio@0.2.0;
+
+interface types{
+    // async io task handle
+    type handle = u32;
+}

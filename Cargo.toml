@@ -1,9 +1,11 @@
 [workspace]
 members = [
-    "crates/dao",
+    "crates/dao", "crates/sdk", "crates/sdk-macro",
     "crates/service",
     "crates/tplvars",
     "crates/utils",
+    "crates/wasm-gen",
+    "crates/wasm-host",
     "crates/worker-server",
     "land-cli",
     "land-server",
@@ -13,7 +15,7 @@ default-members = ["land-cli"]
 resolver = "2"
 
 [workspace.package]
-version = "0.2.0-b2"
+version = "0.2.0-b3"
 edition = "2021"
 authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
@@ -23,12 +25,15 @@ land-dao = { path = "crates/dao" }
 land-tplvars = { path = "crates/tplvars" }
 land-utils = { path = "crates/utils" }
 land-service = { path = "crates/service" }
+land-wasm-gen = { path = "crates/wasm-gen" }
+land-wasm-host = { path = "crates/wasm-host" }
 land-worker-server = { path = "crates/worker-server" }
 
 # thirdparty dependencies
 anyhow = "1.0.93"
 async-trait = "0.1.83"
 axum = "0.7.7"
+bytes = "1.8.0"
 clap = { version = "4.5.20", features = ["derive", "env"] }
 chrono = "0.4.38"
 metrics = "0.24.0"
@@ -67,3 +72,9 @@ uuid = { version = "1.11.0", features = [
     "macro-diagnostics",
 ] }
 walkdir = "2.5.0"
+wasmtime = { version = "26.0.1", features = ["component-model", "async"] }
+wasmtime-wasi = "26.0.1"
+wasi-preview1-component-adapter-provider = "25.0.1"
+wit-bindgen-core = "0.34.0"
+wit-bindgen-rust = "0.34.0"
+wit-component = "0.219.1"

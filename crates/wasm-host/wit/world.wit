@@ -1,0 +1,12 @@
+package land:worker@0.2.0;
+
+world http-handler {
+    export land:http/incoming@0.2.0;
+    export land:asyncio/context@0.2.0;
+}
+
+world http-service {
+    import land:http/body@0.2.0;
+    import land:http/fetching@0.2.0;
+    import land:asyncio/asyncio@0.2.0;
+}

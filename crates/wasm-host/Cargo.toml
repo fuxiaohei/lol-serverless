@@ -1,0 +1,25 @@
+[package]
+name = "land-wasm-host"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+axum = { workspace = true }
+bytes = { workspace = true }
+bytesize = "1.3.0"
+futures-util = "0.3.31"
+http-body = "1.0.1"
+http-body-util = "0.1.2"
+lazy_static = { workspace = true }
+moka = { version = "0.12.8", features = ["sync"] }
+reqwest = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+wasmtime = { workspace = true }
+wasmtime-wasi = { workspace = true }
+
+[build-dependencies]
+land-wasm-gen = { workspace = true }
