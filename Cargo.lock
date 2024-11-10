@@ -2488,6 +2488,7 @@ dependencies = [
  "tokio",
  "toml",
  "tracing",
+ "walkdir",
 ]
 
 [[package]]
@@ -2576,7 +2577,9 @@ version = "0.2.0-b3"
 dependencies = [
  "anyhow",
  "axum",
+ "land-service",
  "land-utils",
+ "land-wasm-host",
  "metrics",
  "metrics-exporter-prometheus",
  "serde",
