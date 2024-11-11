@@ -163,3 +163,21 @@ html[data-bs-theme="dark"] #projects-overview .project-item:hover {
 #projects-table td {
     background-color: transparent !important;
 }
+
+.badge.status-success {
+    background-color: #008000;
+    color: #e2e4e5;
+}
+
+.badge.status-waitdeploy,
+.badge.status-deploying,
+.badge.status-uploading,
+.badge.status-compiling {
+    background-color: #DDD;
+    color: #333;
+}
+
+.badge.status-failed {
+    background-color: #b22b38;
+    color: #e2e4e5;
+}

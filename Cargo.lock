@@ -124,9 +124,9 @@ dependencies = [
 
 [[package]]
 name = "allocator-api2"
-version = "0.2.19"
+version = "0.2.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "611cc2ae7d2e242c457e4be7f97036b8ad9ca152b499f53faf99b1ed8fc2553f"
+checksum = "45862d1c77f2228b9e10bc609d5bc203d86ebc9b87ad8d5d5167a6c9abf739d9"
 
 [[package]]
 name = "ambient-authority"
@@ -2395,11 +2395,11 @@ dependencies = [
 
 [[package]]
 name = "land-cli"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 
 [[package]]
 name = "land-dao"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2420,7 +2420,7 @@ dependencies = [
 
 [[package]]
 name = "land-sdk"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "hmac",
@@ -2435,7 +2435,7 @@ dependencies = [
 
 [[package]]
 name = "land-sdk-macro"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "http",
@@ -2445,7 +2445,7 @@ dependencies = [
 
 [[package]]
 name = "land-server"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "axum",
@@ -2473,7 +2473,7 @@ dependencies = [
 
 [[package]]
 name = "land-service"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2499,7 +2499,7 @@ dependencies = [
 
 [[package]]
 name = "land-tplvars"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2511,7 +2511,7 @@ dependencies = [
 
 [[package]]
 name = "land-utils"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2531,7 +2531,7 @@ dependencies = [
 
 [[package]]
 name = "land-wasm-gen"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "tracing",
@@ -2544,7 +2544,7 @@ dependencies = [
 
 [[package]]
 name = "land-wasm-host"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2566,7 +2566,7 @@ dependencies = [
 
 [[package]]
 name = "land-worker"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "clap",
@@ -2579,7 +2579,7 @@ dependencies = [
 
 [[package]]
 name = "land-worker-server"
-version = "0.2.0-b3"
+version = "0.2.0-b4"
 dependencies = [
  "anyhow",
  "axum",
@@ -4104,9 +4104,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.38.39"
+version = "0.38.40"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "375116bee2be9ed569afe2154ea6a99dfdffd257f533f187498c2a8f5feaf4ee"
+checksum = "99e4ea3e1cdc4b559b8e5650f9c8e5998e3e5c1343b4eaf034565f32318d63c0"
 dependencies = [
  "bitflags 2.6.0",
  "errno",
