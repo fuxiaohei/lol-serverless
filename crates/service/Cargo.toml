@@ -8,8 +8,12 @@ authors = { workspace = true }
 anyhow = { workspace = true }
 chrono = { workspace = true }
 land-dao = { workspace = true }
+land-tplvars = { workspace = true }
 land-utils = { workspace = true }
+land-wasm-gen = { workspace = true }
+land-wasm-host = { workspace = true }
 lazy_static = { workspace = true }
+md5 = { workspace = true }
 opendal = { version = "0.50.2", default-features = false, features = [
     "services-fs",
     "services-s3",
@@ -19,6 +23,8 @@ reqwest = { workspace = true }
 rust-embed = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+serde_yaml = "0.9.33"
+tempfile = "3.14.0"
 tokio = { workspace = true }
 toml = "0.8.19"
 tracing = { workspace = true }

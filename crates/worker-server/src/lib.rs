@@ -1,5 +1,6 @@
 use anyhow::Result;
 use axum::{routing::any, Router};
+use land_service::memenvs;
 use land_utils::get_hostname;
 use metrics_exporter_prometheus::PrometheusBuilder;
 use std::{net::SocketAddr, sync::OnceLock, time::Duration};
@@ -62,17 +63,17 @@ async fn init_opts(opts: &Opts) -> Result<()> {
     ENDPOINT_NAME.set(hostname).unwrap();
     ENABLE_WASMTIME_AOT.set(opts.enable_wasmtime_aot).unwrap();
     ENABLE_METRICS.set(opts.enable_metrics).unwrap();
-    // land_wasm_host::FILE_DIR.set(opts.dir.clone()).unwrap();
+    land_wasm_host::FILE_DIR.set(opts.dir.clone()).unwrap();
 
     // init clients to handle fetch hostcall
-    // land_wasm_host::init_clients();
+    land_wasm_host::init_clients();
 
     // init wasmtime engine in memory.
     // some instances are live in one wasmtime engine.
-    //land_wasm_host::init_engines()?;
+    land_wasm_host::init_engines()?;
 
     // load envs to memory from local files
-    // land_modules::memenvs::init_envs(format!("{}/envs", opts.dir)).await?;
+    memenvs::init_envs(format!("{}/envs", opts.dir)).await?;
 
     if opts.enable_metrics {
         let addr: SocketAddr = opts
@@ -96,8 +97,8 @@ async fn load_default_wasm() -> Result<()> {
         debug!("No default wasm");
         return Ok(());
     }
-    //let aot_enable = ENABLE_WASMTIME_AOT.get().unwrap();
-    //let _ = land_wasm_host::Worker::new_in_pool(default_wasm, *aot_enable).await?;
+    let aot_enable = ENABLE_WASMTIME_AOT.get().unwrap();
+    let _ = land_wasm_host::Worker::new_in_pool(default_wasm, *aot_enable).await?;
     Ok(())
 }
 

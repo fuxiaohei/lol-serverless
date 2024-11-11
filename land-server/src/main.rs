@@ -54,6 +54,8 @@ async fn main() -> Result<()> {
 
     // init workers living refreshing
     land_service::workerlivings::init_refreshing().await;
+    // init deployer background tasks
+    land_service::deployer::init_background().await;
 
     // start http server
     server::start(args.address.parse()?, "./assets", args.tpldir.clone())

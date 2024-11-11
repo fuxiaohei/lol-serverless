@@ -76,6 +76,13 @@ async fn main() -> Result<()> {
         args.dir.clone(),
     )
     .await;
+    edgesyncer::tasks::init(
+        args.server_url.clone(),
+        args.token.clone(),
+        args.dir.clone(),
+        args.service_name.clone(),
+    )
+    .await;
 
     // Start server
     let opts = land_worker_server::Opts {

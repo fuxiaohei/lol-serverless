@@ -1,7 +1,16 @@
-use axum::{body::{Body, HttpBody}, extract::Request, http::{HeaderValue, StatusCode}, response::IntoResponse, Json};
-use land_service::{confs, workerlivings};
+use axum::{
+    body::{Body, HttpBody},
+    extract::{Path, Request},
+    http::{HeaderValue, StatusCode},
+    response::IntoResponse,
+    Json,
+};
+use land_service::{confs, storage, workerlivings};
 use land_utils::localip;
 use serde::{Deserialize, Serialize};
+use tracing::debug;
+
+pub mod task;
 
 /// heartbeat handles the worker heartbeat request
 pub async fn heartbeat(req: Request<Body>) -> Result<impl IntoResponse, JsonError> {
@@ -30,7 +39,13 @@ pub async fn heartbeat(req: Request<Body>) -> Result<impl IntoResponse, JsonErro
     Ok(resp)
 }
 
-
+/// download handles the worker download wasm request
+pub async fn download(Path(path): Path<String>) -> Result<impl IntoResponse, JsonError> {
+    let real_path = format!("wasm/{}", path);
+    let wasm_bytes = storage::read(&real_path).await?;
+    debug!("download: {:?}, path:{}", wasm_bytes.len(), path);
+    Ok(wasm_bytes.into_response())
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 struct JsonResponse<T> {

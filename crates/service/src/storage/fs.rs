@@ -18,7 +18,7 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             local_path: "./data".to_string(),
-            local_url: "/download/{name}".to_string(),
+            local_url: "{name}".to_string(),
         }
     }
 }

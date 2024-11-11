@@ -11,6 +11,9 @@ pub use project::Project;
 mod worker;
 pub use worker::Worker;
 
+mod task;
+pub use task::Task;
+
 /// Page is the template page vars, for every page
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Page {

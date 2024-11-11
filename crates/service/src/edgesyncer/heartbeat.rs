@@ -1,20 +1,16 @@
 use anyhow::{anyhow, Result};
 use land_utils::localip;
 use serde::Deserialize;
-use std::sync::{Once, OnceLock};
 use tracing::{debug, instrument, warn};
-
-static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
-static CLIENT_ONCE: Once = Once::new();
 
 /// init start a loop to ping server every 10 seconds
 pub async fn init(addr: String, token: String, dir: String) {
     debug!("agent init_heartbeat_ping");
 
     // init client
-    CLIENT_ONCE.call_once(|| {
+    super::CLIENT_ONCE.call_once(|| {
         let client = reqwest::Client::new();
-        CLIENT.set(client).unwrap();
+        super::CLIENT.set(client).unwrap();
     });
 
     tokio::spawn(async move {
@@ -42,7 +38,7 @@ struct SyncResponse {
 #[instrument("[AGT-SYNC]", skip_all)]
 async fn heartbeat_ping(addr: String, token: String, dir: String) -> Result<()> {
     let ipinfo = localip::get().await;
-    let client = CLIENT.get().unwrap();
+    let client = super::CLIENT.get().unwrap();
 
     let api = format!("{}/_worker_api/heartbeat", addr);
     let token = format!("Bearer {}", token);

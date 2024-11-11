@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 use tokio::{sync::Mutex, time::Instant};
 use tracing::{debug, instrument, warn};
 
+pub mod traefik;
+
 /// WasmConfig is the config for wasm file
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WasmConfig {

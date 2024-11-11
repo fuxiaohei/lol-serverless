@@ -162,6 +162,13 @@ pub async fn save(name: &str, data: Vec<u8>) -> Result<()> {
     Ok(())
 }
 
+/// read bytes from storage
+pub async fn read(name: &str) -> Result<Vec<u8>> {
+    let storage = STORAGE.lock().await;
+    let data = storage.read(name).await?.to_vec();
+    Ok(data)
+}
+
 trait UrlBuilder {
     fn build_url(&self, name: &str) -> String;
 }

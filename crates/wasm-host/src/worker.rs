@@ -1,6 +1,7 @@
 use crate::{hostcall::HttpHandlerPre, Context};
 use anyhow::Result;
 use axum::body::Body;
+use tokio::time::Instant;
 use tracing::debug;
 use wasmtime::{
     component::{Component, Linker},
@@ -48,14 +49,10 @@ impl Worker {
     }
 
     async fn from_aot(path: String) -> Result<Self> {
+        let start_time = Instant::now();
         let engine = crate::engine::get("default")?;
         let bytes = std::fs::read(&path)?;
-        debug!(
-            "Load wasm component from AOT file: {}, size: {}",
-            path,
-            bytes.len()
-        );
-
+        let bytes_len = bytes.len();
         let component = unsafe { Component::deserialize(&engine, bytes)? };
 
         // create linker
@@ -67,6 +64,13 @@ impl Worker {
             .expect("add http_service failed");
 
         let instance_pre = linker.instantiate_pre(&component)?;
+
+        debug!(
+            "Load wasm component from AOT file: {}, size: {}, cost: {:?}",
+            path,
+            bytes_len,
+            start_time.elapsed(),
+        );
         Ok(Self {
             path,
             engine,
