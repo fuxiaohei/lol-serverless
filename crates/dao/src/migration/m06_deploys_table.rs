@@ -17,6 +17,7 @@ enum Deploys {
     DeployMessage,
     Status,
     Rips,
+    Description,
     SuccessCount,
     FailedCount,
     TotalCount,
@@ -69,6 +70,7 @@ async fn create_deploys_table(manager: &SchemaManager<'_>) -> Result<(), DbErr> 
                 )
                 .col(ColumnDef::new(Deploys::Status).string_len(12).not_null())
                 .col(ColumnDef::new(Deploys::Rips).text().not_null())
+                .col(ColumnDef::new(Deploys::Description).text().not_null())
                 .col(ColumnDef::new(Deploys::SuccessCount).integer().not_null())
                 .col(ColumnDef::new(Deploys::FailedCount).integer().not_null())
                 .col(ColumnDef::new(Deploys::TotalCount).integer().not_null())

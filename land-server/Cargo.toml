@@ -14,6 +14,7 @@ chrono = { workspace = true }
 clap = { workspace = true }
 gravatar = "0.2.0"
 handlebars = "6.2.0"
+htmlentity = "1.3.2"
 land-dao = { workspace = true }
 land-service = { workspace = true }
 land-tplvars = { workspace = true }

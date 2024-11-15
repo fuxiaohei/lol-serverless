@@ -1,0 +1,30 @@
+<ul class="list-group shadow-none" id="deploys-list-ul">
+    {{#each deployments}}
+    <li class="list-group-item d-flex y-center justify-content-between">
+        <div class="d-flex y-center justifiy-content-start">
+            <div class="meta" style="width: 180px;">
+                <p class="fw-bold mb-1">{{short_id}} (#{{id}})
+                    <span class="text-body-tertiary d-none small ms-1">({{uuid}})</span>
+                </p>
+                <p class="mb-0">
+                    <span class="text-body-tertiary small text-capitalize">{{deploy_type}}</span>
+                    {{#if is_current}}
+                    <span class="badge bg-primary small">Current</span>
+                    {{/if}}
+                </p>
+            </div>
+            <div class="status ms-5">
+                <span>{{description}}</span>
+                <span class="badge status-{{deploy_status}} ms-2 text-capitalize">{{deploy_status}}</span>
+            </div>
+        </div>
+        <div>
+            {{#if is_current}}
+            <a href="{{domain_url}}" target="_blank" class="btn btn-sm btn-outline-secondary">View</a>
+            {{/if}}
+            <span class="text-body-tertiary small ms-2"><span class="time-ago"
+                    data-x-timeago="{{updated_at}}"></span></span>
+        </div>
+    </li>
+    {{/each}}
+</ul>

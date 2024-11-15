@@ -177,7 +177,7 @@ async fn handle_each_deploy(
     land_wasm_host::Worker::new_in_pool(&item.file_name, true).await?;
 
     // 4. generate traefik config
-    build_traefik(&item, &dir, &service_name).await?;
+    build_traefik(item, &dir, &service_name).await?;
 
     Ok(deploy_task::Status::Success)
 }

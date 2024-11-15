@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> partial/head.hbs}}
+    <link title="light" rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/a11y-light.min.css" />
+    <link title="dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/a11y-dark.min.css"
+        disabled="disabled" />
+</head>
+
+<body id="root">
+    {{> partial/sidebar.hbs}}
+    <main id="main" class="w-100 overflow-y-auto">
+        {{> partial/topnav.hbs}}
+        <div id="project-single-container" class="overflow-y-auto">
+            {{#with data}}
+            {{> partial/project-header.hbs}}
+            {{/with}}
+            <div id="deploys-list" class="p-3 mb-4">
+                {{#with data}}
+                {{> partial/deploys-list.hbs}}
+                {{/with}}
+            </div>
+        </div>
+        {{> partial/footer.hbs}}
+    </main>
+    {{> partial/js.hbs}}
+</body>
+
+</html>

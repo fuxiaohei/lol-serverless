@@ -229,6 +229,11 @@ pub async fn create_deploy(project: &project::Model, dtype: DeployType) -> Resul
     }
     let user = user.unwrap();
 
+    let mut description = String::new();
+    if dtype == DeployType::Production && project.created_by == CreatedBy::Playground.to_string() {
+        description = "Deploy playground to production".to_string();
+    }
+
     // create new deploy
     let dp = crate::deploys::create(
         project.owner_id,
@@ -237,6 +242,7 @@ pub async fn create_deploy(project: &project::Model, dtype: DeployType) -> Resul
         project.uuid.clone(),
         project.prod_domain.clone(),
         dtype.clone(),
+        description,
     )
     .await?;
 

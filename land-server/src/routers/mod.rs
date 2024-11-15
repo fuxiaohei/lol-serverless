@@ -47,6 +47,15 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
             get(project::settings).post(project::handle_update_settings),
         )
         .route("/projects/:name/envs", post(project::handle_update_envs))
+        .route(
+            "/projects/:name/edit",
+            get(project::edit).post(project::handle_edit),
+        )
+        .route(
+            "/projects/:name/check-status",
+            post(project::handle_check_status),
+        )
+        .route("/projects/:name/deployments", get(project::deployments))
         .route("/settings", get(setting::index))
         .route("/settings/tokens", post(setting::handle_token))
         .route("/admin", get(admin::index))

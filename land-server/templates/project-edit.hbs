@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> partial/head.hbs}}
+    <style type="text/css">
+        .tooltip-inner {
+            text-align: left !important;
+            max-width: 300px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        {{#with data}}
+        <div id="editor-container" class="border-end d-flex flex-column w-50" data-x-name="{{project.name}}">
+            <div id="editor-nav" style="height: 60px;" class="y-center justify-content-between border-bottom">
+                <div class="y-center">
+                    <div class="lang-logo">
+                        <img width="40" height="40" src="/static/img/javascript.svg" class="m-2 my-3 {{lang}}-svg"
+                            alt="{{lang}}">
+                    </div>
+                    <div class="name">
+                        <p class="fw-bold mb-0"><a href="/projects/{{project.name}}"
+                                class="text-reset">{{project.name}}</a></p>
+                        <p class="mb-0 text-body-tertiary small">Updated<span class="time-ago ms-1"
+                                data-x-timeago="{{project.updated_at}}"></span></p>
+                    </div>
+                </div>
+                <div class="y-center justify-content-end">
+                    <div>
+                        <span id="deploy-message"></span>
+                        <button class="btn btn-reset px-2 text-danger me-1 d-none" data-bs-toggle="tooltip"
+                            data-bs-html="true" data-bs-placement="bottom" id="deploy-tooltip" data-bs-title="Nothing">
+                            <i class='bi bi-exclamation-circle'></i>
+                        </button>
+                    </div>
+                    <button id="save-btn" class="me-3 ms-1 btn btn-primary btn-sm text-uppercase">
+                        <span id="save-btn-spinner" class="spinner-border d-none spinner-border-sm me-1"></span>
+                        <span>Save & Deploy</span>
+                    </button>
+                </div>
+            </div>
+            <div id="editor-wrapper" class="p-2 mb-auto" style="height: calc(100vh - 226px)">loading...</div>
+            <div id="log-wrapper" class="border-top p-2">
+                <h6 class="y-center"><i class='bi bi-chat-right-text me-1'></i>Logs</h6>
+                <p class="text-body-tertiary">Comming soon...</p>
+            </div>
+            <pre class="d-none"><code id="code">{{project.source}}</code></pre>
+        </div>
+        <div id="preview-container" class="d-flex flex-column flex-fill">
+            <div id="preview-nav" style="height: 60px;" class="y-center border-bottom">
+                <div class="input-group mx-3">
+                    <input id="preview-url" type="text" class="form-control py-1 shadow-none"
+                        value="{{project.prod_domain_url}}">
+                    <button data-x-url="{{project.prod_domain_url}}" id="refresh-btn"
+                        class="btn btn-outline-secondary y-center px-2" type="button"><i
+                            class='bi bi-refresh me-1'></i>Refresh</button>
+                </div>
+            </div>
+            <div class="bg-transparent" style="height: calc(100vh - 60px)">
+                <iframe src="{{project.prod_domain_url}}" frameborder="0" id="project-preview"
+                    sandbox="allow-forms allow-modals allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
+            </div>
+        </div>
+        {{/with}}
+    </div>
+    {{> partial/js.hbs}}
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.50.0/min/vs/loader.js"></script>
+    <script type="text/javascript">
+        const projectName = document.getElementById("editor-container").getAttribute("data-x-name");
+        const projectEditSubmitUrl = "/projects/" + projectName + "/edit";
+        const projectStatusUrl = "/projects/" + projectName + "/check-status";
+        const messageElement = document.getElementById("deploy-message");
+        const tooltipElement = document.getElementById("deploy-tooltip");
+        const saveBtn = document.getElementById("save-btn");
+        const saveBtnSpinner = document.getElementById("save-btn-spinner");
+        const refreshBtn = document.getElementById("refresh-btn");
+
+
+
+        function setFailedMessage(msg) {
+            let msg2 = encodeURIComponent(msg).split("%0A").join("<br>");
+            msg2 = decodeURIComponent(msg2);
+            messageElement.innerText = "Deploy Failed";
+            messageElement.classList.remove("text-success");
+            messageElement.classList.add("text-danger");
+            tooltipElement.setAttribute("data-bs-title", msg2);
+            tooltipElement.classList.remove("d-none");
+            new bootstrap.Tooltip(tooltipElement);
+        }
+
+        function setSuccessMessage(msg) {
+            messageElement.innerText = msg;
+            messageElement.classList.remove("text-danger");
+            messageElement.classList.add("text-success");
+            tooltipElement.classList.add("d-none");
+        }
+
+        function startCheckStatus(obj) {
+            saveBtn.setAttribute("disabled", "disabled");
+            saveBtnSpinner.classList.remove("d-none");
+            window.checkProjectStatusInterval = setInterval(async function () {
+                let resp = await fetch(projectStatusUrl, {
+                    method: "POST",
+                    body: JSON.stringify(obj),
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+                let status = resp.status;
+                if (status !== 200) {
+                    let text = await resp.text();
+                    setFailedMessage(text);
+                    clearInterval(window.checkProjectStatusInterval);
+                    saveBtn.removeAttribute("disabled");
+                    saveBtnSpinner.classList.add("d-none");
+                    return;
+                }
+                let result = await resp.json();
+                if (result.status == "success") {
+                    setSuccessMessage("OK");
+                    clearInterval(window.checkProjectStatusInterval);
+                    saveBtn.removeAttribute("disabled");
+                    saveBtnSpinner.classList.add("d-none");
+                    refreshBtn.click(); // refresh preview
+                    return;
+                }
+                if (result.status == "failed") {
+                    setFailedMessage(result.html);
+                    clearInterval(window.checkProjectStatusInterval);
+                    saveBtn.removeAttribute("disabled");
+                    saveBtnSpinner.classList.add("d-none");
+                    return;
+                }
+            }, 1000)
+        }
+
+        // init editor after document is loaded
+        function initEditor() {
+            require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.50.0/min/vs' } });
+            require(['vs/editor/editor.main'], function () {
+                let container = document.getElementById('editor-wrapper');
+                container.innerText = "";
+                let code = document.getElementById('code').textContent;
+                var editor = monaco.editor.create(container, {
+                    automaticLayout: true,
+                    value: code,
+                    language: 'javascript',
+                    scrollBeyondLastLine: false,
+                    scrollBeyondLastColumn: 0,
+                    scrollbar: {
+                        useShadows: false,
+                        vertical: 'hidden',
+                        horizontal: 'hidden',
+                    },
+                    minimap: { enabled: false },
+                    overviewRulerLanes: 0,
+                    fontSize: "14px",
+                    theme: "vs", //getPreferredTheme() === "dark" ? "vs-dark" : "vs",
+                });
+                const btn = document.getElementById("save-btn");
+                btn.addEventListener("click", async function (e) {
+                    btn.setAttribute("disabled", "disabled");
+                    let data = new URLSearchParams();
+                    data.append("source", editor.getValue());
+                    let resp = await fetch(projectEditSubmitUrl, {
+                        method: "POST",
+                        body: data,
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        }
+                    });
+                    let status = resp.status;
+                    if (status === 200) {
+                        let json = await resp.json();
+                        console.log(json);
+                        startCheckStatus(json);
+                        return;
+                    }
+                    let text = await resp.text();
+                    setFailedMessage(text);
+                })
+            });
+        };
+        document.addEventListener("DOMContentLoaded", function () {
+            initEditor();
+        });
+
+        // refresh refresh button
+        refreshBtn.addEventListener("click", function () {
+            let iframe = document.getElementById("project-preview");
+            let url = refreshBtn.getAttribute("data-x-url");
+            let new_url = document.getElementById("preview-url").value;
+            if (!new_url.startsWith(url)) {
+                alert("Only support refresh same origin: " + url);
+                return;
+            }
+            console.log("iframe", new_url);
+            iframe.src = new_url;
+        })
+
+
+    </script>
+</body>
+
+</html>

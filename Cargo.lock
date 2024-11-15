@@ -943,9 +943,9 @@ dependencies = [
 
 [[package]]
 name = "cpufeatures"
-version = "0.2.14"
+version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "608697df725056feaccfa42cffdaeeec3fccc4ffc38358ecd19b243e716a78e0"
+checksum = "0ca741a962e1b0bff6d724a1a0958b686406e853bb14061f218562e1896f95e6"
 dependencies = [
  "libc",
 ]
@@ -1773,7 +1773,7 @@ dependencies = [
  "aho-corasick 1.1.3",
  "bstr",
  "log",
- "regex-automata 0.4.8",
+ "regex-automata 0.4.9",
  "regex-syntax 0.8.5",
 ]
 
@@ -1952,6 +1952,17 @@ dependencies = [
  "cfg-if",
  "libc",
  "windows",
+]
+
+[[package]]
+name = "htmlentity"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd54ae4f69adcc1a43637dcff230852832c3ad50df31a90e0cb5f001dd441359"
+dependencies = [
+ "anyhow",
+ "lazy_static",
+ "thiserror",
 ]
 
 [[package]]
@@ -2395,11 +2406,11 @@ dependencies = [
 
 [[package]]
 name = "land-cli"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 
 [[package]]
 name = "land-dao"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2420,7 +2431,7 @@ dependencies = [
 
 [[package]]
 name = "land-sdk"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "hmac",
@@ -2435,7 +2446,7 @@ dependencies = [
 
 [[package]]
 name = "land-sdk-macro"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "http",
@@ -2445,7 +2456,7 @@ dependencies = [
 
 [[package]]
 name = "land-server"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "axum",
@@ -2456,6 +2467,7 @@ dependencies = [
  "clap",
  "gravatar",
  "handlebars",
+ "htmlentity",
  "land-dao",
  "land-service",
  "land-tplvars",
@@ -2473,7 +2485,7 @@ dependencies = [
 
 [[package]]
 name = "land-service"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2499,7 +2511,7 @@ dependencies = [
 
 [[package]]
 name = "land-tplvars"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2511,7 +2523,7 @@ dependencies = [
 
 [[package]]
 name = "land-utils"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2531,7 +2543,7 @@ dependencies = [
 
 [[package]]
 name = "land-wasm-gen"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "tracing",
@@ -2544,7 +2556,7 @@ dependencies = [
 
 [[package]]
 name = "land-wasm-host"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2566,7 +2578,7 @@ dependencies = [
 
 [[package]]
 name = "land-worker"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "clap",
@@ -2579,7 +2591,7 @@ dependencies = [
 
 [[package]]
 name = "land-worker-server"
-version = "0.2.0-b4"
+version = "0.2.0-b5"
 dependencies = [
  "anyhow",
  "axum",
@@ -3818,7 +3830,7 @@ checksum = "b544ef1b4eac5dc2db33ea63606ae9ffcfac26c1416a2806ae0bf5f56b201191"
 dependencies = [
  "aho-corasick 1.1.3",
  "memchr",
- "regex-automata 0.4.8",
+ "regex-automata 0.4.9",
  "regex-syntax 0.8.5",
 ]
 
@@ -3833,9 +3845,9 @@ dependencies = [
 
 [[package]]
 name = "regex-automata"
-version = "0.4.8"
+version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "368758f23274712b504848e9d5a6f010445cc8b87a7cdb4d7cbee666c1288da3"
+checksum = "809e8dc61f6de73b46c85f4c96486310fe304c434cfa43669d7b40f711150908"
 dependencies = [
  "aho-corasick 1.1.3",
  "memchr",
@@ -4352,18 +4364,18 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.214"
+version = "1.0.215"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f55c3193aca71c12ad7890f1785d2b73e1b9f63a0bbc353c08ef26fe03fc56b5"
+checksum = "6513c1ad0b11a9376da888e3e0baa0077f1aed55c17f50e7b2397136129fb88f"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.214"
+version = "1.0.215"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de523f781f095e28fa605cdce0f8307e451cc0fd14e2eb4cd2e98a355b147766"
+checksum = "ad1e866f866923f252f05c889987993144fb74e722403468a4ebd70c3cd756c0"
 dependencies = [
  "proc-macro2",
  "quote",

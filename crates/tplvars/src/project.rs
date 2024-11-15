@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result};
-use land_dao::models::project;
+use land_dao::{models::project, settings::DomainSettings};
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
@@ -36,8 +36,9 @@ impl Project {
         with_owner: bool,
     ) -> Result<Vec<Self>> {
         let mut projects = Vec::new();
+        let domain_settings = land_dao::settings::get_domain_settings().await?;
         for model in models {
-            projects.push(Project::new(&model).await?);
+            projects.push(Project::new(&model, Some(domain_settings.clone())).await?);
         }
         if with_owner {
             // read owners to fill
@@ -56,8 +57,12 @@ impl Project {
         Ok(projects)
     }
     /// new creates a new project from a model
-    pub async fn new(project: &project::Model) -> anyhow::Result<Self> {
-        let domain_settings = land_dao::settings::get_domain_settings().await?;
+    pub async fn new(project: &project::Model, ds: Option<DomainSettings>) -> anyhow::Result<Self> {
+        let domain_settings = if let Some(ds) = ds {
+            ds
+        } else {
+            land_dao::settings::get_domain_settings().await?
+        };
         let prod_domain_full = format!("{}.{}", project.prod_domain, domain_settings.domain_suffix);
         let prod_domain_url = format!("{}://{}", domain_settings.http_protocol, prod_domain_full);
         let dev_domain_full = format!("{}.{}", project.dev_domain, domain_settings.domain_suffix);
@@ -93,7 +98,7 @@ impl Project {
 
     /// new_with_source creates a new project from a model with playground source
     pub async fn new_with_source(project: &project::Model) -> anyhow::Result<Self> {
-        let mut project = Project::new(project).await?;
+        let mut project = Project::new(project, None).await?;
         if project.created_by != land_dao::projects::CreatedBy::Playground.to_string() {
             return Err(anyhow!("Project is not created by playground"));
         }

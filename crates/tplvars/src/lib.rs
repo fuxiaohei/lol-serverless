@@ -14,6 +14,9 @@ pub use worker::Worker;
 mod task;
 pub use task::Task;
 
+mod deploy;
+pub use deploy::Deploy;
+
 /// Page is the template page vars, for every page
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Page {
@@ -60,6 +63,7 @@ pub enum BreadCrumbKey {
     Projects,
     ProjectSingle,
     ProjectSettings,
+    ProjectDeployments,
     Settings,
     Admin,
     AdminGeneral,
@@ -76,14 +80,24 @@ impl BreadCrumb {
             link: None,
         }
     }
+    /// link creates a breadcrumb item with title and link
+    pub fn link(name: &str, link: &str) -> Self {
+        BreadCrumb {
+            title: name.to_string(),
+            link: Some(link.to_string()),
+        }
+    }
     /// new creates breadcrumb items
     pub fn new(key: &BreadCrumbKey) -> Vec<BreadCrumb> {
         match key {
             BreadCrumbKey::Dashboard => vec![Self::title("Dashboard")],
             BreadCrumbKey::Settings => vec![Self::title("Settings")],
-            BreadCrumbKey::Projects
-            | BreadCrumbKey::ProjectSingle
-            | BreadCrumbKey::ProjectSettings => vec![Self::title("Projects")],
+            BreadCrumbKey::Projects => vec![Self::title("Projects")],
+            BreadCrumbKey::ProjectSingle
+            | BreadCrumbKey::ProjectSettings
+            | BreadCrumbKey::ProjectDeployments => {
+                vec![Self::link("Projects", "/projects")]
+            }
             BreadCrumbKey::Admin | BreadCrumbKey::AdminGeneral | BreadCrumbKey::AdminWorkers => {
                 vec![Self::title("Admin")]
             }
