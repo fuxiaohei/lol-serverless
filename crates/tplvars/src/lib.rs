@@ -68,6 +68,8 @@ pub enum BreadCrumbKey {
     Admin,
     AdminGeneral,
     AdminWorkers,
+    AdminProjects,
+    AdminDeploys,
     NotFound,
     None,
 }
@@ -98,7 +100,11 @@ impl BreadCrumb {
             | BreadCrumbKey::ProjectDeployments => {
                 vec![Self::link("Projects", "/projects")]
             }
-            BreadCrumbKey::Admin | BreadCrumbKey::AdminGeneral | BreadCrumbKey::AdminWorkers => {
+            BreadCrumbKey::Admin
+            | BreadCrumbKey::AdminGeneral
+            | BreadCrumbKey::AdminWorkers
+            | BreadCrumbKey::AdminProjects
+            | BreadCrumbKey::AdminDeploys => {
                 vec![Self::title("Admin")]
             }
             BreadCrumbKey::None | BreadCrumbKey::NotFound => vec![],

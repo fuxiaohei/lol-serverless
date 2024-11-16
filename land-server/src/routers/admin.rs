@@ -22,6 +22,30 @@ pub async fn index(
     ))
 }
 
+/// projects shows the admin projects page
+pub async fn projects(
+    engine: Engine,
+    Extension(user): Extension<land_tplvars::User>,
+) -> Result<impl IntoResponse, ServerError> {
+    Ok(HtmlMinified(
+        "admin/index.hbs",
+        engine,
+        new_empty_admin("Admin", BreadCrumbKey::AdminProjects, Some(user)),
+    ))
+}
+
+/// deploys shows the admin deploys page
+pub async fn deploys(
+    engine: Engine,
+    Extension(user): Extension<land_tplvars::User>,
+) -> Result<impl IntoResponse, ServerError> {
+    Ok(HtmlMinified(
+        "admin/index.hbs",
+        engine,
+        new_empty_admin("Admin", BreadCrumbKey::AdminDeploys, Some(user)),
+    ))
+}
+
 /// general shows the admin general settings page
 pub async fn general(
     engine: Engine,

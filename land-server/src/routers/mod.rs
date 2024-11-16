@@ -64,6 +64,8 @@ pub async fn new(assets_dir: &str, tpl_dir: Option<String>) -> Result<Router> {
         .route("/admin/storage", post(admin::handle_update_storage))
         .route("/admin/workers", get(admin::workers))
         .route("/admin/workers/tokens", post(admin::handle_workers_token))
+        .route("/admin/projects", get(admin::projects))
+        .route("/admin/deploys", get(admin::deploys))
         .route("/_worker_api/heartbeat", post(worker_api::heartbeat))
         .route("/_worker_api/tasks", post(worker_api::task::tasks))
         .route("/_worker_api/download/*path", get(worker_api::download))

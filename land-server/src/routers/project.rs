@@ -8,7 +8,13 @@ use crate::{
 };
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension, Form, Json};
 use htmlentity::entity::{self, ICodedDataTrait};
-use land_dao::{deploys, envs, projects, settings};
+use land_dao::{
+    deploys::{
+        self,
+        DeployType::{Development, Disabled, Production},
+    },
+    envs, projects, settings,
+};
 use land_service::examples;
 use land_tplvars::{new_vars, BreadCrumbKey, Deploy, Project};
 use serde::{Deserialize, Serialize};
@@ -377,13 +383,11 @@ pub async fn deployments(
         return Ok(notfound_page(engine, &msg, user).into_response());
     }
     let project = Project::new(&project.unwrap(), None).await?;
-    let deploys = deploys::list_by_project(
-        project.id,
-        vec![
-            deploys::DeployType::Production,
-            deploys::DeployType::Development,
-            deploys::DeployType::Disabled,
-        ],
+    let (deploys, _pager) = deploys::list_by(
+        Some(project.id),
+        vec![Production, Development, Disabled],
+        1,
+        100,
     )
     .await?;
     Ok(HtmlMinified(

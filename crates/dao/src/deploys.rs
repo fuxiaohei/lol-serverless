@@ -4,8 +4,8 @@ use crate::{
 };
 use anyhow::Result;
 use sea_orm::{
-    sea_query::Expr, ActiveModelTrait, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
-    QueryOrder,
+    sea_query::Expr, ActiveModelTrait, ColumnTrait, EntityTrait, IntoActiveModel,
+    ItemsAndPagesNumber, PaginatorTrait, QueryFilter, QueryOrder,
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -170,19 +170,26 @@ pub async fn list_by_ids(ids: Vec<i32>) -> Result<Vec<deploys::Model>> {
     Ok(models)
 }
 
-/// list_by_project returns a list of deployments by project
-pub async fn list_by_project(
-    project_id: i32,
+/// list_by returns a list of deployments by project
+pub async fn list_by(
+    project_id: Option<i32>,
     deploy_types: Vec<DeployType>,
-) -> Result<Vec<deploys::Model>> {
+    page: u64,
+    page_size: u64,
+) -> Result<(Vec<deploys::Model>, ItemsAndPagesNumber)> {
     let db = DB.get().unwrap();
-    let mut selector = deploys::Entity::find().filter(deploys::Column::ProjectId.eq(project_id));
+    let mut selector = deploys::Entity::find();
+    if let Some(project_id) = project_id {
+        selector = selector.filter(deploys::Column::ProjectId.eq(project_id));
+    }
     if !deploy_types.is_empty() {
         let types: Vec<String> = deploy_types.iter().map(|t| t.to_string()).collect();
         selector = selector.filter(deploys::Column::DeployType.is_in(types));
     }
-    let models = selector.order_by_desc(deploys::Column::Id).all(db).await?;
-    Ok(models)
+    let pager = selector.paginate(db, page_size);
+    let models = pager.fetch_page(page - 1).await?;
+    let pages = pager.num_items_and_pages().await?;
+    Ok((models, pages))
 }
 
 /// get_for_status returns a deployment by status

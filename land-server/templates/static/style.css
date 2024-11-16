@@ -164,7 +164,8 @@ html[data-bs-theme="dark"] #projects-overview .project-item:hover {
     background-color: transparent !important;
 }
 
-.badge.status-success {
+.badge.status-success,
+.badge.status-online {
     background-color: #008000;
     color: #e2e4e5;
 }
@@ -172,7 +173,8 @@ html[data-bs-theme="dark"] #projects-overview .project-item:hover {
 .badge.status-waitdeploy,
 .badge.status-deploying,
 .badge.status-uploading,
-.badge.status-compiling {
+.badge.status-compiling,
+.badge.status-offline {
     background-color: #DDD;
     color: #333;
 }
