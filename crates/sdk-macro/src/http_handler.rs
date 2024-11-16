@@ -518,7 +518,7 @@ macro_rules! __export_http_handler_impl {
         exports::land::asyncio::context::__export_land_asyncio_context_0_2_0_cabi!($ty
         with_types_in $($path_to_types_root)*:: exports::land::asyncio::context); const _
         : () = { #[cfg(target_arch = "wasm32")] #[link_section =
-        "component-type:wit-bindgen:0.34.0:land:worker@0.2.0:http-handler:imports and exports"]
+        "component-type:wit-bindgen:0.35.0:land:worker@0.2.0:http-handler:imports and exports"]
         #[doc(hidden)] pub static __WIT_BINDGEN_COMPONENT_TYPE : [u8; 775] = *
         b"\
 \0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\x84\x05\x01A\x02\x01\
@@ -537,14 +537,14 @@ req\x01\0\x03\x04\0\x0ehandle-request\x01\x04\x04\0\x18land:http/incoming@0.2.0\
 \x03\x01B\x03\x01@\0\0\x7f\x04\0\x0ais-pending\x01\0\x04\0\x06select\x01\0\x04\0\
 \x1aland:asyncio/context@0.2.0\x05\x04\x04\0\x1eland:worker/http-handler@0.2.0\x04\
 \0\x0b\x12\x01\0\x0chttp-handler\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\
-\x0dwit-component\x070.219.1\x10wit-bindgen-rust\x060.34.0";
+\x0dwit-component\x070.220.0\x10wit-bindgen-rust\x060.35.0";
         };
     };
 }
 #[doc(inline)]
 pub use __export_http_handler_impl as export;
 #[cfg(target_arch = "wasm32")]
-#[link_section = "component-type:wit-bindgen:0.34.0:land:worker@0.2.0:http-handler-with-all-of-its-exports-removed:encoded world"]
+#[link_section = "component-type:wit-bindgen:0.35.0:land:worker@0.2.0:http-handler-with-all-of-its-exports-removed:encoded world"]
 #[doc(hidden)]
 pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 651] = *b"\
 \0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xe8\x03\x01A\x02\x01\
@@ -559,7 +559,7 @@ eout\0\0\x0binvalid-url\0\0\x17destination-not-allowed\0\0\x11too-many-requests\
 edirect\x13\x04\0\x0frequest-options\x03\0\x14\x03\0\x15land:http/types@0.2.0\x05\
 \0\x04\0>land:worker/http-handler-with-all-of-its-exports-removed@0.2.0\x04\0\x0b\
 2\x01\0,http-handler-with-all-of-its-exports-removed\x03\0\0\0G\x09producers\x01\
-\x0cprocessed-by\x02\x0dwit-component\x070.219.1\x10wit-bindgen-rust\x060.34.0";
+\x0cprocessed-by\x02\x0dwit-component\x070.220.0\x10wit-bindgen-rust\x060.35.0";
 #[inline(never)]
 #[doc(hidden)]
 pub fn __link_custom_section_describing_imports() {

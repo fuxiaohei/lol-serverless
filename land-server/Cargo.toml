@@ -7,7 +7,7 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 axum = { workspace = true }
-axum-extra = { version = "0.9.4", features = ["cookie"] }
+axum-extra = { version = "0.9.5", features = ["cookie"] }
 axum-htmx = "0.6.0"
 axum-template = { version = "2.4.0", features = ["handlebars"] }
 chrono = { workspace = true }
