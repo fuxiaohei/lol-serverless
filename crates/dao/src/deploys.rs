@@ -186,7 +186,9 @@ pub async fn list_by(
         let types: Vec<String> = deploy_types.iter().map(|t| t.to_string()).collect();
         selector = selector.filter(deploys::Column::DeployType.is_in(types));
     }
-    let pager = selector.paginate(db, page_size);
+    let pager = selector
+        .order_by_desc(deploys::Column::Id)
+        .paginate(db, page_size);
     let models = pager.fetch_page(page - 1).await?;
     let pages = pager.num_items_and_pages().await?;
     Ok((models, pages))
