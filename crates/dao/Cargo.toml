@@ -7,20 +7,20 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 async-trait = { workspace = true }
-bcrypt = "0.15.1"
+bcrypt = "0.16.0"
 chrono = { workspace = true }
 clap = { workspace = true }
 land-utils = { workspace = true }
 rand =  { workspace = true }
 random_word = { version = "0.4.3", features = ["en"] }
-sea-orm = { version = "1.1.0", default-features = false, features = [
+sea-orm = { version = "1.1.1", default-features = false, features = [
     "with-chrono",
     "with-json",
     "runtime-tokio-rustls",
     "sqlx-sqlite",
     "sqlx-postgres",
 ] }
-sea-orm-migration = "1.1.0"
+sea-orm-migration = "1.1.1"
 serde = { workspace = true }
 serde_json = { workspace = true }
 strum = { workspace = true }
