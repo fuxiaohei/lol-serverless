@@ -44,7 +44,7 @@ pub async fn init(addr: String, token: String, dir: String, service_name: String
             {
                 Ok(_) => {}
                 Err(e) => {
-                    warn!("agent task error: {:?}", e);
+                    warn!("agent task error: {:#}", e);
                 }
             };
             ticker.tick().await;

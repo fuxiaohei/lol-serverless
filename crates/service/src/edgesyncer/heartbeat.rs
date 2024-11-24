@@ -20,7 +20,7 @@ pub async fn init(addr: String, token: String, dir: String) {
             match heartbeat_ping(addr.clone(), token.clone(), dir.clone()).await {
                 Ok(_) => {}
                 Err(e) => {
-                    warn!("agent heartbeat_ping error: {:?}", e);
+                    warn!("agent heartbeat_ping error: {:#}", e);
                 }
             };
             ticker.tick().await;

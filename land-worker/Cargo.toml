@@ -11,4 +11,4 @@ land-service = { workspace = true }
 land-utils = { workspace = true }
 land-worker-server = { workspace = true }
 tokio = { workspace = true }
-url = "2.5.3"
+url = "2.5.4"
