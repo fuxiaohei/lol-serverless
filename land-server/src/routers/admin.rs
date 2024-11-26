@@ -3,10 +3,12 @@ use super::{
     HtmlMinified, ServerError,
 };
 use crate::{routers::utils::ok_htmx, templates::Engine};
-use axum::{response::IntoResponse, Extension, Form};
-use land_dao::{settings, tokens, workers};
+use axum::{extract::Query, response::IntoResponse, Extension, Form};
+use land_dao::{projects, settings, tokens, workers};
 use land_service::storage;
-use land_tplvars::{new_empty_admin, new_vars_admin, BreadCrumbKey, Token, Worker};
+use land_tplvars::{
+    new_empty_admin, new_vars_admin, BreadCrumbKey, Pagination, Project, Token, Worker,
+};
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
@@ -22,15 +24,47 @@ pub async fn index(
     ))
 }
 
+/// FilterQuery is the query params for pager and filter
+#[derive(Debug, Deserialize)]
+pub struct FilterQuery {
+    pub page: Option<u64>,
+    pub size: Option<u64>,
+    pub search: Option<String>,
+}
+
 /// projects shows the admin projects page
 pub async fn projects(
     engine: Engine,
     Extension(user): Extension<land_tplvars::User>,
+    Query(page): Query<FilterQuery>,
 ) -> Result<impl IntoResponse, ServerError> {
+    #[derive(Serialize)]
+    struct Data {
+        pub projects: Vec<Project>,
+        pub pagination: Pagination,
+    }
+    let (current_page, current_size) = (page.page.unwrap_or(1), page.size.unwrap_or(20));
+    let (projects, pager) =
+        projects::list(None, page.search.clone(), current_page, current_size).await?;
+    let pagination = Pagination::new(
+        current_page,
+        current_size,
+        pager.number_of_pages,
+        pager.number_of_items,
+        "/admin/projects",
+    );
     Ok(HtmlMinified(
-        "admin/index.hbs",
+        "admin/projects.hbs",
         engine,
-        new_empty_admin("Admin", BreadCrumbKey::AdminProjects, Some(user)),
+        new_vars_admin(
+            "Admin",
+            BreadCrumbKey::AdminProjects,
+            Some(user),
+            Data {
+                projects: Project::new_from_models(projects, true).await?,
+                pagination,
+            },
+        ),
     ))
 }
 

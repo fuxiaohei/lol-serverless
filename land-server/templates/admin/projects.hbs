@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    {{> partial/head.hbs}}
+</head>
+
+<body id="root">
+    {{> partial/sidebar.hbs}}
+    <main id="main" class="w-100 overflow-y-auto">
+        {{> partial/topnav.hbs}}
+        <div id="main-container">
+            <table id="projects-table" class="table shadow-none mx-3 bg-transparent">
+                <thead>
+                    <tr>
+                        <th scope="col"><span class="y-center">Name<i class='bi bi-sort-up ms-2'
+                                    role="button"></i></span></th>
+                        <th scope="col">Owner</th>
+                        <th scope="col">Lang</th>
+                        <th scope="col">Deployment URL</th>
+                        <th scope="col" class="y-center">Requests / Bandwidth<i class='bi bi-info-circle ms-2'
+                                data-bs-toggle="tooltip" data-bs-title="Latest 24 Hours"></i></th>
+                        <th scope="col">Status</th>
+                        <th scope="col"><span class="y-center">Updated<i class='bi bi-sort-up ms-2'
+                                    role="button"></i></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data.projects}}
+                    <tr x-data-pid="{{id}}">
+                        <td>
+                            <p class="mb-1 fs-6">
+                                <a href="/projects/{{name}}" class="link-reset fw-semibold link-hover">{{name}}</a>
+                                <span class="small text-body-tertiary fw-normal text-uppercase">{{created_by}}</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p class="mb-0">
+                                <a href="/admin/users/{{owner.uuid}}" class="link-reset link-hover">{{owner.username}}</a>
+                            </p>
+                        </td>
+                        <td class="lang-logo-24">
+                            <img src="/static/img/javascript.svg" class="me-2 {{language}}-svg" alt="{{language}}">
+                        </td>
+                        <td>
+                            {{#if prod_domain_url}}
+                            <a href="{{prod_domain_url}}" target="_blank" class="link-reset y-center link-hover"><span
+                                    class="link">{{prod_domain_full}}</span><i class='bi bi-link ms-2'></i></a></i>
+                            {{/if}}
+                        </td>
+                        <td class="text-body-secondary">
+                            <span id="p-{{id}}-reqs-value">-</span><span id="p-{{id}}-flows-value"
+                                class="border-start ms-2 ps-2">-</span>
+                        </td>
+                        <td>
+                            {{#if is_disabled}}
+                            <span class="small text-uppercase status-{{status}} badge">
+                                {{status}}
+                            </span>
+                            {{else}}
+                            <span class="small text-uppercase status-{{deploy_status}} badge">
+                                {{deploy_status}}
+                            </span>
+                            {{/if}}
+                        </td>
+                        <td class="text-body-secondary"><span class="time-ago" data-x-timeago="{{updated_at}}"></span>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            <div class="pagination p-3 px-4">
+                {{#with data}}
+                {{> partial/pagination.hbs}}
+                {{/with}}
+            </div>
+        </div>
+        {{> partial/footer.hbs}}
+    </main>
+    {{> partial/js.hbs}}
+</body>
+
+</html>

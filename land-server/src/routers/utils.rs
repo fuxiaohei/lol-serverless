@@ -1,7 +1,7 @@
 use super::ServerError;
 use crate::{routers::HtmlMinified, templates::Engine};
 use axum::{
-    body::Body,
+    body::{Body, HttpBody},
     extract::{ConnectInfo, OriginalUri, Request},
     http::{HeaderValue, Response, StatusCode, Uri},
     middleware::Next,
@@ -113,12 +113,7 @@ pub async fn logger(request: Request, next: Next) -> Result<axum::response::Resp
             .unwrap_or(&empty_header)
             .to_str()
             .unwrap();
-        let content_size = resp
-            .headers()
-            .get("content-length")
-            .unwrap_or(&empty_header)
-            .to_str()
-            .unwrap();
+        let content_size = resp.body().size_hint().exact().unwrap_or_default();
         if status >= 400 {
             warn!(
                 rmt = remote,

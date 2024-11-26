@@ -17,6 +17,9 @@ pub use task::Task;
 mod deploy;
 pub use deploy::Deploy;
 
+mod pagination;
+pub use pagination::{Pagination, PaginationItem};
+
 /// Page is the template page vars, for every page
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Page {
