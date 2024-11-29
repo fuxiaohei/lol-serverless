@@ -15,5 +15,5 @@ RUN \
   apt-get clean
 COPY --from=build /usr/src/land-server/target/release/land-server /opt/bin/land-server
 COPY --from=build /usr/src/land-server/wizer-v7.0.5-x86_64-linux /opt/bin/wizer
-EXPOSE 9840
+EXPOSE 8844
 CMD ["/opt/bin/land-server","--verbose"]
