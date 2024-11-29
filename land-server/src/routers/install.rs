@@ -95,6 +95,9 @@ pub async fn handle(
     settings::set_installed().await?;
     info!("app set installed");
 
+    // init default settings values
+    settings::init_defaults().await?;
+
     // use email name as username
     let user_name = install_form
         .email
