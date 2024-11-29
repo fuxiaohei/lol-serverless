@@ -14,6 +14,6 @@ RUN \
   apt-get install -y ca-certificates && \
   apt-get clean
 COPY --from=build /usr/src/land-server/target/release/land-server /opt/bin/land-server
-COPY --from=build /usr/src/land-server/wizer-v6.0.0-x86_64-linux /opt/bin/wizer
+COPY --from=build /usr/src/land-server/wizer-v7.0.5-x86_64-linux /opt/bin/wizer
 EXPOSE 9840
 CMD ["/opt/bin/land-server","--verbose"]
