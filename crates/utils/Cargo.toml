@@ -20,4 +20,4 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 
 [build-dependencies]
-vergen-git2 = { version = "1.0.1", features = ["build", "cargo", "rustc"] }
+vergen-git2 = { version = "1.0.2", features = ["build", "cargo", "rustc"] }

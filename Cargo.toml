@@ -37,7 +37,7 @@ land-worker-server = { path = "crates/worker-server" }
 anyhow = "1.0.93"
 async-trait = "0.1.83"
 axum = "0.7.9"
-bytes = "1.8.0"
+bytes = "1.9.0"
 clap = { version = "4.5.21", features = ["derive", "env"] }
 chrono = "0.4.38"
 http = "1.1.0"
@@ -65,7 +65,7 @@ tower-http = { version = "0.6.2", features = [
     "fs",
     "trace",
 ] }
-tracing = "0.1.40"
+tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.18", features = [
     "time",
     "local-time",
@@ -80,7 +80,7 @@ walkdir = "2.5.0"
 wasmtime = { version = "27.0.0", features = ["component-model", "async"] }
 wasmtime-wasi = "27.0.0"
 wasi-preview1-component-adapter-provider = "27.0.0"
-wit-bindgen-core = "0.35.0"
-wit-bindgen-rust = "0.35.0"
-wit-bindgen = "0.35.0"
-wit-component = "0.220.0"
+wit-bindgen-core = "0.36.0"
+wit-bindgen-rust = "0.36.0"
+wit-bindgen = "0.36.0"
+wit-component = "0.221.0"
