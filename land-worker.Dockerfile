@@ -9,5 +9,5 @@ RUN cargo build -p land-worker --release
 FROM debian:stable-slim
 WORKDIR /opt/bin/
 COPY --from=build /usr/src/land-src/target/release/land-worker /opt/bin/land-worker
-EXPOSE 9940
+EXPOSE 8840
 CMD ["/opt/bin/land-worker","--verbose"]

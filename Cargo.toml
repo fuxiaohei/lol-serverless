@@ -34,13 +34,13 @@ land-wasm-host = { path = "crates/wasm-host" }
 land-worker-server = { path = "crates/worker-server" }
 
 # thirdparty dependencies
-anyhow = "1.0.93"
+anyhow = "1.0.94"
 async-trait = "0.1.83"
 axum = "0.7.9"
 bytes = "1.9.0"
-clap = { version = "4.5.21", features = ["derive", "env"] }
+clap = { version = "4.5.23", features = ["derive", "env"] }
 chrono = "0.4.38"
-http = "1.1.0"
+http = "1.2.0"
 metrics = "0.24.0"
 md5 = "0.7.0"
 lazy_static = "1.5.0"
@@ -57,8 +57,8 @@ rust-embed = { version = "8.5.0", features = [
 serde = { version = "1.0.215", features = ["derive"] }
 serde_json = "1.0.133"
 strum = { version = "0.26.3", features = ["derive"] }
-time = { version = "0.3.36", features = ["local-offset"] }
-tokio = { version = "1.41.1", features = ["full"] }
+time = { version = "0.3.37", features = ["local-offset"] }
+tokio = { version = "1.42.0", features = ["full"] }
 tower-http = { version = "0.6.2", features = [
     "timeout",
     "cors",
@@ -66,7 +66,7 @@ tower-http = { version = "0.6.2", features = [
     "trace",
 ] }
 tracing = "0.1.41"
-tracing-subscriber = { version = "0.3.18", features = [
+tracing-subscriber = { version = "0.3.19", features = [
     "time",
     "local-time",
     "env-filter",
@@ -83,4 +83,4 @@ wasi-preview1-component-adapter-provider = "27.0.0"
 wit-bindgen-core = "0.36.0"
 wit-bindgen-rust = "0.36.0"
 wit-bindgen = "0.36.0"
-wit-component = "0.221.0"
+wit-component = "0.221.2"
